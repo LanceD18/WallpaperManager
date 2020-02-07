@@ -21,9 +21,6 @@ using WallpaperManager.Tagging;
 
 namespace WallpaperManager
 {
-    //TODO Tag Linking
-    //TODO Adding and removing tags to a loaded page that has a search cn
-
     public partial class WallpaperManager : Form
     {
         // Essentials
