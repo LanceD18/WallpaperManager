@@ -29,9 +29,8 @@ namespace WallpaperManager.ApplicationData
 
         public static bool RandomizeSelection;
 
-        private static string jpxStringPrompt = "See if these images still work and if not, try to find an alternative method than just renaming them.\n" +
-                           "Consider still adding the renaming option for jpg_large for people like me who'd rather not stack up on unopenable files\n" +
-                           "This'll be (even more) optional though\n\n";
+        private static string jpxStringPrompt = "TODO: Test jpeg files. I'm pretty sure they'll work but just to be sure.\n" +
+                           "Here are your current jpeg files:\n";
         /*
         private static string jpxStringPrompt = "The following files have extensions that are unusable. However, they can be readily converted into jpg or png files.\n" +
                            "Would you like to convert the following images? \n " +
