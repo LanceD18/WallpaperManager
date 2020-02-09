@@ -72,6 +72,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -120,6 +121,12 @@
     </Compile>
     <Compile Include="Options\OptionsForm.Designer.cs">
       <DependentUpon>OptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options\RankDistributionChart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Options\RankDistributionChart.Designer.cs">
+      <DependentUpon>RankDistributionChart.cs</DependentUpon>
     </Compile>
     <Compile Include="Tagging\CategoryData.cs" />
     <Compile Include="Tagging\TagClickerForm.cs">
@@ -226,6 +233,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Options\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options\RankDistributionChart.resx">
+      <DependentUpon>RankDistributionChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

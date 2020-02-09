@@ -34,7 +34,7 @@ namespace WallpaperManager.Options
 
         private void buttonInspectRankDistribution_Click(object sender, EventArgs e)
         {
-
+            new RankDistributionChart().Show();
         }
 
         private void buttonModifyMaxRank_Click(object sender, EventArgs e)
