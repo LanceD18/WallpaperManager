@@ -118,7 +118,9 @@ namespace WallpaperManager.ImageSelector
 
             if (WallpaperData.ContainsRank(selectedRank))
             {
-                WallpaperData.WallpaperManagerForm.RebuildImageSelector(WallpaperData.GetImagesOfRank(selectedRank));
+                string[] imagesToSelect = WallpaperData.GetImagesOfRank(selectedRank);
+                string[] imagesSelected = checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect;
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesSelected);
             }
             else
             {
