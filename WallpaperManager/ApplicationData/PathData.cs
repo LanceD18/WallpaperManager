@@ -97,92 +97,72 @@ namespace WallpaperManager.ApplicationData
         #region Wallpaper Order Modifiers
         private static void ModifyWallpaperOrder()
         {
-            /*
             if (IsWallpapersValid())
             {
-                string[] test = LargestImagesWithCustomFilePath(ActiveWallpapers);
-
+                string[] reorderedWallpapers = new string[0];
                 int[] largestMonitorIndexOrder = MonitorData.GetLargestMonitorIndexOrder();
-                for (int i = 0; i < ActiveWallpapers.Length; i++)
-                {
-                    Debug.WriteLine(largestMonitorIndexOrder[i]);
-                    ActiveWallpapers[largestMonitorIndexOrder[i]] = test[i];
-                }
-            }
 
-            if (IsWallpapersValid())
-            {
                 if (OptionsData.HigherRankedImagesOnLargerMonitors)
                 {
+                    reorderedWallpapers = (from f in ActiveWallpapers orderby WallpaperData.GetImageRank(f) descending select f).ToArray();
+
+                    // both ranking and size are now a factor so first an image's rank will determine their index and then afterwards
+                    // any ranking conflicts have their indexes determined by size rather than being random
                     if (OptionsData.LargerImagesOnLargerMonitors)
                     {
-
+                        ConflictResolveIdenticalRanks(ref reorderedWallpapers);
                     }
                 }
                 else if (OptionsData.LargerImagesOnLargerMonitors)
                 {
-
+                    reorderedWallpapers = LargestImagesWithCustomFilePath(ActiveWallpapers);
                 }
-            }
-            */
 
-            if (false && IsWallpapersValid())
+                ApplyNewPathOrder(reorderedWallpapers, largestMonitorIndexOrder);
+            }
+        }
+
+        private static void ConflictResolveIdenticalRanks(ref string[] reorderedWallpapers)
+        {
+            bool conflictFound = false;
+            Dictionary<int, List<string>> rankConflicts = new Dictionary<int, List<string>>();
+            foreach (string wallpaper in reorderedWallpapers)
             {
-                if (OptionsData.HigherRankedImagesOnLargerMonitors && OptionsData.LargerImagesOnLargerMonitors)
+                int wallpaperRank = WallpaperData.GetImageRank(wallpaper);
+                if (!rankConflicts.ContainsKey(wallpaperRank))
                 {
-                    int[] testRanks = new int[ActiveWallpapers.Length];
-                    bool checkForSize = false;
-                    int identicalRankCount = 0;
-
-                    for (int i = 0; i < ActiveWallpapers.Length; i++)
-                    {
-                        int curRank = WallpaperData.GetImageRank(ActiveWallpapers[i]);
-
-                        if (testRanks.Contains(curRank))
-                        {
-                            checkForSize = true; // at least 2 images will have their size compared
-                            identicalRankCount++;
-                        }
-
-                        testRanks[identicalRankCount] = curRank;
-                    }
-
-                    if (identicalRankCount != ActiveWallpapers.Length - 1)
-                    {
-                        HigherRankedImagesOnLargerMonitors(checkForSize);
-                    }
-                    else // All ranks for the current wallpapers are identical
-                    {
-                        LargerImagesOnLargerMonitors();
-                    }
+                    rankConflicts.Add(wallpaperRank, new List<string> { wallpaper });
                 }
-
-                if (OptionsData.HigherRankedImagesOnLargerMonitors && !OptionsData.LargerImagesOnLargerMonitors)
+                else // more than one wallpaper contains the same rank, they'll have to have their conflicts resolved below
                 {
-                    HigherRankedImagesOnLargerMonitors(false);
-                }
-
-                if (OptionsData.LargerImagesOnLargerMonitors && !OptionsData.HigherRankedImagesOnLargerMonitors)
-                {
-                    LargerImagesOnLargerMonitors();
+                    rankConflicts[wallpaperRank].Add(wallpaper);
+                    conflictFound = true;
                 }
             }
+
+            if (conflictFound) // if this is false then nothing will happen and the original reorderedWallpapers value will persist
+            {
+                List<string> conflictResolvedOrder = new List<string>();
+                foreach (int rank in rankConflicts.Keys)
+                {
+                    if (rankConflicts[rank].Count > 1) // conflict present, fix it by comparing image sizes and placing the largest image first
+                    {
+                        string[] conflictResolvedRank = LargestImagesWithCustomFilePath(rankConflicts[rank].ToArray());
+                        foreach (string wallpaper in conflictResolvedRank)
+                        {
+                            conflictResolvedOrder.Add(wallpaper);
+                        }
+                    }
+                    else
+                    {
+                        conflictResolvedOrder.Add(rankConflicts[rank][0]);
+                    }
+                }
+
+                reorderedWallpapers = conflictResolvedOrder.ToArray();
+            }
         }
-
-        private static void HigherRankedImagesOnLargerMonitors(bool alsoCheckingForSize)
-        {
-            string[] tempFilePath = (from f in ActiveWallpapers orderby WallpaperData.GetImageRank(f) descending select f).ToArray();
-
-            ReOrderFilePathWithLargestMonitor(tempFilePath, alsoCheckingForSize);
-        }
-
-        private static void LargerImagesOnLargerMonitors()
-        {
-            string[] tempFilePath = LargestImagesWithCustomFilePath(ActiveWallpapers);
-
-            ApplyNewPathOrder(tempFilePath);
-        }
-
+            
         private static string[] LargestImagesWithCustomFilePath(string[] CustomFilePath)
         {
             Image[] images = (from f in CustomFilePath select Image.FromFile(f)).ToArray();
@@ -202,65 +182,11 @@ namespace WallpaperManager.ApplicationData
             return CustomFilePath;
         }
 
-        private static void ReOrderFilePathWithLargestMonitor(string[] tempFilePath, bool checkingForIdenticalRank)
+        private static void ApplyNewPathOrder(string[] reorderedWallpapers, int[] reorderedIndexes)
         {
-            if (checkingForIdenticalRank)
-            {
-                // so by now we have the images ordered by their ranks
-                // but there are at least 2 images with the same rank
-                // single these images out and reorder them based on size
-                // they should be right next to each other in the array, so just ensure that their positions are cycled appropriately
-
-                Dictionary<int, List<string>> rankInfo = new Dictionary<int, List<string>>();
-
-                foreach (string path in tempFilePath)
-                {
-                    int curRank = WallpaperData.GetImageRank(path);
-
-                    if (!rankInfo.Keys.Contains(curRank))
-                    {
-                        rankInfo.Add(curRank, new List<string>() {path});
-                    }
-                    else
-                    {
-                        rankInfo[curRank].Add(path);
-                    }
-                }
-
-                // take into account that the ranks are already ordered, you just need to order the identical sections
-                List<string> reorderedFilePath = new List<string>();
-                foreach (int rank in rankInfo.Keys)
-                {
-                    if (rankInfo[rank].Count > 1) // duplicates exist at this rank
-                    {
-                        string[] identicalRankOrder = LargestImagesWithCustomFilePath(rankInfo[rank].ToArray());
-
-                        foreach (string path in identicalRankOrder)
-                        {
-                            reorderedFilePath.Add(path);
-                        }
-                    }
-                    else
-                    {
-                        reorderedFilePath.Add(rankInfo[rank][0]);
-                    }
-                }
-
-                ApplyNewPathOrder(reorderedFilePath.ToArray());
-            }
-            else
-            {
-                ApplyNewPathOrder(tempFilePath);
-            }
-        }
-
-        private static void ApplyNewPathOrder(string[] reorderedFilePath)
-        {
-            int[] largestMonitorIndexOrder = MonitorData.GetLargestMonitorIndexOrder();
-
             for (int i = 0; i < ActiveWallpapers.Length; i++)
             {
-                ActiveWallpapers[largestMonitorIndexOrder[i]] = reorderedFilePath[i];
+                ActiveWallpapers[reorderedIndexes[i]] = reorderedWallpapers[i];
             }
         }
         #endregion
