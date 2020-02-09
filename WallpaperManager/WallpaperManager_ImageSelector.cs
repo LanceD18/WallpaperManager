@@ -147,7 +147,7 @@ namespace WallpaperManager
 
         private void LoadTab(int tabIndex)
         {
-            if (tabIndex != -1) // will occur when resetting the tabControl
+            if (tabIndex != -1 && selectedImages != null) // tabIndex will equal -1 when resetting the tabControl | selectedImages may equal null when clearing
             {
                 tabControlImagePages.SuspendLayout();
                 while (loadedImages.Count > 0)
