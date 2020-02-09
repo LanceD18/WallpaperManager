@@ -100,25 +100,28 @@ namespace WallpaperManager.ApplicationData
             if (IsWallpapersValid())
             {
                 string[] reorderedWallpapers = new string[0];
-                int[] largestMonitorIndexOrder = MonitorData.GetLargestMonitorIndexOrder();
-
-                if (OptionsData.HigherRankedImagesOnLargerMonitors)
+                if (OptionsData.HigherRankedImagesOnLargerMonitors || OptionsData.LargerImagesOnLargerMonitors)
                 {
-                    reorderedWallpapers = (from f in ActiveWallpapers orderby WallpaperData.GetImageRank(f) descending select f).ToArray();
+                    int[] largestMonitorIndexOrder = MonitorData.GetLargestMonitorIndexOrder();
 
-                    // both ranking and size are now a factor so first an image's rank will determine their index and then afterwards
-                    // any ranking conflicts have their indexes determined by size rather than being random
-                    if (OptionsData.LargerImagesOnLargerMonitors)
+                    if (OptionsData.HigherRankedImagesOnLargerMonitors)
                     {
-                        ConflictResolveIdenticalRanks(ref reorderedWallpapers);
-                    }
-                }
-                else if (OptionsData.LargerImagesOnLargerMonitors)
-                {
-                    reorderedWallpapers = LargestImagesWithCustomFilePath(ActiveWallpapers);
-                }
+                        reorderedWallpapers = (from f in ActiveWallpapers orderby WallpaperData.GetImageRank(f) descending select f).ToArray();
 
-                ApplyNewPathOrder(reorderedWallpapers, largestMonitorIndexOrder);
+                        // both ranking and size are now a factor so first an image's rank will determine their index and then afterwards
+                        // any ranking conflicts have their indexes determined by size rather than being random
+                        if (OptionsData.LargerImagesOnLargerMonitors)
+                        {
+                            ConflictResolveIdenticalRanks(ref reorderedWallpapers);
+                        }
+                    }
+                    else if (OptionsData.LargerImagesOnLargerMonitors)
+                    {
+                        reorderedWallpapers = LargestImagesWithCustomFilePath(ActiveWallpapers);
+                    }
+
+                    ApplyNewPathOrder(reorderedWallpapers, largestMonitorIndexOrder);
+                }
             }
         }
 
