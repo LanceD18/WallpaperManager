@@ -145,7 +145,9 @@ namespace WallpaperManager.ApplicationData
                 return foundTags.ToArray();
             }
 
-            public bool CheckIfTagIsParent(TagData tag)
+            public bool CheckIfTagIsParent(TagData tag) => CheckIfTagIsParent(tag, out var dummyChildTagName);
+
+            public bool CheckIfTagIsParent(TagData tag, out string childTagName)
             {
                 string categoryName = tag.ParentCategoryName;
                 string tagName = tag.Name;
@@ -156,14 +158,19 @@ namespace WallpaperManager.ApplicationData
                     {
                         foreach (Tuple<string, string> tagInfo in tag.ChildTags)
                         {
-                            if (Tags[tagInfo.Item1].Contains(tagInfo.Item2))
+                            if (Tags.ContainsKey(tagInfo.Item1)) // without this child tags from different categories will cause a crash if the image does not have said tag
                             {
-                                return true;
+                                if (Tags[tagInfo.Item1].Contains(tagInfo.Item2))
+                                {
+                                    childTagName = tagInfo.Item2;
+                                    return true;
+                                }
                             }
                         }
                     }
                 }
 
+                childTagName = "";
                 return false;
             }
 

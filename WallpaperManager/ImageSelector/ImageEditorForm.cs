@@ -137,13 +137,10 @@ namespace WallpaperManager.ImageSelector
             if (tag != null)
             {
                 // Determine if a child tag of this tag is present in the image, if so then the tag cannot be removed
-                foreach (Tuple<string, string> tagInfo in tag.ChildTags)
+                if (activeImage.CheckIfTagIsParent(tag, out var childTagName))
                 {
-                    if (activeImage.Tags[tagInfo.Item1].Contains(tagInfo.Item2))
-                    {
-                        MessageBox.Show("You cannot remove the tag " + tag.Name + " while it's child tag " + tagInfo.Item2 + " is also tagged");
-                        return;
-                    }
+                    MessageBox.Show("You cannot remove the tag " + tag.Name + " while it's child tag " + childTagName + " is also tagged");
+                    return;
                 }
 
                 activeImage.RemoveTag(tag);
