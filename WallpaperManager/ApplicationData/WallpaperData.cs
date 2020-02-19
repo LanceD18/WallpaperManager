@@ -55,21 +55,25 @@ namespace WallpaperManager.ApplicationData
 
         // File Data
         #region File Data
-        public static void AddImage(ImageData newImageData)
+        public static bool AddImage(ImageData newImageData)
         {
-            Tagging.LinkImageTags(newImageData);
-
-            FileData.Add(newImageData.Path, newImageData);
+            if (File.Exists(newImageData.Path))
+            {
+                Tagging.LinkImageTags(newImageData);
+                FileData.Add(newImageData.Path, newImageData);
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("Attempted to create an invalid image: " + newImageData.Path);
+                return false;
+            }
         }
 
-        public static void AddImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
+        public static bool AddImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
         {
             tags = tags ?? new Dictionary<string, HashSet<string>>(); // if null, the right-hand side of ?? will be called
-
-            ImageData newImageData = new ImageData(path, rank, active, tags);
-            Tagging.LinkImageTags(newImageData);
-
-            FileData.Add(path, newImageData);
+            return AddImage(new ImageData(path, rank, active, tags));
         }
 
         public static void RemoveImage(string path)

@@ -171,9 +171,18 @@ namespace WallpaperManager.ApplicationData
             }
 
             // All tags will be linked through the AddImage method
+            string invalidImagesString = "A few image files for your theme appear to be missing.\nThe following image's will not be saved to your theme: \n";
             foreach (ImageData image in jsonWallpaperData.imageData)
             {
-                AddImage(image);
+                if (!AddImage(image))
+                {
+                    invalidImagesString += "\n" + image.Path;
+                }
+            }
+
+            if (invalidImagesString.Contains("\n\n"))
+            {
+                MessageBox.Show(invalidImagesString);
             }
 
             // Activates Images
