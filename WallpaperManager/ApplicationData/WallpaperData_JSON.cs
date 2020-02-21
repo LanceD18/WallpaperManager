@@ -155,7 +155,7 @@ namespace WallpaperManager.ApplicationData
 
         private static void ResetWallpaperManager()
         {
-            WallpaperManagerForm.ClearImageSelector();
+            WallpaperManagerForm.ResetWallpaperManager();
         }
 
         private static void LoadCoreData(JsonWallpaperData jsonWallpaperData)

@@ -205,6 +205,12 @@ namespace WallpaperManager
             }
         }
 
+        public void ResetWallpaperManager()
+        {
+            ClearImageSelector();
+            ClearImageFolders();
+        }
+
         private void buttonNextWallpaper_Click(object sender, EventArgs e)
         {
             NextWallpaper();
