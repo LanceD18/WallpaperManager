@@ -19,6 +19,11 @@ namespace WallpaperManager
 {
     public partial class WallpaperManager : Form
     {
+        private void flowLayoutPanelImageFolders_Click(object sender, EventArgs e)
+        {
+            flowLayoutPanelImageFolders.Focus();
+        }
+
         private void buttonAddFolder_Click(object sender, EventArgs e)
         {
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
@@ -72,14 +77,6 @@ namespace WallpaperManager
             }
             if (pauseLayout) { flowLayoutPanelImageFolders.ResumeLayout(); } // prevents inefficiency by handling controls all at once instead of one-by-one
 
-            //! Make an Autosave Option | Also this might be hindering performance on load [Tbh thou I don't really notice too big of a difference, test]
-            /*
-            if (initialLength != flowLayoutPanelImageFolders.Controls.Count) // one or more folders have been added, rewrite data
-            {
-                WallpaperData.SaveData(PathData.ActiveWallpaperTheme);
-            }
-            */
-
             // displays a list of folder paths the user attempted to add that already exist
             if (duplicateFolderPaths != "")
             {
@@ -123,14 +120,6 @@ namespace WallpaperManager
                 }
             }
             if (pauseLayout) { flowLayoutPanelImageFolders.ResumeLayout(); } // prevents inefficiency by handling controls all at once instead of one-by-one
-
-            //! Make an Autosave Option | Also this might be hindering performance on load [Tbh thou I don't really notice too big of a difference, test]
-            /*
-            if (initialLength != flowLayoutPanelImageFolders.Controls.Count) // one or more folders have been removed, rewrite data
-            {
-                WallpaperData.SaveData(PathData.ActiveWallpaperTheme);
-            }
-            */
 
             // displays a list of folder paths the user attempted to add that already exist
             if (invalidFolderPaths != "")
@@ -179,6 +168,8 @@ namespace WallpaperManager
             {
                 MessageBox.Show("An error occured. Check Box item is invalid");
             }
+
+            flowLayoutPanelImageFolders.Focus(); // prevents the weird behavior where clicking on a checkbox resets the scroll every second
         }
 
         private void ActivateFolderImages(string folderPath)

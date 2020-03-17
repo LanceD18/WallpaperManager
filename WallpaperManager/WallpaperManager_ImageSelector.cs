@@ -29,6 +29,11 @@ namespace WallpaperManager
 
         private FlowLayoutPanel activeTabLayoutPanel;
 
+        private void tabLayoutPanel_MouseClick(object sender, EventArgs e)
+        {
+            (sender as ScrollLockedFlowLayoutPanel).Focus();
+        }
+
         private void buttonClearSelection_Click(object sender, EventArgs e)
         {
             ClearImageSelector();
@@ -162,6 +167,7 @@ namespace WallpaperManager
                 tabLayoutPanel.Size = new Size(tabControlImagePages.Size.Width - 5, tabControlImagePages.Size.Height - tabControlImagePages.ItemSize.Height - 5);
                 tabLayoutPanel.AutoScroll = true;
                 tabLayoutPanel.HorizontalScroll.Visible = false;
+                tabLayoutPanel.MouseClick += tabLayoutPanel_MouseClick;
 
                 if (tabControlImagePages.TabPages[tabIndex].Controls.Count > 0)
                 {

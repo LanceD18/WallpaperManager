@@ -172,6 +172,42 @@ namespace WallpaperManager
             }
         }
 
+        #region Button Events
+        private void buttonNextWallpaper_Click(object sender, EventArgs e)
+        {
+            NextWallpaper();
+        }
+
+        private void buttonPreviousWallpaper_Click(object sender, EventArgs e)
+        {
+            PreviousWallpaper();
+        }
+
+        private void buttonOptions_Click(object sender, EventArgs e)
+        {
+            using (OptionsForm f = new OptionsForm())
+            {
+                f.ShowDialog();
+            }
+        }
+
+        private TagForm activeTagForm;
+        private void buttonTagSettings_Click(object sender, EventArgs e)
+        {
+            // Show() will dispose itself on close, ShowDialog() will not however | Show() will allow you to click on other controls while ShowDialog() will not
+            if (activeTagForm == null || activeTagForm.IsDisposed)
+            {
+                activeTagForm = new TagForm();
+                activeTagForm.Show();
+            }
+        }
+
+        private void WallpaperManager_Click(object sender, EventArgs e)
+        {
+            labelTimeLeft.Focus(); // you can't focus onto the form but this acts like what you'd want
+        }
+        #endregion
+
         private void NextWallpaper()
         {
             if (!WallpaperData.FileDataIsEmpty())
@@ -202,35 +238,6 @@ namespace WallpaperManager
             else
             {
                 MessageBox.Show("There are no more previous wallpapers");
-            }
-        }
-
-        private void buttonNextWallpaper_Click(object sender, EventArgs e)
-        {
-            NextWallpaper();
-        }
-
-        private void buttonPreviousWallpaper_Click(object sender, EventArgs e)
-        {
-            PreviousWallpaper();
-        }
-
-        private void buttonOptions_Click(object sender, EventArgs e)
-        {
-            using (OptionsForm f = new OptionsForm())
-            {
-                f.ShowDialog();
-            }
-        }
-
-        private TagForm activeTagForm;
-        private void buttonTagSettings_Click(object sender, EventArgs e)
-        {
-            // Show() will dispose itself on close, ShowDialog() will not however | Show() will allow you to click on other controls while ShowDialog() will not
-            if (activeTagForm == null || activeTagForm.IsDisposed)
-            {
-                activeTagForm = new TagForm();
-                activeTagForm.Show();
             }
         }
     }

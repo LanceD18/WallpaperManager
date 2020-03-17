@@ -246,8 +246,11 @@ namespace WallpaperManager.ApplicationData
                 string[] images = FileData.Keys.ToArray();
                 foreach (string image in images)
                 {
-                    int newRank = Math.Max((int) Math.Round((double) FileData[image].Rank * rankChangeRatio), 1); // the Math.Max is used to ensure that no images are set to 0 (unranked)
-                    FileData[image].Rank = newRank;
+                    if (FileData[image].Rank != 0) // due to the Math.Max() used below this if statement is needed otherwise all rank 0 images would be set to 1
+                    {
+                        int newRank = Math.Max((int) Math.Round((double) FileData[image].Rank * rankChangeRatio), 1); // the Math.Max is used to ensure that no images are set to 0 (unranked)
+                        FileData[image].Rank = newRank;
+                    }
                 }
 
                 WallpaperManagerForm.UpdateImageRanks();

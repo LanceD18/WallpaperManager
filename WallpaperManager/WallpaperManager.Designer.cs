@@ -160,6 +160,7 @@
             this.flowLayoutPanelImageFolders.Size = new System.Drawing.Size(598, 250);
             this.flowLayoutPanelImageFolders.TabIndex = 0;
             this.flowLayoutPanelImageFolders.WrapContents = false;
+            this.flowLayoutPanelImageFolders.Click += new System.EventHandler(this.flowLayoutPanelImageFolders_Click);
             // 
             // buttonSaveTheme
             // 
@@ -537,6 +538,7 @@
             this.Controls.Add(this.buttonNextWallpaper);
             this.Name = "WallpaperManager";
             this.Text = "WallpaperManager";
+            this.Click += new System.EventHandler(this.WallpaperManager_Click);
             this.panelImageFolders.ResumeLayout(false);
             this.panelImageSettings.ResumeLayout(false);
             this.panelImageSelector.ResumeLayout(false);

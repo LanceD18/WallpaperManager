@@ -15,7 +15,7 @@ namespace WallpaperManager.ApplicationData
         public class ImageData
         {
             [DataMember(Name = "path")]
-            public string Path { get; } //? If you need to change this, FileData's field must be changed into List<ImageData>
+            public string Path { get; private set; } //? If you need to change this, FileData's field must be changed into List<ImageData>
 
             [DataMember(Name = "rank")]
             private int rank;
@@ -76,6 +76,11 @@ namespace WallpaperManager.ApplicationData
                 Active = active;
                 Tags = tags ?? new Dictionary<string, HashSet<string>>();
                 TagNamingExceptions = tagNamingExceptions ?? new HashSet<Tuple<string, string>>();
+            }
+
+            public void UpdatePath(string newPath)
+            {
+                Path = newPath;
             }
 
             public void AddTag(CategoryData category, string tag)

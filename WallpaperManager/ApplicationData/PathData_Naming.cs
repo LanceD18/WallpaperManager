@@ -35,7 +35,7 @@ namespace WallpaperManager.ApplicationData
             Dictionary<string, Dictionary<string, HashSet<WallpaperData.ImageData>>> namingConflicts = GetRenameData(images, out int failedToNameCount);
             List<string> acceptedNames = new List<string>();
 
-            bool renamingAllowed = MessageBox.Show("Allow renaming?", "hoo", MessageBoxButtons.YesNo) == DialogResult.Yes;
+            bool renamingAllowed = MessageBox.Show("Allow renaming?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
 
             foreach (string curDirectory in namingConflicts.Keys)
             {
@@ -221,7 +221,7 @@ namespace WallpaperManager.ApplicationData
                 {
                     try
                     {
-                        // Since File.Move is case insensitive, first we need to check if oldPath and newPath has the same letters when cases are ignored
+                        //? Since File.Move is case insensitive, first we need to check if oldPath and newPath has the same letters when cases are ignored
                         if (String.Equals(oldPath, newPath, StringComparison.CurrentCultureIgnoreCase))
                         {
                             Debug.WriteLine("Cases ignored");
@@ -234,9 +234,7 @@ namespace WallpaperManager.ApplicationData
                             File.Move(oldPath, newPath);
                         }
 
-                        //TODO FILEDATA STUFF
-                        //TODO MAKE IT TO WHERE JUST CHANGING THE .PATH HANDLES EVERYTHING ELSE
-                        //TODO USE A GETTER AND SETTER FOR IMAGEDATA'S .PATH VARIABLE
+                        WallpaperData.GetImageData(oldPath).UpdatePath(newPath);
                     }
                     catch (Exception e)
                     {

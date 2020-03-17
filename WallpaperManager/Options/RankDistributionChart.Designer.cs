@@ -32,6 +32,7 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chartRankDistribution = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.labelImageCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chartRankDistribution)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,22 +58,36 @@
             this.chartRankDistribution.Tag = "";
             this.chartRankDistribution.Text = "chart1";
             // 
+            // labelImageCount
+            // 
+            this.labelImageCount.AutoSize = true;
+            this.labelImageCount.BackColor = System.Drawing.Color.White;
+            this.labelImageCount.ForeColor = System.Drawing.Color.Black;
+            this.labelImageCount.Location = new System.Drawing.Point(12, 428);
+            this.labelImageCount.Name = "labelImageCount";
+            this.labelImageCount.Size = new System.Drawing.Size(67, 13);
+            this.labelImageCount.TabIndex = 1;
+            this.labelImageCount.Text = "Image Count";
+            // 
             // RankDistributionChart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelImageCount);
             this.Controls.Add(this.chartRankDistribution);
             this.Name = "RankDistributionChart";
             this.Text = "RankDistributionGraph";
             ((System.ComponentModel.ISupportInitialize)(this.chartRankDistribution)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chartRankDistribution;
+        private System.Windows.Forms.Label labelImageCount;
     }
 }
