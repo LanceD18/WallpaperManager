@@ -410,6 +410,7 @@ namespace WallpaperManager.ApplicationData
 
             if (jpxFiles.Count > 0)
             {
+                /*
                 if (IsLoadingData)
                 {
                     jpxToJpgWarning += jpxString;
@@ -419,7 +420,6 @@ namespace WallpaperManager.ApplicationData
                     MessageBox.Show(jpxStringPrompt + jpxString);
                 }
 
-                /*
                 DialogResult result = MessageBox.Show(jpxString, "Choose an option", MessageBoxButtons.YesNo);
 
                 if (result == DialogResult.Yes)

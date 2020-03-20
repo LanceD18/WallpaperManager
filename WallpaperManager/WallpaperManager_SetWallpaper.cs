@@ -16,9 +16,11 @@ namespace WallpaperManager
 {
     public partial class WallpaperManager : Form
     {
+        private Thread setWallpaperThread;
+
         private void SetWallpaper()
         {
-            Thread thread = new Thread(() =>
+            setWallpaperThread = new Thread(() =>
             {
                 // Check if all potential wallpapers exist
                 foreach (string wallpaperPath in PathData.ActiveWallpapers)
@@ -98,7 +100,9 @@ namespace WallpaperManager
                 IntPtr result = IntPtr.Zero;
                 SendMessageTimeout(FindWindow("Program", IntPtr.Zero), 0x52c, IntPtr.Zero, IntPtr.Zero, 0, 500, out result);
             });
-            thread.Start();
+
+            if (setWallpaperThread.IsAlive) setWallpaperThread.Abort();
+            setWallpaperThread.Start();
         }
 
         private void DrawBackground()
@@ -206,7 +210,30 @@ namespace WallpaperManager
                         }
                     }
 
-                    b.Save(PathData.ActiveWallpaperImage, ImageFormat.MemoryBmp);
+                    try
+                    {
+                        b.Save(PathData.ActiveWallpaperImage, ImageFormat.Jpeg);
+                    }
+                    catch (Exception e)
+                    {
+                        try
+                        {
+                            Thread.Sleep(1000); //? this buffer prevents a great deal of potential GDI+ errors
+                            b.Save(PathData.ActiveWallpaperImage, ImageFormat.Jpeg);
+                            Debug.WriteLine("Buffer Reload Attempt");
+                            Debug.WriteLine(e);
+                        }
+                        catch (Exception e2)
+                        {
+                            Thread.Sleep(1000); //? Tries again with a blank background, then tries to reload the background
+                            Bitmap placeholderBitmap = new Bitmap(TotalMonitorWidth, MaxMonitorHeight);
+                            placeholderBitmap.Save(PathData.ActiveWallpaperImage, ImageFormat.Jpeg);
+                            placeholderBitmap.Dispose();
+                            Debug.WriteLine("Placeholder Bitmap");
+                            Debug.WriteLine(e2);
+                            DrawBackground();
+                        }
+                    }
                 }
             }
         }
@@ -222,7 +249,7 @@ namespace WallpaperManager
 
             if (recursionCount > 5)
             {
-                Debug.WriteLine("Failed to load wallpaper");
+                MessageBox.Show("Failed to load wallpaper");
                 return false;
             }
 
@@ -240,7 +267,7 @@ namespace WallpaperManager
                     catch
                     {
                         Process proc = Process.GetCurrentProcess();
-                        Console.WriteLine("Memory Usage: " + proc.PrivateMemorySize64);
+                        Debug.WriteLine("Memory Usage: " + proc.PrivateMemorySize64);
                         fs.Close();
                         fs.Dispose();
                         redo = true;

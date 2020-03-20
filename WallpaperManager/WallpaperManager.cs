@@ -245,5 +245,11 @@ namespace WallpaperManager
                 MessageBox.Show("There are no more previous wallpapers");
             }
         }
+
+        public void ResetWallpaperManager()
+        {
+            ClearImageSelector();
+            ClearImageFolders();
+        }
     }
 }
