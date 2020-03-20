@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -52,6 +53,8 @@ namespace WallpaperManager
         //? SendMessageTimeout(FindWindow("Program", IntPtr.Zero), 0x52c, IntPtr.Zero, IntPtr.Zero, 0, 500, out result);
         #endregion
 
+        private GlobalHotkey ghShiftAlt;
+
         public WallpaperManager()
         {
             InitializeComponent();
@@ -70,48 +73,6 @@ namespace WallpaperManager
             InitializeKeys();
             InitializeNotifyIcon();
         }
-
-        private void InitializeKeys()
-        {
-            //? See if you actually need this, makes it to where key presses are detected across all forms, does this include while the app is closed too?
-            //? If the above is true then this will need to have a setting in the options panel
-            this.KeyPreview = true;
-
-            // GlobalHotkey stuff
-            /*
-            ghShiftAlt = new GlobalHotkey(VirtualKey.SHIFT + VirtualKey.ALT, Keys.None, this);
-            ghDivide = new GlobalHotkey(VirtualKey.NOMOD, Keys.Divide, this);
-            ghMultiply = new GlobalHotkey(VirtualKey.NOMOD, Keys.Multiply, this);
-            ghNumPad5 = new GlobalHotkey(VirtualKey.NOMOD, Keys.NumPad5, this);
-            */
-        }
-
-        #region Keys
-        /*
-        private void HandleHotKey()
-        {
-            SetDefaultTheme();
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            if (m.Msg == VirtualKey.WM_HOTKEY_MSG_ID)
-            {
-                HandleHotKey();
-            }
-
-            base.WndProc(ref m);
-        }
-
-        private void Form1_KeyPress(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Space)
-            {
-                SetDefaultTheme();
-            }
-        } // KEYPRESS METHOD HERE!!! <----------------------
-        */
-        #endregion
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
@@ -140,8 +101,6 @@ namespace WallpaperManager
             */
         }
 
-        //? Is this even necessary?
-        //? Ensure that I don't overwrite Form.OnLoad | I don't think this does
         private void OnLoad(object sender, EventArgs e)
         {
             Debug.WriteLine("OnLoad is incomplete");
@@ -161,7 +120,6 @@ namespace WallpaperManager
             */
         }
 
-        //? Ensure that I don't overwrite Form.OnResize | I don't think this does
         private void OnResize(object sender, EventArgs e)
         {
             // minimizes the program to the system tray, "hiding" it
@@ -172,45 +130,42 @@ namespace WallpaperManager
             }
         }
 
-        private void NextWallpaper()
+        #region Hotkeys
+        private void InitializeKeys()
         {
-            if (!WallpaperData.FileDataIsEmpty())
-            {
-                //TODO Find a way to prevent the first previous wallpaper from being filled with empty strings
-                ResetTimer();
-                string[] previousWallpapers = new string[PathData.ActiveWallpapers.Length];
-                PathData.ActiveWallpapers.CopyTo(previousWallpapers, 0);
-                PathData.PreviousWallpapers.Push(previousWallpapers);
+            //? See if you actually need this, makes it to where key presses are detected across all forms, does this include while the app is closed too?
+            //? If the above is true then this will need to have a setting in the options panel
+            this.KeyPreview = true;
 
-                PathData.RandomizeWallpapers();
-                SetWallpaper();
-            }
-            else
+            // GlobalHotkey
+            ghShiftAlt = new GlobalHotkey(VirtualKey.SHIFT + VirtualKey.ALT, Keys.None, this);
+            //ghDivide = new GlobalHotkey(VirtualKey.NOMOD, Keys.Divide, this);
+            //ghMultiply = new GlobalHotkey(VirtualKey.NOMOD, Keys.Multiply, this);
+            //ghNumPad5 = new GlobalHotkey(VirtualKey.NOMOD, Keys.NumPad5, this);
+
+            if (!ghShiftAlt.Register())
             {
-                MessageBox.Show("No wallpapers were found");
+                MessageBox.Show("Hotkey failed to register!");
             }
         }
 
-        private void PreviousWallpaper()
+        protected override void WndProc(ref Message m)
         {
-            if (PathData.PreviousWallpapers.Count > 1) // the first wallpaper will be filled with empty strings
+            if (m.Msg == VirtualKey.WM_HOTKEY_MSG_ID)
             {
-                ResetTimer();
-                PathData.PreviousWallpapers.Pop().CopyTo(PathData.ActiveWallpapers, 0);
-                SetWallpaper();
+                HandleHotKey();
             }
-            else
-            {
-                MessageBox.Show("There are no more previous wallpapers");
-            }
+
+            base.WndProc(ref m);
         }
 
-        public void ResetWallpaperManager()
+        private void HandleHotKey()
         {
-            ClearImageSelector();
-            ClearImageFolders();
+            WallpaperData.LoadDefaultTheme();
         }
+        #endregion
 
+        #region Button Events
         private void buttonNextWallpaper_Click(object sender, EventArgs e)
         {
             NextWallpaper();
@@ -237,6 +192,57 @@ namespace WallpaperManager
             {
                 activeTagForm = new TagForm();
                 activeTagForm.Show();
+            }
+        }
+
+        private void WallpaperManager_Click(object sender, EventArgs e)
+        {
+            labelTimeLeft.Focus(); // you can't focus onto the form but this acts like what you'd want
+        }
+        #endregion
+
+        public void NextWallpaper()
+        {
+            NextWallpaper(false);
+        }
+
+        public void NextWallpaper(bool ignoreErrorMessages)
+        {
+            if (!WallpaperData.FileDataIsEmpty())
+            {
+                if (!WallpaperData.NoImagesActive() && WallpaperData.GetAllRankedImages().Length != 0)
+                {
+                    //TODO Find a way to prevent the first previous wallpaper from being filled with empty strings
+                    ResetTimer();
+                    string[] previousWallpapers = new string[PathData.ActiveWallpapers.Length];
+                    PathData.ActiveWallpapers.CopyTo(previousWallpapers, 0);
+                    PathData.PreviousWallpapers.Push(previousWallpapers);
+
+                    PathData.RandomizeWallpapers();
+                    SetWallpaper();
+                }
+                else
+                {
+                    if (!ignoreErrorMessages) MessageBox.Show("No active wallpapers were found");
+                }
+            }
+            else
+            {
+                if (!ignoreErrorMessages) MessageBox.Show("Add some wallpapers first! Use the Add Folder button to add a collection of images that'll be used as potential wallpapers");
+            }
+        }
+
+        public void PreviousWallpaper()
+        {
+            if (PathData.PreviousWallpapers.Count > 1) // the first wallpaper will be filled with empty strings
+            {
+                ResetTimer();
+                PathData.PreviousWallpapers.Pop().CopyTo(PathData.ActiveWallpapers, 0);
+                SetWallpaper();
+            }
+            else
+            {
+                MessageBox.Show("There are no more previous wallpapers");
             }
         }
     }
