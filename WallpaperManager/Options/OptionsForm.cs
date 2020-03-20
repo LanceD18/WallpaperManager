@@ -18,6 +18,8 @@ namespace WallpaperManager.Options
         {
             InitializeComponent();
 
+            labelDefaultThemePath.Text = Properties.Settings.Default["DefaultTheme"] as string;
+
             checkBoxLargerImagesOnLargerMonitors.Checked = OptionsData.LargerImagesOnLargerMonitors;
             checkBoxHigherRankedImagesOnLargerMonitors.Checked = OptionsData.HigherRankedImagesOnLargerMonitors;
             checkBoxEnableDetectionOfInactiveImages.Checked = OptionsData.EnableDetectionOfInactiveImages;
@@ -64,6 +66,28 @@ namespace WallpaperManager.Options
             {
                 MessageBox.Show("Invalid Input");
             }
+        }
+
+        private void buttonSetDefaultTheme_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                // dialog properties
+                dialog.Title = "Select a compatible json file to load";
+                dialog.Filter = "Wallpaper Data (*.json) | *.json";
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    Properties.Settings.Default["DefaultTheme"] = dialog.FileName;
+                    Properties.Settings.Default.Save();
+                    labelDefaultThemePath.Text = dialog.FileName;
+                }
+            }
+        }
+
+        private void buttonLoadDefaultTheme_Click(object sender, EventArgs e)
+        {
+            WallpaperData.LoadDefaultTheme();
         }
     }
 }

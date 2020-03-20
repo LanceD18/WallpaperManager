@@ -33,6 +33,11 @@
             this.checkBoxEnableDetectionOfInactiveImages = new System.Windows.Forms.CheckBox();
             this.buttonInspectRankDistribution = new System.Windows.Forms.Button();
             this.buttonModifyMaxRank = new System.Windows.Forms.Button();
+            this.labelDefaultTheme = new System.Windows.Forms.Label();
+            this.labelDefaultThemePath = new System.Windows.Forms.Label();
+            this.buttonSetDefaultTheme = new System.Windows.Forms.Button();
+            this.buttonLoadDefaultTheme = new System.Windows.Forms.Button();
+            this.checkBoxEnableGlobalHotkey = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkBoxLargerImagesOnLargerMonitors
@@ -93,12 +98,73 @@
             this.buttonModifyMaxRank.UseVisualStyleBackColor = true;
             this.buttonModifyMaxRank.Click += new System.EventHandler(this.buttonModifyMaxRank_Click);
             // 
+            // labelDefaultTheme
+            // 
+            this.labelDefaultTheme.AutoSize = true;
+            this.labelDefaultTheme.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDefaultTheme.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.labelDefaultTheme.Location = new System.Drawing.Point(12, 99);
+            this.labelDefaultTheme.Name = "labelDefaultTheme";
+            this.labelDefaultTheme.Size = new System.Drawing.Size(113, 16);
+            this.labelDefaultTheme.TabIndex = 44;
+            this.labelDefaultTheme.Text = "Default Theme:";
+            // 
+            // labelDefaultThemePath
+            // 
+            this.labelDefaultThemePath.AutoSize = true;
+            this.labelDefaultThemePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDefaultThemePath.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.labelDefaultThemePath.Location = new System.Drawing.Point(12, 125);
+            this.labelDefaultThemePath.Name = "labelDefaultThemePath";
+            this.labelDefaultThemePath.Size = new System.Drawing.Size(94, 13);
+            this.labelDefaultThemePath.TabIndex = 45;
+            this.labelDefaultThemePath.Text = "defaultThemePath";
+            // 
+            // buttonSetDefaultTheme
+            // 
+            this.buttonSetDefaultTheme.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.buttonSetDefaultTheme.Location = new System.Drawing.Point(249, 96);
+            this.buttonSetDefaultTheme.Name = "buttonSetDefaultTheme";
+            this.buttonSetDefaultTheme.Size = new System.Drawing.Size(112, 23);
+            this.buttonSetDefaultTheme.TabIndex = 46;
+            this.buttonSetDefaultTheme.Text = "Set Default Theme";
+            this.buttonSetDefaultTheme.UseVisualStyleBackColor = true;
+            this.buttonSetDefaultTheme.Click += new System.EventHandler(this.buttonSetDefaultTheme_Click);
+            // 
+            // buttonLoadDefaultTheme
+            // 
+            this.buttonLoadDefaultTheme.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.buttonLoadDefaultTheme.Location = new System.Drawing.Point(131, 96);
+            this.buttonLoadDefaultTheme.Name = "buttonLoadDefaultTheme";
+            this.buttonLoadDefaultTheme.Size = new System.Drawing.Size(112, 23);
+            this.buttonLoadDefaultTheme.TabIndex = 47;
+            this.buttonLoadDefaultTheme.Text = "Load Default Theme";
+            this.buttonLoadDefaultTheme.UseVisualStyleBackColor = true;
+            this.buttonLoadDefaultTheme.Click += new System.EventHandler(this.buttonLoadDefaultTheme_Click);
+            // 
+            // checkBoxEnableGlobalHotkey
+            // 
+            this.checkBoxEnableGlobalHotkey.AutoSize = true;
+            this.checkBoxEnableGlobalHotkey.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBoxEnableGlobalHotkey.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.checkBoxEnableGlobalHotkey.Location = new System.Drawing.Point(15, 141);
+            this.checkBoxEnableGlobalHotkey.Name = "checkBoxEnableGlobalHotkey";
+            this.checkBoxEnableGlobalHotkey.Size = new System.Drawing.Size(250, 17);
+            this.checkBoxEnableGlobalHotkey.TabIndex = 48;
+            this.checkBoxEnableGlobalHotkey.Text = "Enable Default Theme Global Hotkey (Alt+Shift)";
+            this.checkBoxEnableGlobalHotkey.UseVisualStyleBackColor = true;
+            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(484, 450);
+            this.Controls.Add(this.checkBoxEnableGlobalHotkey);
+            this.Controls.Add(this.buttonLoadDefaultTheme);
+            this.Controls.Add(this.buttonSetDefaultTheme);
+            this.Controls.Add(this.labelDefaultThemePath);
+            this.Controls.Add(this.labelDefaultTheme);
             this.Controls.Add(this.buttonModifyMaxRank);
             this.Controls.Add(this.buttonInspectRankDistribution);
             this.Controls.Add(this.checkBoxEnableDetectionOfInactiveImages);
@@ -118,5 +184,10 @@
         private System.Windows.Forms.CheckBox checkBoxEnableDetectionOfInactiveImages;
         private System.Windows.Forms.Button buttonInspectRankDistribution;
         private System.Windows.Forms.Button buttonModifyMaxRank;
+        private System.Windows.Forms.Label labelDefaultTheme;
+        private System.Windows.Forms.Label labelDefaultThemePath;
+        private System.Windows.Forms.Button buttonSetDefaultTheme;
+        private System.Windows.Forms.Button buttonLoadDefaultTheme;
+        private System.Windows.Forms.CheckBox checkBoxEnableGlobalHotkey;
     }
 }

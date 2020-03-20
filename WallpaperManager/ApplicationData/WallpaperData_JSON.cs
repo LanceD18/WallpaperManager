@@ -97,7 +97,7 @@ namespace WallpaperManager.ApplicationData
         }
 
         // Load Data
-        public static void LoadData(string path)
+        public static bool LoadData(string path)
         {
             if (File.Exists(path))
             {
@@ -119,7 +119,7 @@ namespace WallpaperManager.ApplicationData
                 if (jsonWallpaperData == null)
                 {
                     MessageBox.Show("Load failed");
-                    return;
+                    return false;
                 }
 
                 LoadCoreData(jsonWallpaperData);
@@ -132,10 +132,12 @@ namespace WallpaperManager.ApplicationData
                 }
 
                 IsLoadingData = false;
+                return true;
             }
-            else  // MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
+            else  //! MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
             {
                 Debug.WriteLine("Attempted to load a non-existant file");
+                return false;
             }
         }
 
@@ -204,14 +206,16 @@ namespace WallpaperManager.ApplicationData
             TagSortOption = jsonWallpaperData.miscData.tagSortOption;
         }
 
-        public static void SaveDefaultData()
+        public static void LoadDefaultTheme()
         {
-            SaveData(PathData.DefaultWallpaperData);
-        }
-
-        public static void LoadDefaultData()
-        {
-            LoadData(PathData.DefaultWallpaperData);
+            if (LoadData(Properties.Settings.Default["DefaultTheme"] as string))
+            {
+                WallpaperManagerForm.NextWallpaper();
+            }
+            else
+            {
+                MessageBox.Show("No Default Theme currently exists. You'll need to set one up under the options menu first.");
+            }
         }
     }
 }

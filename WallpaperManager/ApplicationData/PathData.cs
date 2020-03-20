@@ -18,7 +18,6 @@ namespace WallpaperManager.ApplicationData
         public static Stack<string[]> PreviousWallpapers = new Stack<string[]>(); // allows you to return back to every wallpaper encountered during the current session
         public static readonly string WallpaperDataDirectory = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData";
         public static readonly string ActiveWallpaperImage = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\ActiveWallpaperImage.bmp";
-        public static readonly string DefaultWallpaperData = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\DefaultWallpaperData.json";
         public static readonly string TempImageLocation = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\TempImageLocation.file";
         public static string ActiveWallpaperTheme; // the currently loaded wallpaper theme
 

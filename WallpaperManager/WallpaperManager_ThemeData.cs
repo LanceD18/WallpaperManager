@@ -18,7 +18,7 @@ namespace WallpaperManager
             {
                 // dialog properties
                 dialog.Title = "Select a compatible json file to load";
-                dialog.Filter = "Wallpaper Data (*.json, *.xml) | *.json; *.xml";
+                dialog.Filter = "Wallpaper Data (*.json) | *.json";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {

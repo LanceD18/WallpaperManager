@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Timers;
+using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager
 {
@@ -67,7 +68,7 @@ namespace WallpaperManager
         private void IntervalElapsed(object sender, ElapsedEventArgs e)
         {
             timerStopWatch.Restart();
-            NextWallpaper();
+            NextWallpaper(true);
         }
 
         // when the user change's their preferred timer
@@ -121,8 +122,11 @@ namespace WallpaperManager
 
         public void ResetTimer()
         {
-            timer.Interval = timerInterval;
-            timerStopWatch.Restart();
+            if (timerInterval != 0)
+            {
+                timer.Interval = timerInterval;
+                timerStopWatch.Restart();
+            }
         }
     }
 }

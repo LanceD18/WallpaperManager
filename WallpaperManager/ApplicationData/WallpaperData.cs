@@ -49,7 +49,7 @@ namespace WallpaperManager.ApplicationData
 
             if (useLastLoadedTheme)
             {
-                LoadDefaultData();
+                LoadDefaultTheme();
             }
         }
 
@@ -138,7 +138,7 @@ namespace WallpaperManager.ApplicationData
 
             foreach (int rank in RankData.Keys)
             {
-                if (rank != 0 && RankData[rank].Count != 0)
+                if (rank != 0 && RankData[rank].Count != 0) // ensures that rank 0 images are not included since they are 'unranked'
                 {
                     string[] currentRankArray = RankData[rank].ToArray();
                     int tempArraySize = arraySize + currentRankArray.Length;
@@ -162,7 +162,7 @@ namespace WallpaperManager.ApplicationData
 
         public static ImageData[] GetAllRankedImageData()
         {
-            string[] images = GetAllRankedImages();
+            string[] images = GetAllRankedImages(); //? note that this ensures that rank 0 images are not included since they are 'unranked'
             ImageData[] rankedImageData = new ImageData[images.Length];
 
             for (int i = 0; i < rankedImageData.Length; i++)
@@ -483,7 +483,7 @@ namespace WallpaperManager.ApplicationData
 
                 if (RankData.Count == 0) //? This is where RankData is initialized for new themes (when the first folder is added)
                 {
-                    Debug.WriteLine("oop");
+                    Debug.WriteLine("Initializing RankData for new theme");
                     SetRankMax(10, false); // default max rank
                 }
 
