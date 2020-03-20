@@ -39,7 +39,7 @@ namespace WallpaperManager
             ClearImageSelector();
         }
 
-        public void ClearImageSelector()
+        private void ClearImageSelector()
         {
             panelImageSelector.Visible = false;
 

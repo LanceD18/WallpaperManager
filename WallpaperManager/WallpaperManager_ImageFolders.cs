@@ -204,5 +204,10 @@ namespace WallpaperManager
 
             return folderPaths;
         }
+
+        private void ClearImageFolders()
+        {
+            flowLayoutPanelImageFolders.Controls.Clear();
+        }
     }
 }
