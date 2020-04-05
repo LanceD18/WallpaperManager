@@ -11,5 +11,6 @@ namespace WallpaperManager.Options
         public static bool LargerImagesOnLargerMonitors;
         public static bool HigherRankedImagesOnLargerMonitors;
         public static bool EnableDetectionOfInactiveImages;
+        public static bool EnableGlobalHotkey;
     }
 }

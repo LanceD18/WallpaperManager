@@ -161,7 +161,11 @@ namespace WallpaperManager
 
         private void HandleHotKey()
         {
-            WallpaperData.LoadDefaultTheme();
+            if (OptionsData.EnableGlobalHotkey)
+            {
+                WallpaperData.SaveData(PathData.ActiveWallpaperTheme);
+                WallpaperData.LoadDefaultTheme();
+            }
         }
         #endregion
 

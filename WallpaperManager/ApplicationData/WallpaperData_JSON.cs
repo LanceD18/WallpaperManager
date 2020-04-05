@@ -21,7 +21,6 @@ namespace WallpaperManager.ApplicationData
 
         public class JsonWallpaperData
         {
-            //? Smaller file size, will have to traverse for output
             [JsonProperty("OptionsData")] public OptionsData optionsData;
 
             [JsonProperty("MiscData")] public MiscData miscData;
@@ -67,6 +66,7 @@ namespace WallpaperManager.ApplicationData
             public bool largerImagesOnLargerMonitors;
             public bool higherRankedImagesOnLargerMonitors;
             public bool enableDetectionOfInactiveImages;
+            public bool enableGlobalHotkey;
 
             public OptionsData()
             {
@@ -196,6 +196,7 @@ namespace WallpaperManager.ApplicationData
             Options.OptionsData.LargerImagesOnLargerMonitors = jsonWallpaperData.optionsData.largerImagesOnLargerMonitors;
             Options.OptionsData.HigherRankedImagesOnLargerMonitors = jsonWallpaperData.optionsData.higherRankedImagesOnLargerMonitors;
             Options.OptionsData.EnableDetectionOfInactiveImages = jsonWallpaperData.optionsData.enableDetectionOfInactiveImages;
+            Options.OptionsData.EnableGlobalHotkey = jsonWallpaperData.optionsData.enableGlobalHotkey;
         }
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)

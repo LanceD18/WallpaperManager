@@ -23,6 +23,7 @@ namespace WallpaperManager.Options
             checkBoxLargerImagesOnLargerMonitors.Checked = OptionsData.LargerImagesOnLargerMonitors;
             checkBoxHigherRankedImagesOnLargerMonitors.Checked = OptionsData.HigherRankedImagesOnLargerMonitors;
             checkBoxEnableDetectionOfInactiveImages.Checked = OptionsData.EnableDetectionOfInactiveImages;
+            checkBoxEnableGlobalHotkey.Checked = OptionsData.EnableGlobalHotkey;
 
             this.FormClosed += SaveOptionsData;
         }
@@ -32,6 +33,7 @@ namespace WallpaperManager.Options
             OptionsData.LargerImagesOnLargerMonitors = checkBoxLargerImagesOnLargerMonitors.Checked;
             OptionsData.HigherRankedImagesOnLargerMonitors = checkBoxHigherRankedImagesOnLargerMonitors.Checked;
             OptionsData.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
+            OptionsData.EnableGlobalHotkey = checkBoxEnableGlobalHotkey.Checked;
         }
 
         private void buttonInspectRankDistribution_Click(object sender, EventArgs e)

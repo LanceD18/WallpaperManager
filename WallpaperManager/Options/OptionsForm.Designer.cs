@@ -38,6 +38,7 @@
             this.buttonSetDefaultTheme = new System.Windows.Forms.Button();
             this.buttonLoadDefaultTheme = new System.Windows.Forms.Button();
             this.checkBoxEnableGlobalHotkey = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // checkBoxLargerImagesOnLargerMonitors
@@ -154,12 +155,23 @@
             this.checkBoxEnableGlobalHotkey.Text = "Enable Default Theme Global Hotkey (Alt+Shift)";
             this.checkBoxEnableGlobalHotkey.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label1.Location = new System.Drawing.Point(12, 161);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(346, 13);
+            this.label1.TabIndex = 49;
+            this.label1.Text = "(Your Active Theme will be saved upon swapping to the Default Theme)";
+            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(484, 450);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBoxEnableGlobalHotkey);
             this.Controls.Add(this.buttonLoadDefaultTheme);
             this.Controls.Add(this.buttonSetDefaultTheme);
@@ -189,5 +201,6 @@
         private System.Windows.Forms.Button buttonSetDefaultTheme;
         private System.Windows.Forms.Button buttonLoadDefaultTheme;
         private System.Windows.Forms.CheckBox checkBoxEnableGlobalHotkey;
+        private System.Windows.Forms.Label label1;
     }
 }
