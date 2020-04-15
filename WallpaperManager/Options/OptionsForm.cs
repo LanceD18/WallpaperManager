@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,18 @@ namespace WallpaperManager.Options
             checkBoxLargerImagesOnLargerMonitors.Checked = OptionsData.LargerImagesOnLargerMonitors;
             checkBoxHigherRankedImagesOnLargerMonitors.Checked = OptionsData.HigherRankedImagesOnLargerMonitors;
             checkBoxEnableDetectionOfInactiveImages.Checked = OptionsData.EnableDetectionOfInactiveImages;
-            checkBoxEnableGlobalHotkey.Checked = OptionsData.EnableGlobalHotkey;
+
+            if (File.Exists(Properties.Settings.Default["DefaultTheme"] as string))
+            {
+                checkBoxEnableGlobalHotkey.Checked = OptionsData.EnableDefaultThemeHotkey;
+            }
+            else
+            {
+                checkBoxEnableGlobalHotkey.Checked = false;
+                checkBoxEnableGlobalHotkey.AutoCheck = false;
+                checkBoxEnableGlobalHotkey.ForeColor = Color.Gray;
+                labelDefaultThemePath.Text = "No Default Theme selected";
+            }
 
             this.FormClosed += SaveOptionsData;
         }
@@ -33,7 +45,7 @@ namespace WallpaperManager.Options
             OptionsData.LargerImagesOnLargerMonitors = checkBoxLargerImagesOnLargerMonitors.Checked;
             OptionsData.HigherRankedImagesOnLargerMonitors = checkBoxHigherRankedImagesOnLargerMonitors.Checked;
             OptionsData.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
-            OptionsData.EnableGlobalHotkey = checkBoxEnableGlobalHotkey.Checked;
+            OptionsData.EnableDefaultThemeHotkey = checkBoxEnableGlobalHotkey.Checked;
         }
 
         private void buttonInspectRankDistribution_Click(object sender, EventArgs e)
@@ -81,8 +93,13 @@ namespace WallpaperManager.Options
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     Properties.Settings.Default["DefaultTheme"] = dialog.FileName;
-                    Properties.Settings.Default.Save();
                     labelDefaultThemePath.Text = dialog.FileName;
+
+                    Properties.Settings.Default["DefaultThemeHotkey"] = true;
+                    checkBoxEnableGlobalHotkey.AutoCheck = true;
+                    checkBoxEnableGlobalHotkey.ForeColor = Color.White;
+
+                    Properties.Settings.Default.Save();
                 }
             }
         }

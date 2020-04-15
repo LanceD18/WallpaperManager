@@ -66,7 +66,6 @@ namespace WallpaperManager.ApplicationData
             public bool largerImagesOnLargerMonitors;
             public bool higherRankedImagesOnLargerMonitors;
             public bool enableDetectionOfInactiveImages;
-            public bool enableGlobalHotkey;
 
             public OptionsData()
             {
@@ -196,7 +195,6 @@ namespace WallpaperManager.ApplicationData
             Options.OptionsData.LargerImagesOnLargerMonitors = jsonWallpaperData.optionsData.largerImagesOnLargerMonitors;
             Options.OptionsData.HigherRankedImagesOnLargerMonitors = jsonWallpaperData.optionsData.higherRankedImagesOnLargerMonitors;
             Options.OptionsData.EnableDetectionOfInactiveImages = jsonWallpaperData.optionsData.enableDetectionOfInactiveImages;
-            Options.OptionsData.EnableGlobalHotkey = jsonWallpaperData.optionsData.enableGlobalHotkey;
         }
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)
@@ -212,10 +210,6 @@ namespace WallpaperManager.ApplicationData
             if (LoadData(Properties.Settings.Default["DefaultTheme"] as string))
             {
                 WallpaperManagerForm.NextWallpaper();
-            }
-            else
-            {
-                MessageBox.Show("No Default Theme currently exists. You'll need to set one up under the options menu first.");
             }
         }
     }

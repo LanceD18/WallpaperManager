@@ -68,6 +68,7 @@ namespace WallpaperManager
 
             PathData.Validate(); // ensures that all needed folders exist
             WallpaperData.Initialize(this, false); // loads in all necessary data
+            OptionsData.Initialize();
 
             InitializeTimer();
             InitializeKeys();
@@ -161,7 +162,7 @@ namespace WallpaperManager
 
         private void HandleHotKey()
         {
-            if (OptionsData.EnableGlobalHotkey)
+            if (OptionsData.EnableDefaultThemeHotkey)
             {
                 WallpaperData.SaveData(PathData.ActiveWallpaperTheme);
                 WallpaperData.LoadDefaultTheme();

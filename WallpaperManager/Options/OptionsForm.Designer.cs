@@ -146,6 +146,8 @@
             // checkBoxEnableGlobalHotkey
             // 
             this.checkBoxEnableGlobalHotkey.AutoSize = true;
+            this.checkBoxEnableGlobalHotkey.Checked = true;
+            this.checkBoxEnableGlobalHotkey.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxEnableGlobalHotkey.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBoxEnableGlobalHotkey.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.checkBoxEnableGlobalHotkey.Location = new System.Drawing.Point(15, 141);
@@ -161,9 +163,10 @@
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.label1.Location = new System.Drawing.Point(12, 161);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(346, 13);
+            this.label1.Size = new System.Drawing.Size(410, 13);
             this.label1.TabIndex = 49;
-            this.label1.Text = "(Your Active Theme will be saved upon swapping to the Default Theme)";
+            this.label1.Text = "(Your Active Theme will be automatically saved upon swapping to the Default Theme" +
+    ")";
             // 
             // OptionsForm
             // 

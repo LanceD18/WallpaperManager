@@ -11,6 +11,14 @@ namespace WallpaperManager.Options
         public static bool LargerImagesOnLargerMonitors;
         public static bool HigherRankedImagesOnLargerMonitors;
         public static bool EnableDetectionOfInactiveImages;
-        public static bool EnableGlobalHotkey;
+
+        public static string DefaultTheme;
+        public static bool EnableDefaultThemeHotkey;
+
+        public static void Initialize()
+        {
+            DefaultTheme = Properties.Settings.Default.DefaultTheme;
+            EnableDefaultThemeHotkey = Properties.Settings.Default.DefaultThemeHotkey;
+        }
     }
 }
