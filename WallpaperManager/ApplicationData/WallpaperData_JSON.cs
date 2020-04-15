@@ -131,6 +131,7 @@ namespace WallpaperManager.ApplicationData
                 }
 
                 IsLoadingData = false;
+                PathData.ActiveWallpaperTheme = path;
                 return true;
             }
             else  //! MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
