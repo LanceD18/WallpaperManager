@@ -200,7 +200,7 @@ namespace WallpaperManager.ApplicationData
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)
         {
-            WallpaperManagerForm.UpdateWallpaperStyle(jsonWallpaperData.miscData.wallpaperStyle);
+            WallpaperManagerForm.UpdateWallpaperStyle(jsonWallpaperData.miscData.wallpaperStyle, true);
             WallpaperManagerForm.SetTimerIndex(jsonWallpaperData.miscData.timerIndex);
             RandomizeSelection = jsonWallpaperData.miscData.randomizeSelection;
             TagSortOption = jsonWallpaperData.miscData.tagSortOption;

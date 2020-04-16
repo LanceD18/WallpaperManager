@@ -23,15 +23,24 @@ namespace WallpaperManager
     public partial class WallpaperManager : Form
     {
         private PictureStyle WallpaperStyle;
+        private bool cancelWallpaperStyleUpdate;
 
         private void comboBoxSelectStyle_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateWallpaperStyle();
-
-            if (PathData.IsWallpapersValid())
+            if (!cancelWallpaperStyleUpdate)
             {
-                SetWallpaper();
-                Thread.Sleep(250);
+                Debug.WriteLine("hmm");
+                UpdateWallpaperStyle();
+
+                if (PathData.IsWallpapersValid())
+                {
+                    SetWallpaper();
+                    Thread.Sleep(250);
+                }
+            }
+            else
+            {
+                cancelWallpaperStyleUpdate = false;
             }
         }
 
@@ -53,10 +62,11 @@ namespace WallpaperManager
             }
         }
 
-        public void UpdateWallpaperStyle(PictureStyle newWallpaperStyle)
+        public void UpdateWallpaperStyle(PictureStyle newWallpaperStyle, bool loadingTheme)
         {
             WallpaperStyle = newWallpaperStyle;
             comboBoxSelectStyle.Text = newWallpaperStyle.ToString();
+            cancelWallpaperStyleUpdate = loadingTheme;
         }
 
         public PictureStyle GetWallpaperStyle()
