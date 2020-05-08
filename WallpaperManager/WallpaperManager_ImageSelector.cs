@@ -100,7 +100,7 @@ namespace WallpaperManager
             tabControlImagePages.Flush();
 
             // Ensure that only enabled images are selected
-            if (!OptionsData.EnableDetectionOfInactiveImages)
+            if (!OptionsData.ThemeOptions.EnableDetectionOfInactiveImages)
             {
                 HashSet<string> activeSelectedImages = new HashSet<string>();
                 foreach (string image in selectedImages)

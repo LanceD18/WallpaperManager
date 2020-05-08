@@ -29,7 +29,6 @@ namespace WallpaperManager
         {
             if (!cancelWallpaperStyleUpdate)
             {
-                Debug.WriteLine("hmm");
                 UpdateWallpaperStyle();
 
                 if (PathData.IsWallpapersValid())

@@ -8,10 +8,10 @@ namespace WallpaperManager.Options
 {
     public static class OptionsData
     {
-        public static bool LargerImagesOnLargerMonitors;
-        public static bool HigherRankedImagesOnLargerMonitors;
-        public static bool EnableDetectionOfInactiveImages;
+        // Theme Options
+        public static ThemeOptions ThemeOptions;
 
+        // Global Options
         public static string DefaultTheme;
         public static bool EnableDefaultThemeHotkey;
 
@@ -20,5 +20,13 @@ namespace WallpaperManager.Options
             DefaultTheme = Properties.Settings.Default.DefaultTheme;
             EnableDefaultThemeHotkey = Properties.Settings.Default.DefaultThemeHotkey;
         }
+    }
+
+    public struct ThemeOptions
+    {
+        public bool LargerImagesOnLargerMonitors;
+        public bool HigherRankedImagesOnLargerMonitors;
+        public bool EnableDetectionOfInactiveImages;
+        public bool WeightedRanking;
     }
 }

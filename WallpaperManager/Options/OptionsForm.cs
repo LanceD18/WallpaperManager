@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -15,17 +16,22 @@ namespace WallpaperManager.Options
 {
     public partial class OptionsForm : Form
     {
+        public ThemeOptions ThemeSettings = OptionsData.ThemeOptions;
+
         public OptionsForm()
         {
             InitializeComponent();
+            this.FormClosed += SaveOptionsData;
 
-            labelDefaultThemePath.Text = Properties.Settings.Default["DefaultTheme"] as string;
+            // Theme Settings
+            checkBoxLargerImagesOnLargerMonitors.Checked = ThemeSettings.LargerImagesOnLargerMonitors;
+            checkBoxHigherRankedImagesOnLargerMonitors.Checked = ThemeSettings.HigherRankedImagesOnLargerMonitors;
+            checkBoxEnableDetectionOfInactiveImages.Checked = ThemeSettings.EnableDetectionOfInactiveImages;
 
-            checkBoxLargerImagesOnLargerMonitors.Checked = OptionsData.LargerImagesOnLargerMonitors;
-            checkBoxHigherRankedImagesOnLargerMonitors.Checked = OptionsData.HigherRankedImagesOnLargerMonitors;
-            checkBoxEnableDetectionOfInactiveImages.Checked = OptionsData.EnableDetectionOfInactiveImages;
+            // Global Settings
+            labelDefaultThemePath.Text = OptionsData.DefaultTheme;
 
-            if (File.Exists(Properties.Settings.Default["DefaultTheme"] as string))
+            if (File.Exists(OptionsData.DefaultTheme))
             {
                 checkBoxEnableGlobalHotkey.Checked = OptionsData.EnableDefaultThemeHotkey;
             }
@@ -36,16 +42,22 @@ namespace WallpaperManager.Options
                 checkBoxEnableGlobalHotkey.ForeColor = Color.Gray;
                 labelDefaultThemePath.Text = "No Default Theme selected";
             }
-
-            this.FormClosed += SaveOptionsData;
         }
 
         private void SaveOptionsData(object sender, FormClosedEventArgs e)
         {
-            OptionsData.LargerImagesOnLargerMonitors = checkBoxLargerImagesOnLargerMonitors.Checked;
-            OptionsData.HigherRankedImagesOnLargerMonitors = checkBoxHigherRankedImagesOnLargerMonitors.Checked;
-            OptionsData.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
-            OptionsData.EnableDefaultThemeHotkey = checkBoxEnableGlobalHotkey.Checked;
+            // Theme Settings
+            ThemeSettings.LargerImagesOnLargerMonitors = checkBoxLargerImagesOnLargerMonitors.Checked;
+            ThemeSettings.HigherRankedImagesOnLargerMonitors = checkBoxHigherRankedImagesOnLargerMonitors.Checked;
+            ThemeSettings.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
+            OptionsData.ThemeOptions = ThemeSettings;
+
+            // Global Settings
+            if (File.Exists(OptionsData.DefaultTheme))
+            {
+                OptionsData.DefaultTheme = labelDefaultThemePath.Text;
+                OptionsData.EnableDefaultThemeHotkey = checkBoxEnableGlobalHotkey.Checked;
+            }
         }
 
         private void buttonInspectRankDistribution_Click(object sender, EventArgs e)

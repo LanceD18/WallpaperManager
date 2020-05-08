@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Newtonsoft.Json;
+using WallpaperManager.Options;
 using WallpaperManager.Tagging;
 using Formatting = Newtonsoft.Json.Formatting;
 
@@ -21,7 +22,7 @@ namespace WallpaperManager.ApplicationData
 
         public class JsonWallpaperData
         {
-            [JsonProperty("OptionsData")] public OptionsData optionsData;
+            [JsonProperty("ThemeOptions")] public ThemeOptions themeOptions;
 
             [JsonProperty("MiscData")] public MiscData miscData;
 
@@ -34,8 +35,8 @@ namespace WallpaperManager.ApplicationData
             public JsonWallpaperData(ImageData[] imageData, Dictionary<string, bool> imageFolders)
             {
                 //? This handles saving | Don't go to this code segment for modifying how data is loaded
-                optionsData = new OptionsData();
-                miscData = new MiscData();
+                themeOptions = Options.OptionsData.ThemeOptions;
+                miscData = new MiscData(); // values are updated in the constructor
                 this.imageFolders = imageFolders;
                 tagData = TaggingInfo.GetAllCategories();
                 this.imageData = imageData;
@@ -69,9 +70,9 @@ namespace WallpaperManager.ApplicationData
 
             public OptionsData()
             {
-                largerImagesOnLargerMonitors = Options.OptionsData.LargerImagesOnLargerMonitors;
-                higherRankedImagesOnLargerMonitors = Options.OptionsData.HigherRankedImagesOnLargerMonitors;
-                enableDetectionOfInactiveImages = Options.OptionsData.EnableDetectionOfInactiveImages;
+                //largerImagesOnLargerMonitors = Options.OptionsData.LargerImagesOnLargerMonitors;
+                //higherRankedImagesOnLargerMonitors = Options.OptionsData.HigherRankedImagesOnLargerMonitors;
+                //enableDetectionOfInactiveImages = Options.OptionsData.EnableDetectionOfInactiveImages;
             }
         }
 
@@ -193,9 +194,10 @@ namespace WallpaperManager.ApplicationData
 
         private static void LoadOptionsData(JsonWallpaperData jsonWallpaperData)
         {
-            Options.OptionsData.LargerImagesOnLargerMonitors = jsonWallpaperData.optionsData.largerImagesOnLargerMonitors;
-            Options.OptionsData.HigherRankedImagesOnLargerMonitors = jsonWallpaperData.optionsData.higherRankedImagesOnLargerMonitors;
-            Options.OptionsData.EnableDetectionOfInactiveImages = jsonWallpaperData.optionsData.enableDetectionOfInactiveImages;
+            Options.OptionsData.ThemeOptions = jsonWallpaperData.themeOptions;
+            //Options.OptionsData.LargerImagesOnLargerMonitors = jsonWallpaperData.optionsData.largerImagesOnLargerMonitors;
+            //Options.OptionsData.HigherRankedImagesOnLargerMonitors = jsonWallpaperData.optionsData.higherRankedImagesOnLargerMonitors;
+            //Options.OptionsData.EnableDetectionOfInactiveImages = jsonWallpaperData.optionsData.enableDetectionOfInactiveImages;
         }
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)
