@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.checkBoxLargerImagesOnLargerMonitors = new System.Windows.Forms.CheckBox();
             this.checkBoxHigherRankedImagesOnLargerMonitors = new System.Windows.Forms.CheckBox();
             this.checkBoxEnableDetectionOfInactiveImages = new System.Windows.Forms.CheckBox();
@@ -39,6 +40,8 @@
             this.buttonLoadDefaultTheme = new System.Windows.Forms.Button();
             this.checkBoxEnableGlobalHotkey = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.checkBoxWeightedRanks = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // checkBoxLargerImagesOnLargerMonitors
@@ -104,7 +107,7 @@
             this.labelDefaultTheme.AutoSize = true;
             this.labelDefaultTheme.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDefaultTheme.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.labelDefaultTheme.Location = new System.Drawing.Point(12, 99);
+            this.labelDefaultTheme.Location = new System.Drawing.Point(9, 113);
             this.labelDefaultTheme.Name = "labelDefaultTheme";
             this.labelDefaultTheme.Size = new System.Drawing.Size(113, 16);
             this.labelDefaultTheme.TabIndex = 44;
@@ -115,7 +118,7 @@
             this.labelDefaultThemePath.AutoSize = true;
             this.labelDefaultThemePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDefaultThemePath.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.labelDefaultThemePath.Location = new System.Drawing.Point(12, 125);
+            this.labelDefaultThemePath.Location = new System.Drawing.Point(9, 139);
             this.labelDefaultThemePath.Name = "labelDefaultThemePath";
             this.labelDefaultThemePath.Size = new System.Drawing.Size(94, 13);
             this.labelDefaultThemePath.TabIndex = 45;
@@ -124,7 +127,7 @@
             // buttonSetDefaultTheme
             // 
             this.buttonSetDefaultTheme.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSetDefaultTheme.Location = new System.Drawing.Point(249, 96);
+            this.buttonSetDefaultTheme.Location = new System.Drawing.Point(246, 110);
             this.buttonSetDefaultTheme.Name = "buttonSetDefaultTheme";
             this.buttonSetDefaultTheme.Size = new System.Drawing.Size(112, 23);
             this.buttonSetDefaultTheme.TabIndex = 46;
@@ -135,7 +138,7 @@
             // buttonLoadDefaultTheme
             // 
             this.buttonLoadDefaultTheme.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonLoadDefaultTheme.Location = new System.Drawing.Point(131, 96);
+            this.buttonLoadDefaultTheme.Location = new System.Drawing.Point(128, 110);
             this.buttonLoadDefaultTheme.Name = "buttonLoadDefaultTheme";
             this.buttonLoadDefaultTheme.Size = new System.Drawing.Size(112, 23);
             this.buttonLoadDefaultTheme.TabIndex = 47;
@@ -150,7 +153,7 @@
             this.checkBoxEnableGlobalHotkey.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxEnableGlobalHotkey.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBoxEnableGlobalHotkey.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxEnableGlobalHotkey.Location = new System.Drawing.Point(15, 141);
+            this.checkBoxEnableGlobalHotkey.Location = new System.Drawing.Point(12, 155);
             this.checkBoxEnableGlobalHotkey.Name = "checkBoxEnableGlobalHotkey";
             this.checkBoxEnableGlobalHotkey.Size = new System.Drawing.Size(250, 17);
             this.checkBoxEnableGlobalHotkey.TabIndex = 48;
@@ -161,12 +164,24 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(12, 161);
+            this.label1.Location = new System.Drawing.Point(9, 175);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(410, 13);
             this.label1.TabIndex = 49;
             this.label1.Text = "(Your Active Theme will be automatically saved upon swapping to the Default Theme" +
     ")";
+            // 
+            // checkBoxWeightedRanks
+            // 
+            this.checkBoxWeightedRanks.AutoSize = true;
+            this.checkBoxWeightedRanks.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBoxWeightedRanks.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.checkBoxWeightedRanks.Location = new System.Drawing.Point(12, 81);
+            this.checkBoxWeightedRanks.Name = "checkBoxWeightedRanks";
+            this.checkBoxWeightedRanks.Size = new System.Drawing.Size(106, 17);
+            this.checkBoxWeightedRanks.TabIndex = 50;
+            this.checkBoxWeightedRanks.Text = "Weighted Ranks";
+            this.checkBoxWeightedRanks.UseVisualStyleBackColor = true;
             // 
             // OptionsForm
             // 
@@ -174,6 +189,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(484, 450);
+            this.Controls.Add(this.checkBoxWeightedRanks);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBoxEnableGlobalHotkey);
             this.Controls.Add(this.buttonLoadDefaultTheme);
@@ -205,5 +221,7 @@
         private System.Windows.Forms.Button buttonLoadDefaultTheme;
         private System.Windows.Forms.CheckBox checkBoxEnableGlobalHotkey;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBoxWeightedRanks;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

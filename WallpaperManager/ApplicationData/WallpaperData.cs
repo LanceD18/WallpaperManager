@@ -278,12 +278,20 @@ namespace WallpaperManager.ApplicationData
             for (int i = 0; i < newRankMax; i++)
             {
                 //TODO Add a system for modifying percentile ranges directly or changing up the formula
-                // This is the default formula for rank percentiles, where each percentile has twice the probability of the previous one
+                // This is the default formula for rank percentiles, where each 10% of ranks has twice the probability of the previous 10%
+                // Due to the rank multiplier, the max rank will always have a probability of 1024
+                // ex: if the max rank is 100, rank 100 will have a probability of 1024 while rank 90 will have a probability of 512. These same numbers apply to 45 and 50 if the max is 50
                 //? Note that the below formula does not include rank 0 | 0 * rankMultiplier is rank 1
                 rankPercentiles[i] = Math.Pow(2, i * rankMultiplier);
             }
         }
 
+
+        /// <summary>
+        /// Modifies rank percentiles to represent the actual percentage chance of the rank appearing
+        /// (The percentages of each rank will be modified to exclude images with a rank of 0)
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<int, double> GetModifiedRankPercentiles()
         {
             double rankPercentagesTotal = 0;
@@ -299,9 +307,38 @@ namespace WallpaperManager.ApplicationData
 
             Dictionary<int, double> modifiedRankPercentiles = new Dictionary<int, double>();
 
+            // scales the percentages to account for ranks that weren't included
             foreach (int rank in validRanks)
             {
                 modifiedRankPercentiles.Add(rank, rankPercentiles[rank - 1] / rankPercentagesTotal);
+            }
+
+            return modifiedRankPercentiles;
+        }
+
+        /// <summary>
+        /// Weights rank percentiles on both how high the rank is and how many images are in a rank
+        /// </summary> 
+        public static Dictionary<int, double> GetWeightedRankPercentiles()
+        {
+            Dictionary<int, double> modifiedRankPercentiles = GetModifiedRankPercentiles();
+            int[] validRanks = modifiedRankPercentiles.Keys.ToArray();
+
+            int rankedImageCount = GetAllRankedImages().Length;
+            double newRankPercentageTotal = 0;
+
+            // sets the individual weighted percentage of each rank
+            foreach (int rank in validRanks)
+            {
+                // modifiedRankPercentile * (imagesInRank / rankedImagesTotalCount)
+                modifiedRankPercentiles[rank] = modifiedRankPercentiles[rank] * ((double)GetImagesOfRank(rank).Length / rankedImageCount);
+                newRankPercentageTotal += modifiedRankPercentiles[rank];
+            }
+
+            // rescales the percentages to account for weighting
+            foreach (int rank in validRanks)
+            {
+                modifiedRankPercentiles[rank] = modifiedRankPercentiles[rank] / newRankPercentageTotal;
             }
 
             return modifiedRankPercentiles;

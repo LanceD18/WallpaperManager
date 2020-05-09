@@ -27,6 +27,6 @@ namespace WallpaperManager.Options
         public bool LargerImagesOnLargerMonitors;
         public bool HigherRankedImagesOnLargerMonitors;
         public bool EnableDetectionOfInactiveImages;
-        public bool WeightedRanking;
+        public bool WeightedRanks;
     }
 }

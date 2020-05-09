@@ -47,29 +47,16 @@ namespace WallpaperManager.ApplicationData
 
         public static void RandomizeWallpapers()
         {
-            Dictionary<int, double> modifiedRankPercentiles = WallpaperData.GetModifiedRankPercentiles();
-            int[] rankPercentageKeys = modifiedRankPercentiles.Keys.ToArray();
-            double[] rankPercentageValues = modifiedRankPercentiles.Values.ToArray();
+
 
             Random rand = new Random();
 
             for (int i = 0; i < MonitorData.Screens.Length; i++)
             {
-                double percentage = rand.NextDouble(); // determines which rank is chosen
-                double percentageCounter = 1.0; // used to "traverse" through rank percentages
-                int randomRank = -1;
-
-                // Find random rank based on percentiles
-                for (int j = rankPercentageValues.Length - 1; j >= 0; j--)
-                {
-                    if (percentage.InRange(percentageCounter - rankPercentageValues[j], percentageCounter)) // First Value
-                    {
-                        randomRank = rankPercentageKeys[j];
-                        break;
-                    }
-
-                    percentageCounter -= rankPercentageValues[j];
-                }
+                int randomRank;
+                randomRank = 
+                    GetRandomRank(rand, !OptionsData.ThemeOptions.WeightedRanks ?
+                        WallpaperData.GetModifiedRankPercentiles() : WallpaperData.GetWeightedRankPercentiles());
 
                 // Find random image path
                 if (randomRank == -1)
@@ -82,7 +69,7 @@ namespace WallpaperManager.ApplicationData
 
                     if (!WallpaperData.GetImageData(ActiveWallpapers[i]).Active && !OptionsData.ThemeOptions.EnableDetectionOfInactiveImages)
                     {
-                        //TODO TEST THIS CODE SEGMENT!!!
+                        //TODO Test this code segment more thoroughly
                         MessageBox.Show("Attempted to set monitor " + i + " to an inactive wallpaper | A new wallpaper has been chosen" +
                                         "\nThis error message can be deleted after you confirm that this works");
                         i--; // find another wallpaper, the selected wallpaper is inactive
@@ -91,6 +78,33 @@ namespace WallpaperManager.ApplicationData
             }
 
             ModifyWallpaperOrder();
+        }
+
+        // Picks ranks based on their default percentiles (Where the highest rank is the most likely to appear and it goes down from there)
+        private static int GetRandomRank(Random rand, Dictionary<int, double> modifiedRankPercentiles)
+        {
+            int randomRank = -1;
+            int[] rankPercentageKeys = modifiedRankPercentiles.Keys.ToArray();
+            double[] rankPercentageValues = modifiedRankPercentiles.Values.ToArray();
+
+            double randomPercentage = rand.NextDouble(); // determines which rank is chosen
+            //TODO check if this needs to be set to the "percentage total" of the modifiedRankPercentiles
+            double percentageCounter = 1.0; // used to "traverse" through rank percentages
+
+            // Find random rank based on percentiles
+            for (int j = rankPercentageValues.Length - 1; j >= 0; j--)
+            {
+                if (randomPercentage.InRange(percentageCounter - rankPercentageValues[j], percentageCounter))
+                {
+                    randomRank = rankPercentageKeys[j];
+                    break;
+                }
+
+                // since randomPercentage is a static value in this loop, this is needed to ensure that all values from 0.0 to 1.0 are checked
+                percentageCounter -= rankPercentageValues[j];
+            }
+
+            return randomRank;
         }
 
         #region Wallpaper Order Modifiers

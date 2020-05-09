@@ -27,6 +27,7 @@ namespace WallpaperManager.Options
             checkBoxLargerImagesOnLargerMonitors.Checked = ThemeSettings.LargerImagesOnLargerMonitors;
             checkBoxHigherRankedImagesOnLargerMonitors.Checked = ThemeSettings.HigherRankedImagesOnLargerMonitors;
             checkBoxEnableDetectionOfInactiveImages.Checked = ThemeSettings.EnableDetectionOfInactiveImages;
+            checkBoxWeightedRanks.Checked = ThemeSettings.WeightedRanks;
 
             // Global Settings
             labelDefaultThemePath.Text = OptionsData.DefaultTheme;
@@ -50,6 +51,7 @@ namespace WallpaperManager.Options
             ThemeSettings.LargerImagesOnLargerMonitors = checkBoxLargerImagesOnLargerMonitors.Checked;
             ThemeSettings.HigherRankedImagesOnLargerMonitors = checkBoxHigherRankedImagesOnLargerMonitors.Checked;
             ThemeSettings.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
+            ThemeSettings.WeightedRanks = checkBoxWeightedRanks.Checked;
             OptionsData.ThemeOptions = ThemeSettings;
 
             // Global Settings
