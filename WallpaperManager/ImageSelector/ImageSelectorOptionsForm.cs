@@ -111,7 +111,7 @@ namespace WallpaperManager.ImageSelector
             {
                 selectedRank = int.Parse(Interaction.InputBox("Enter a rank to select: ", "Select Images of Rank"));
             }
-            catch
+            catch // no response
             {
                 return;
             }

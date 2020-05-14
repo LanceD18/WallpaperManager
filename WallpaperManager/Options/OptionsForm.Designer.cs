@@ -46,6 +46,8 @@
             this.tabPageThemeOptions = new System.Windows.Forms.TabPage();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
+            this.tabPageThemeOptions.SuspendLayout();
+            this.tabPageGlobalOptions.SuspendLayout();
             this.SuspendLayout();
             // 
             // checkBoxLargerImagesOnLargerMonitors
@@ -53,7 +55,7 @@
             this.checkBoxLargerImagesOnLargerMonitors.AutoSize = true;
             this.checkBoxLargerImagesOnLargerMonitors.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBoxLargerImagesOnLargerMonitors.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxLargerImagesOnLargerMonitors.Location = new System.Drawing.Point(12, 12);
+            this.checkBoxLargerImagesOnLargerMonitors.Location = new System.Drawing.Point(6, 6);
             this.checkBoxLargerImagesOnLargerMonitors.Name = "checkBoxLargerImagesOnLargerMonitors";
             this.checkBoxLargerImagesOnLargerMonitors.Size = new System.Drawing.Size(184, 17);
             this.checkBoxLargerImagesOnLargerMonitors.TabIndex = 36;
@@ -65,7 +67,7 @@
             this.checkBoxHigherRankedImagesOnLargerMonitors.AutoSize = true;
             this.checkBoxHigherRankedImagesOnLargerMonitors.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBoxHigherRankedImagesOnLargerMonitors.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxHigherRankedImagesOnLargerMonitors.Location = new System.Drawing.Point(12, 35);
+            this.checkBoxHigherRankedImagesOnLargerMonitors.Location = new System.Drawing.Point(6, 29);
             this.checkBoxHigherRankedImagesOnLargerMonitors.Name = "checkBoxHigherRankedImagesOnLargerMonitors";
             this.checkBoxHigherRankedImagesOnLargerMonitors.Size = new System.Drawing.Size(226, 17);
             this.checkBoxHigherRankedImagesOnLargerMonitors.TabIndex = 37;
@@ -77,7 +79,7 @@
             this.checkBoxEnableDetectionOfInactiveImages.AutoSize = true;
             this.checkBoxEnableDetectionOfInactiveImages.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBoxEnableDetectionOfInactiveImages.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxEnableDetectionOfInactiveImages.Location = new System.Drawing.Point(12, 58);
+            this.checkBoxEnableDetectionOfInactiveImages.Location = new System.Drawing.Point(6, 52);
             this.checkBoxEnableDetectionOfInactiveImages.Name = "checkBoxEnableDetectionOfInactiveImages";
             this.checkBoxEnableDetectionOfInactiveImages.Size = new System.Drawing.Size(198, 17);
             this.checkBoxEnableDetectionOfInactiveImages.TabIndex = 40;
@@ -87,7 +89,7 @@
             // buttonInspectRankDistribution
             // 
             this.buttonInspectRankDistribution.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonInspectRankDistribution.Location = new System.Drawing.Point(338, 12);
+            this.buttonInspectRankDistribution.Location = new System.Drawing.Point(335, 6);
             this.buttonInspectRankDistribution.Name = "buttonInspectRankDistribution";
             this.buttonInspectRankDistribution.Size = new System.Drawing.Size(134, 23);
             this.buttonInspectRankDistribution.TabIndex = 41;
@@ -98,7 +100,7 @@
             // buttonModifyMaxRank
             // 
             this.buttonModifyMaxRank.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonModifyMaxRank.Location = new System.Drawing.Point(338, 41);
+            this.buttonModifyMaxRank.Location = new System.Drawing.Point(335, 35);
             this.buttonModifyMaxRank.Name = "buttonModifyMaxRank";
             this.buttonModifyMaxRank.Size = new System.Drawing.Size(134, 23);
             this.buttonModifyMaxRank.TabIndex = 42;
@@ -111,7 +113,7 @@
             this.labelDefaultTheme.AutoSize = true;
             this.labelDefaultTheme.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDefaultTheme.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.labelDefaultTheme.Location = new System.Drawing.Point(9, 113);
+            this.labelDefaultTheme.Location = new System.Drawing.Point(3, 3);
             this.labelDefaultTheme.Name = "labelDefaultTheme";
             this.labelDefaultTheme.Size = new System.Drawing.Size(113, 16);
             this.labelDefaultTheme.TabIndex = 44;
@@ -122,7 +124,7 @@
             this.labelDefaultThemePath.AutoSize = true;
             this.labelDefaultThemePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDefaultThemePath.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.labelDefaultThemePath.Location = new System.Drawing.Point(9, 139);
+            this.labelDefaultThemePath.Location = new System.Drawing.Point(3, 29);
             this.labelDefaultThemePath.Name = "labelDefaultThemePath";
             this.labelDefaultThemePath.Size = new System.Drawing.Size(94, 13);
             this.labelDefaultThemePath.TabIndex = 45;
@@ -131,7 +133,7 @@
             // buttonSetDefaultTheme
             // 
             this.buttonSetDefaultTheme.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSetDefaultTheme.Location = new System.Drawing.Point(246, 110);
+            this.buttonSetDefaultTheme.Location = new System.Drawing.Point(240, 0);
             this.buttonSetDefaultTheme.Name = "buttonSetDefaultTheme";
             this.buttonSetDefaultTheme.Size = new System.Drawing.Size(112, 23);
             this.buttonSetDefaultTheme.TabIndex = 46;
@@ -142,7 +144,7 @@
             // buttonLoadDefaultTheme
             // 
             this.buttonLoadDefaultTheme.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonLoadDefaultTheme.Location = new System.Drawing.Point(128, 110);
+            this.buttonLoadDefaultTheme.Location = new System.Drawing.Point(122, 0);
             this.buttonLoadDefaultTheme.Name = "buttonLoadDefaultTheme";
             this.buttonLoadDefaultTheme.Size = new System.Drawing.Size(112, 23);
             this.buttonLoadDefaultTheme.TabIndex = 47;
@@ -157,7 +159,7 @@
             this.checkBoxEnableGlobalHotkey.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxEnableGlobalHotkey.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBoxEnableGlobalHotkey.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxEnableGlobalHotkey.Location = new System.Drawing.Point(12, 155);
+            this.checkBoxEnableGlobalHotkey.Location = new System.Drawing.Point(6, 45);
             this.checkBoxEnableGlobalHotkey.Name = "checkBoxEnableGlobalHotkey";
             this.checkBoxEnableGlobalHotkey.Size = new System.Drawing.Size(250, 17);
             this.checkBoxEnableGlobalHotkey.TabIndex = 48;
@@ -168,7 +170,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(9, 175);
+            this.label1.Location = new System.Drawing.Point(3, 65);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(410, 13);
             this.label1.TabIndex = 49;
@@ -180,7 +182,7 @@
             this.checkBoxWeightedRanks.AutoSize = true;
             this.checkBoxWeightedRanks.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.checkBoxWeightedRanks.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxWeightedRanks.Location = new System.Drawing.Point(12, 81);
+            this.checkBoxWeightedRanks.Location = new System.Drawing.Point(6, 75);
             this.checkBoxWeightedRanks.Name = "checkBoxWeightedRanks";
             this.checkBoxWeightedRanks.Size = new System.Drawing.Size(106, 17);
             this.checkBoxWeightedRanks.TabIndex = 50;
@@ -191,29 +193,41 @@
             // 
             this.tabControl1.Controls.Add(this.tabPageThemeOptions);
             this.tabControl1.Controls.Add(this.tabPageGlobalOptions);
-            this.tabControl1.Location = new System.Drawing.Point(12, 191);
+            this.tabControl1.Location = new System.Drawing.Point(-1, 1);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(460, 247);
+            this.tabControl1.Size = new System.Drawing.Size(485, 449);
             this.tabControl1.TabIndex = 51;
             // 
             // tabPageThemeOptions
             // 
             this.tabPageThemeOptions.BackColor = System.Drawing.Color.Black;
+            this.tabPageThemeOptions.Controls.Add(this.buttonInspectRankDistribution);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxWeightedRanks);
+            this.tabPageThemeOptions.Controls.Add(this.buttonModifyMaxRank);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxHigherRankedImagesOnLargerMonitors);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxLargerImagesOnLargerMonitors);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxEnableDetectionOfInactiveImages);
             this.tabPageThemeOptions.Location = new System.Drawing.Point(4, 22);
             this.tabPageThemeOptions.Name = "tabPageThemeOptions";
             this.tabPageThemeOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageThemeOptions.Size = new System.Drawing.Size(452, 221);
+            this.tabPageThemeOptions.Size = new System.Drawing.Size(477, 423);
             this.tabPageThemeOptions.TabIndex = 0;
             this.tabPageThemeOptions.Text = "Theme Options";
             // 
             // tabPageGlobalOptions
             // 
             this.tabPageGlobalOptions.BackColor = System.Drawing.Color.Black;
+            this.tabPageGlobalOptions.Controls.Add(this.labelDefaultTheme);
+            this.tabPageGlobalOptions.Controls.Add(this.label1);
+            this.tabPageGlobalOptions.Controls.Add(this.labelDefaultThemePath);
+            this.tabPageGlobalOptions.Controls.Add(this.checkBoxEnableGlobalHotkey);
+            this.tabPageGlobalOptions.Controls.Add(this.buttonSetDefaultTheme);
+            this.tabPageGlobalOptions.Controls.Add(this.buttonLoadDefaultTheme);
             this.tabPageGlobalOptions.Location = new System.Drawing.Point(4, 22);
             this.tabPageGlobalOptions.Name = "tabPageGlobalOptions";
             this.tabPageGlobalOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGlobalOptions.Size = new System.Drawing.Size(452, 221);
+            this.tabPageGlobalOptions.Size = new System.Drawing.Size(477, 423);
             this.tabPageGlobalOptions.TabIndex = 1;
             this.tabPageGlobalOptions.Text = "Global Options";
             // 
@@ -224,23 +238,14 @@
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(484, 450);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.checkBoxWeightedRanks);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.checkBoxEnableGlobalHotkey);
-            this.Controls.Add(this.buttonLoadDefaultTheme);
-            this.Controls.Add(this.buttonSetDefaultTheme);
-            this.Controls.Add(this.labelDefaultThemePath);
-            this.Controls.Add(this.labelDefaultTheme);
-            this.Controls.Add(this.buttonModifyMaxRank);
-            this.Controls.Add(this.buttonInspectRankDistribution);
-            this.Controls.Add(this.checkBoxEnableDetectionOfInactiveImages);
-            this.Controls.Add(this.checkBoxHigherRankedImagesOnLargerMonitors);
-            this.Controls.Add(this.checkBoxLargerImagesOnLargerMonitors);
             this.Name = "OptionsForm";
             this.Text = "Options";
             this.tabControl1.ResumeLayout(false);
+            this.tabPageThemeOptions.ResumeLayout(false);
+            this.tabPageThemeOptions.PerformLayout();
+            this.tabPageGlobalOptions.ResumeLayout(false);
+            this.tabPageGlobalOptions.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
