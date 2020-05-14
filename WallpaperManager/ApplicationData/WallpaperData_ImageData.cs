@@ -29,11 +29,16 @@ namespace WallpaperManager.ApplicationData
                     {
                         if (Active) // Rank Data does not include inactive images
                         {
+                            Debug.WriteLine("Adjusting Rank: " + Rank + " => " + value);
                             RankData[Rank].Remove(Path);
                             RankData[value].Add(Path);
                         }
 
                         rank = value; // place this after the above if statement to ensure that the right image file path is found
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Error: Attempted to assign an invalid rank");
                     }
                 }
             }
@@ -65,9 +70,9 @@ namespace WallpaperManager.ApplicationData
                 }
             }
 
-            [DataMember(Name = "tags")] public Dictionary<string, HashSet<string>> Tags; // this should stay as a string for saving to JSON
+            [DataMember(Name = "Tags")] public Dictionary<string, HashSet<string>> Tags; // this should stay as a string for saving to JSON
 
-            [DataMember(Name = "Tags Naming Exceptions")] public HashSet<Tuple<string, string>> TagNamingExceptions; // these tags be used for naming regardless of constraints
+            [DataMember(Name = "Tag Naming Exceptions")] public HashSet<Tuple<string, string>> TagNamingExceptions; // these tags be used for naming regardless of constraints
 
             public ImageData(string path, int rank, bool active, Dictionary<string, HashSet<string>> tags = null, HashSet<Tuple<string, string>> tagNamingExceptions = null)
             {

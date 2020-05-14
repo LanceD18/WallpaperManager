@@ -47,16 +47,13 @@ namespace WallpaperManager.ApplicationData
 
         public static void RandomizeWallpapers()
         {
-
-
             Random rand = new Random();
 
             for (int i = 0; i < MonitorData.Screens.Length; i++)
             {
-                int randomRank;
-                randomRank = 
-                    GetRandomRank(rand, !OptionsData.ThemeOptions.WeightedRanks ?
-                        WallpaperData.GetModifiedRankPercentiles() : WallpaperData.GetWeightedRankPercentiles());
+                /*!int randomRank = GetRandomRank(rand, !OptionsData.ThemeOptions.WeightedRanks ?
+                        WallpaperData.GetModifiedRankPercentiles() : WallpaperData.GetWeightedRankPercentiles());*/
+                int randomRank = GetRandomRank(rand, WallpaperData.GetRankPercentiles());
 
                 // Find random image path
                 if (randomRank == -1)

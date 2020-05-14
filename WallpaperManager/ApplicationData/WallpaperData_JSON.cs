@@ -56,23 +56,9 @@ namespace WallpaperManager.ApplicationData
             {
                 wallpaperStyle = WallpaperManagerForm.GetWallpaperStyle();
                 timerIndex = WallpaperManagerForm.GetTimerIndex();
-                randomizeSelection = WallpaperData.RandomizeSelection;
+                randomizeSelection = RandomizeSelection;
                 maxRank = GetMaxRank();
                 tagSortOption = TagSortOption;
-            }
-        }
-
-        public class OptionsData
-        {
-            public bool largerImagesOnLargerMonitors;
-            public bool higherRankedImagesOnLargerMonitors;
-            public bool enableDetectionOfInactiveImages;
-
-            public OptionsData()
-            {
-                //largerImagesOnLargerMonitors = Options.OptionsData.LargerImagesOnLargerMonitors;
-                //higherRankedImagesOnLargerMonitors = Options.OptionsData.HigherRankedImagesOnLargerMonitors;
-                //enableDetectionOfInactiveImages = Options.OptionsData.EnableDetectionOfInactiveImages;
             }
         }
 
@@ -133,6 +119,7 @@ namespace WallpaperManager.ApplicationData
 
                 IsLoadingData = false;
                 PathData.ActiveWallpaperTheme = path;
+                UpdateRankPercentiles();
                 return true;
             }
             else  //! MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
@@ -163,7 +150,7 @@ namespace WallpaperManager.ApplicationData
 
         private static void LoadCoreData(JsonWallpaperData jsonWallpaperData)
         {
-            SetRankMax(jsonWallpaperData.miscData.maxRank, true);
+            SetMaxRank(jsonWallpaperData.miscData.maxRank, true);
 
             // Must be set before the foreach loop where AddImage is called so that the available tags and categories can exist
             TaggingInfo = new TaggingInfo(jsonWallpaperData.tagData.ToList());
@@ -195,9 +182,6 @@ namespace WallpaperManager.ApplicationData
         private static void LoadOptionsData(JsonWallpaperData jsonWallpaperData)
         {
             Options.OptionsData.ThemeOptions = jsonWallpaperData.themeOptions;
-            //Options.OptionsData.LargerImagesOnLargerMonitors = jsonWallpaperData.optionsData.largerImagesOnLargerMonitors;
-            //Options.OptionsData.HigherRankedImagesOnLargerMonitors = jsonWallpaperData.optionsData.higherRankedImagesOnLargerMonitors;
-            //Options.OptionsData.EnableDetectionOfInactiveImages = jsonWallpaperData.optionsData.enableDetectionOfInactiveImages;
         }
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)

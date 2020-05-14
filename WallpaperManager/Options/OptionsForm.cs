@@ -51,8 +51,17 @@ namespace WallpaperManager.Options
             ThemeSettings.LargerImagesOnLargerMonitors = checkBoxLargerImagesOnLargerMonitors.Checked;
             ThemeSettings.HigherRankedImagesOnLargerMonitors = checkBoxHigherRankedImagesOnLargerMonitors.Checked;
             ThemeSettings.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
+
+            bool updateRankPercentiles = ThemeSettings.WeightedRanks != checkBoxWeightedRanks.Checked;
             ThemeSettings.WeightedRanks = checkBoxWeightedRanks.Checked;
+
             OptionsData.ThemeOptions = ThemeSettings;
+
+            //? this won't work unless OptionsData.ThemeOptions is updated first
+            if (updateRankPercentiles)
+            {
+                WallpaperData.UpdateRankPercentiles();
+            }
 
             // Global Settings
             if (File.Exists(OptionsData.DefaultTheme))
@@ -83,7 +92,7 @@ namespace WallpaperManager.Options
             {
                 if (newRankMax <= WallpaperData.LargestMaxRank)
                 {
-                    WallpaperData.SetRankMax(newRankMax, false);
+                    WallpaperData.SetMaxRank(newRankMax, false);
                 }
                 else
                 {

@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Serialization;
 using System.Xml;
+using LanceTools;
 using Microsoft.VisualBasic.FileIO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using WallpaperManager.Options;
 using WallpaperManager.Tagging;
 using Formatting = Newtonsoft.Json.Formatting;
 
@@ -21,8 +24,9 @@ namespace WallpaperManager.ApplicationData
         public static WallpaperManager WallpaperManagerForm;
 
         private static Dictionary<string, ImageData> FileData = new Dictionary<string, ImageData>();
-        private static Dictionary<int, List<string>> RankData = new Dictionary<int, List<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
+        private static ReactiveDictionary<int, ReactiveList<string>> RankData = new ReactiveDictionary<int, ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
         private static double[] rankPercentiles;
+        private static Dictionary<int, double> modifiedRankPercentiles = new Dictionary<int, double>();
 
         private static List<string> ActiveImages = new List<string>(); //? Add and removal should be automated, you should only need to retrieve data from this
         private static Dictionary<string, bool> ImageFolders = new Dictionary<string, bool>();
@@ -51,6 +55,43 @@ namespace WallpaperManager.ApplicationData
             {
                 LoadDefaultTheme();
             }
+
+            RankData.OnDictionaryAddItem += RankData_OnDictionaryAddItem;
+            RankData.OnDictionaryRemoveItem += RankData_OnDictionaryRemoveItem;
+        }
+
+        private static void RankData_OnDictionaryAddItem(object sender, DictChangedEventArgs<int, ReactiveList<string>> e)
+        {
+            e.Value.OnListAddItem += RankData_OnListAddItem;
+            e.Value.OnListRemoveItem += RankData_OnListRemoveItem;
+        }
+
+        private static void RankData_OnDictionaryRemoveItem(object sender, DictChangedEventArgs<int, ReactiveList<string>> e)
+        {
+            e.Value.OnListAddItem -= RankData_OnListAddItem;
+            e.Value.OnListRemoveItem -= RankData_OnListRemoveItem;
+        }
+
+        private static void RankData_OnListAddItem(object sender, ListChangedEventArgs<string> e)
+        {
+            if (!IsLoadingData) // UpdateRankPercentiles will be called once the loading ends
+            {
+                if ((sender as ReactiveList<string>).Count == 1) // allows the now unempty rank to be selected
+                {
+                    UpdateRankPercentiles();
+                }
+            }
+        }
+
+        private static void RankData_OnListRemoveItem(object sender, ListChangedEventArgs<string> e)
+        {
+            if (!IsLoadingData) // UpdateRankPercentiles will be called once the loading ends
+            {
+                if ((sender as ReactiveList<string>).Count == 0) // prevents the empty rank from being selected
+                {
+                    UpdateRankPercentiles();
+                }
+            }
         }
 
         // File Data
@@ -78,7 +119,7 @@ namespace WallpaperManager.ApplicationData
 
         public static void RemoveImage(string path)
         {
-            RemoveImages(new string[] {path});
+            RemoveImages(new string[] { path });
         }
 
         public static void RemoveImages(string folderPath)
@@ -126,6 +167,7 @@ namespace WallpaperManager.ApplicationData
 
         // Rank Data
         #region Rank Data
+
         public static string[] GetImagesOfRank(int rank)
         {
             return RankData.ContainsKey(rank) ? RankData[rank].ToArray() : null;
@@ -190,7 +232,12 @@ namespace WallpaperManager.ApplicationData
             return RankData.ContainsKey(rank);
         }
 
-        public static void SetRankMax(int newRankMax, bool loadingData) //? This is the primary initializer for Rank Data
+        public static int GetMaxRank()
+        {
+            return RankData.Count - 1; // note that RankData.Count includes rank 0 which makes this 1 higher than the actual max rank
+        }
+
+        public static void SetMaxRank(int newRankMax, bool loadingData) //? This is the primary initializer for Rank Data
         {
             if (newRankMax > 0) // note that rank 0 is reserved for unranked images
             {
@@ -200,28 +247,6 @@ namespace WallpaperManager.ApplicationData
             else
             {
                 MessageBox.Show("The max rank cannot be equal to or less than 0");
-            }
-        }
-
-        private static void SetRankData(int newRankMax, bool loadingData)
-        {
-            // Set RankData
-            if (RankData.Count == 0) // Initialize RankData
-            {
-                RankData.Add(0, new List<string>());
-
-                for (int i = 0; i < newRankMax; i++)
-                {
-                    RankData.Add(i + 1, new List<string>());
-                }
-            }
-            else // Update RankData
-            {
-                if (loadingData || MessageBox.Show("Are you sure you want to change the max rank?\n(All images will have their ranks adjusted according to this change)",
-                        "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    UpdateMaxRank(newRankMax, loadingData);
-                }
             }
         }
 
@@ -236,7 +261,7 @@ namespace WallpaperManager.ApplicationData
             {
                 for (int i = oldRankMax; i < newRankMax; i++)
                 {
-                    RankData.Add(i + 1, new List<string>());
+                    RankData.Add(i + 1, new ReactiveList<string>());
                 }
             }
 
@@ -248,7 +273,7 @@ namespace WallpaperManager.ApplicationData
                 {
                     if (FileData[image].Rank != 0) // due to the Math.Max() used below this if statement is needed otherwise all rank 0 images would be set to 1
                     {
-                        int newRank = Math.Max((int) Math.Round((double) FileData[image].Rank * rankChangeRatio), 1); // the Math.Max is used to ensure that no images are set to 0 (unranked)
+                        int newRank = Math.Max((int)Math.Round((double)FileData[image].Rank * rankChangeRatio), 1); // the Math.Max is used to ensure that no images are set to 0 (unranked)
                         FileData[image].Rank = newRank;
                     }
                 }
@@ -267,6 +292,29 @@ namespace WallpaperManager.ApplicationData
             }
 
             //Debug.WriteLine(GetMaxRank());
+        }
+
+        //TODO Pretty sure this can just be split into 2 methods
+        private static void SetRankData(int newRankMax, bool loadingData)
+        {
+            // Set RankData
+            if (RankData.Count == 0) // Initialize RankData
+            {
+                RankData.Add(0, new ReactiveList<string>());
+
+                for (int i = 0; i < newRankMax; i++)
+                {
+                    RankData.Add(i + 1, new ReactiveList<string>());
+                }
+            }
+            else // Update RankData
+            {
+                if (loadingData || MessageBox.Show("Are you sure you want to change the max rank?\n(All images will have their ranks adjusted according to this change)",
+                        "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    UpdateMaxRank(newRankMax, loadingData);
+                }
+            }
         }
 
         private static void SetRankPercentiles(int newRankMax)
@@ -292,7 +340,8 @@ namespace WallpaperManager.ApplicationData
         /// (The percentages of each rank will be modified to exclude images with a rank of 0)
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<int, double> GetModifiedRankPercentiles()
+        //? You should call UpdateRankPercentiles instead if that's what's you need
+        private static Dictionary<int, double> GetModifiedRankPercentiles()
         {
             double rankPercentagesTotal = 0;
             List<int> validRanks = new List<int>();
@@ -318,8 +367,9 @@ namespace WallpaperManager.ApplicationData
 
         /// <summary>
         /// Weights rank percentiles on both how high the rank is and how many images are in a rank
-        /// </summary> 
-        public static Dictionary<int, double> GetWeightedRankPercentiles()
+        /// </summary>
+        //? You should call UpdateRankPercentiles instead if that's what's you need
+        private static Dictionary<int, double> GetWeightedRankPercentiles()
         {
             Dictionary<int, double> modifiedRankPercentiles = GetModifiedRankPercentiles();
             int[] validRanks = modifiedRankPercentiles.Keys.ToArray();
@@ -344,9 +394,20 @@ namespace WallpaperManager.ApplicationData
             return modifiedRankPercentiles;
         }
 
-        public static int GetMaxRank()
+        public static Dictionary<int, double> GetRankPercentiles()
         {
-            return RankData.Count - 1; // note that RankData.Count includes rank 0 which makes this 1 higher than the actual max rank
+            // sets up the modifiedRankPercentiles variable if it's empty
+            if (modifiedRankPercentiles.Count == 0)
+            {
+                UpdateRankPercentiles();
+            }
+
+            return modifiedRankPercentiles;
+        }
+
+        public static void UpdateRankPercentiles()
+        {
+            modifiedRankPercentiles = !OptionsData.ThemeOptions.WeightedRanks ? GetModifiedRankPercentiles() : GetWeightedRankPercentiles();
         }
         #endregion Rank Data
 
@@ -521,7 +582,7 @@ namespace WallpaperManager.ApplicationData
                 if (RankData.Count == 0) //? This is where RankData is initialized for new themes (when the first folder is added)
                 {
                     Debug.WriteLine("Initializing RankData for new theme");
-                    SetRankMax(10, false); // default max rank
+                    SetMaxRank(10, false); // default max rank
                 }
 
                 if (active) //? Note that this also adds images to FileData if they have not yet been added
