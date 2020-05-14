@@ -24,7 +24,8 @@ namespace WallpaperManager.ApplicationData
         public static WallpaperManager WallpaperManagerForm;
 
         private static Dictionary<string, ImageData> FileData = new Dictionary<string, ImageData>();
-        private static ReactiveDictionary<int, ReactiveList<string>> RankData = new ReactiveDictionary<int, ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
+        //private static ReactiveDictionary<int, ReactiveList<string>> RankData = new ReactiveDictionary<int, ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
+        private static ReactiveList<ReactiveList<string>> RankData = new ReactiveList<ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
         private static double[] rankPercentiles;
         private static Dictionary<int, double> modifiedRankPercentiles = new Dictionary<int, double>();
 
@@ -56,20 +57,20 @@ namespace WallpaperManager.ApplicationData
                 LoadDefaultTheme();
             }
 
-            RankData.OnDictionaryAddItem += RankData_OnDictionaryAddItem;
-            RankData.OnDictionaryRemoveItem += RankData_OnDictionaryRemoveItem;
+            RankData.OnListAddItem += RankData_OnDictionaryAddItem;
+            RankData.OnListRemoveItem += RankData_OnDictionaryRemoveItem;
         }
 
-        private static void RankData_OnDictionaryAddItem(object sender, DictChangedEventArgs<int, ReactiveList<string>> e)
+        private static void RankData_OnDictionaryAddItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
         {
-            e.Value.OnListAddItem += RankData_OnListAddItem;
-            e.Value.OnListRemoveItem += RankData_OnListRemoveItem;
+            e.Item.OnListAddItem += RankData_OnListAddItem;
+            e.Item.OnListRemoveItem += RankData_OnListRemoveItem;
         }
 
-        private static void RankData_OnDictionaryRemoveItem(object sender, DictChangedEventArgs<int, ReactiveList<string>> e)
+        private static void RankData_OnDictionaryRemoveItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
         {
-            e.Value.OnListAddItem -= RankData_OnListAddItem;
-            e.Value.OnListRemoveItem -= RankData_OnListRemoveItem;
+            e.Item.OnListAddItem -= RankData_OnListAddItem;
+            e.Item.OnListRemoveItem -= RankData_OnListRemoveItem;
         }
 
         private static void RankData_OnListAddItem(object sender, ListChangedEventArgs<string> e)
@@ -119,7 +120,7 @@ namespace WallpaperManager.ApplicationData
 
         public static void RemoveImage(string path)
         {
-            RemoveImages(new string[] { path });
+            RemoveImages(new[] { path });
         }
 
         public static void RemoveImages(string folderPath)
@@ -167,10 +168,9 @@ namespace WallpaperManager.ApplicationData
 
         // Rank Data
         #region Rank Data
-
         public static string[] GetImagesOfRank(int rank)
         {
-            return RankData.ContainsKey(rank) ? RankData[rank].ToArray() : null;
+            return RankData[rank].ToArray();
         }
 
         public static string[] GetAllRankedImages()
@@ -178,11 +178,11 @@ namespace WallpaperManager.ApplicationData
             string[] imagePaths = new string[0];
             int arraySize = 0;
 
-            foreach (int rank in RankData.Keys)
+            for (int i = 0; i < RankData.Count; i++)
             {
-                if (rank != 0 && RankData[rank].Count != 0) // ensures that rank 0 images are not included since they are 'unranked'
+                if (i != 0 && RankData[i].Count != 0) // ensures that rank 0 images are not included since they are 'unranked'
                 {
-                    string[] currentRankArray = RankData[rank].ToArray();
+                    string[] currentRankArray = RankData[i].ToArray();
                     int tempArraySize = arraySize + currentRankArray.Length;
 
                     string[] tempImagePaths = new string[tempArraySize];
@@ -227,11 +227,6 @@ namespace WallpaperManager.ApplicationData
             return "";
         }
 
-        public static bool ContainsRank(int rank)
-        {
-            return RankData.ContainsKey(rank);
-        }
-
         public static int GetMaxRank()
         {
             return RankData.Count - 1; // note that RankData.Count includes rank 0 which makes this 1 higher than the actual max rank
@@ -261,7 +256,7 @@ namespace WallpaperManager.ApplicationData
             {
                 for (int i = oldRankMax; i < newRankMax; i++)
                 {
-                    RankData.Add(i + 1, new ReactiveList<string>());
+                    RankData.Add(new ReactiveList<string>());
                 }
             }
 
@@ -287,7 +282,7 @@ namespace WallpaperManager.ApplicationData
             {
                 for (int i = oldRankMax; i > newRankMax; i--)
                 {
-                    RankData.Remove(i);
+                    RankData.RemoveAt(RankData.Count - 1);
                 }
             }
 
@@ -300,11 +295,11 @@ namespace WallpaperManager.ApplicationData
             // Set RankData
             if (RankData.Count == 0) // Initialize RankData
             {
-                RankData.Add(0, new ReactiveList<string>());
+                RankData.Add(new ReactiveList<string>());
 
                 for (int i = 0; i < newRankMax; i++)
                 {
-                    RankData.Add(i + 1, new ReactiveList<string>());
+                    RankData.Add(new ReactiveList<string>());
                 }
             }
             else // Update RankData
@@ -317,6 +312,12 @@ namespace WallpaperManager.ApplicationData
             }
         }
 
+        public static bool ContainsRank(int rank)
+        {
+            return rank >= 0 && rank < RankData.Count;
+        }
+
+        #region Percentiles
         private static void SetRankPercentiles(int newRankMax)
         {
             // Set Rank Percentiles
@@ -345,12 +346,12 @@ namespace WallpaperManager.ApplicationData
         {
             double rankPercentagesTotal = 0;
             List<int> validRanks = new List<int>();
-            foreach (int rank in RankData.Keys)
+            for (int i = 0; i < RankData.Count; i++) // i == rank
             {
-                if (RankData[rank].Count != 0 && rank != 0)
+                if (RankData[i].Count != 0 && i != 0)
                 {
-                    rankPercentagesTotal += rankPercentiles[rank - 1];
-                    validRanks.Add(rank);
+                    rankPercentagesTotal += rankPercentiles[i - 1];
+                    validRanks.Add(i);
                 }
             }
 
@@ -409,6 +410,7 @@ namespace WallpaperManager.ApplicationData
         {
             modifiedRankPercentiles = !OptionsData.ThemeOptions.WeightedRanks ? GetModifiedRankPercentiles() : GetWeightedRankPercentiles();
         }
+        #endregion
         #endregion Rank Data
 
         // Active Images

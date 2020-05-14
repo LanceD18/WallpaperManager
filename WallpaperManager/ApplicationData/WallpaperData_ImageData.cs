@@ -25,21 +25,14 @@ namespace WallpaperManager.ApplicationData
 
                 set
                 {
-                    if (RankData.ContainsKey(value))
+                    if (Active) // Rank Data does not include inactive images
                     {
-                        if (Active) // Rank Data does not include inactive images
-                        {
-                            Debug.WriteLine("Adjusting Rank: " + Rank + " => " + value);
-                            RankData[Rank].Remove(Path);
-                            RankData[value].Add(Path);
-                        }
+                        Debug.WriteLine("Adjusting Rank: " + Rank + " => " + value);
+                        RankData[Rank].Remove(Path);
+                        RankData[value].Add(Path);
+                    }
 
-                        rank = value; // place this after the above if statement to ensure that the right image file path is found
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Error: Attempted to assign an invalid rank");
-                    }
+                    rank = value; // place this after the above if statement to ensure that the right image file path is found
                 }
             }
 
