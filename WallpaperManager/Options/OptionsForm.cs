@@ -92,7 +92,7 @@ namespace WallpaperManager.Options
             {
                 if (newRankMax <= WallpaperData.LargestMaxRank)
                 {
-                    WallpaperData.SetMaxRank(newRankMax, false);
+                    WallpaperData.SetMaxRank(newRankMax);
                 }
                 else
                 {

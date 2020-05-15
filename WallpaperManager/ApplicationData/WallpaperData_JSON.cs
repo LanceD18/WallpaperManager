@@ -16,7 +16,7 @@ namespace WallpaperManager.ApplicationData
 {
     public static partial class WallpaperData
     {
-        public static bool IsLoadingData { get; private set; }
+        public static bool IsLoadingData { get; private set; } = false;
         public static readonly int LargestMaxRank = 1000;
         private static string jpxToJpgWarning;
 
@@ -140,7 +140,7 @@ namespace WallpaperManager.ApplicationData
             TaggingInfo = new TaggingInfo();
 
             // This is needed if loading otherwise images with invalid ranks will crash the program
-            SetRankData(LargestMaxRank, true);
+            SetRankData(LargestMaxRank);
         }
 
         private static void ResetWallpaperManager()
@@ -150,7 +150,7 @@ namespace WallpaperManager.ApplicationData
 
         private static void LoadCoreData(JsonWallpaperData jsonWallpaperData)
         {
-            SetMaxRank(jsonWallpaperData.miscData.maxRank, true);
+            SetMaxRank(jsonWallpaperData.miscData.maxRank);
 
             // Must be set before the foreach loop where AddImage is called so that the available tags and categories can exist
             TaggingInfo = new TaggingInfo(jsonWallpaperData.tagData.ToList());
@@ -186,7 +186,7 @@ namespace WallpaperManager.ApplicationData
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)
         {
-            WallpaperManagerForm.UpdateWallpaperStyle(jsonWallpaperData.miscData.wallpaperStyle, true);
+            WallpaperManagerForm.UpdateWallpaperStyle(jsonWallpaperData.miscData.wallpaperStyle);
             WallpaperManagerForm.SetTimerIndex(jsonWallpaperData.miscData.timerIndex);
             RandomizeSelection = jsonWallpaperData.miscData.randomizeSelection;
             TagSortOption = jsonWallpaperData.miscData.tagSortOption;

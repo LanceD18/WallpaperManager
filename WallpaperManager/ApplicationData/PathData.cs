@@ -67,8 +67,8 @@ namespace WallpaperManager.ApplicationData
                     if (!WallpaperData.GetImageData(ActiveWallpapers[i]).Active && !OptionsData.ThemeOptions.EnableDetectionOfInactiveImages)
                     {
                         //TODO Test this code segment more thoroughly
-                        MessageBox.Show("Attempted to set monitor " + i + " to an inactive wallpaper | A new wallpaper has been chosen" +
-                                        "\nThis error message can be deleted after you confirm that this works");
+                        //! This error message can be deleted after you confirm that this works
+                        MessageBox.Show("Attempted to set monitor " + i + " to an inactive wallpaper | A new wallpaper has been chosen");
                         i--; // find another wallpaper, the selected wallpaper is inactive
                     }
                 }

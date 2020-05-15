@@ -17,7 +17,7 @@ namespace WallpaperManager
     {
         private System.Timers.Timer timer;
         private Stopwatch timerStopWatch = new Stopwatch();
-        private int timerInterval;
+        private int timerMaxInterval;
 
         private void InitializeTimer()
         {
@@ -77,7 +77,7 @@ namespace WallpaperManager
             if (timer != null)
             {
                 timerStopWatch.Restart();
-                timer.Interval = timerInterval = GetTimerInterval();
+                timer.Interval = timerMaxInterval = GetTimerInterval();
 
                 if (timer.Interval <= 1)
                 {
@@ -122,9 +122,9 @@ namespace WallpaperManager
 
         public void ResetTimer()
         {
-            if (timerInterval != 0)
+            if (timerMaxInterval != 0) // if this equals 0 then there is no timer
             {
-                timer.Interval = timerInterval;
+                timer.Interval = timerMaxInterval;
                 timerStopWatch.Restart();
             }
         }

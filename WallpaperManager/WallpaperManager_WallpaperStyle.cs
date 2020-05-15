@@ -61,11 +61,11 @@ namespace WallpaperManager
             }
         }
 
-        public void UpdateWallpaperStyle(PictureStyle newWallpaperStyle, bool loadingTheme)
+        public void UpdateWallpaperStyle(PictureStyle newWallpaperStyle)
         {
             WallpaperStyle = newWallpaperStyle;
             comboBoxSelectStyle.Text = newWallpaperStyle.ToString();
-            cancelWallpaperStyleUpdate = loadingTheme;
+            cancelWallpaperStyleUpdate = WallpaperData.IsLoadingData;
         }
 
         public PictureStyle GetWallpaperStyle()

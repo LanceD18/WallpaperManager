@@ -11,11 +11,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using LanceTools;
 using Microsoft.VisualBasic.FileIO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using WallpaperManager.Options;
-using WallpaperManager.Tagging;
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace WallpaperManager.ApplicationData
 {
@@ -24,7 +20,6 @@ namespace WallpaperManager.ApplicationData
         public static WallpaperManager WallpaperManagerForm;
 
         private static Dictionary<string, ImageData> FileData = new Dictionary<string, ImageData>();
-        //private static ReactiveDictionary<int, ReactiveList<string>> RankData = new ReactiveDictionary<int, ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
         private static ReactiveList<ReactiveList<string>> RankData = new ReactiveList<ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
         private static double[] rankPercentiles;
         private static Dictionary<int, double> modifiedRankPercentiles = new Dictionary<int, double>();
@@ -56,18 +51,15 @@ namespace WallpaperManager.ApplicationData
             {
                 LoadDefaultTheme();
             }
-
-            RankData.OnListAddItem += RankData_OnDictionaryAddItem;
-            RankData.OnListRemoveItem += RankData_OnDictionaryRemoveItem;
         }
 
-        private static void RankData_OnDictionaryAddItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
+        private static void RankData_OnParentListAddItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
         {
             e.Item.OnListAddItem += RankData_OnListAddItem;
             e.Item.OnListRemoveItem += RankData_OnListRemoveItem;
         }
 
-        private static void RankData_OnDictionaryRemoveItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
+        private static void RankData_OnParentListRemoveItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
         {
             e.Item.OnListAddItem -= RankData_OnListAddItem;
             e.Item.OnListRemoveItem -= RankData_OnListRemoveItem;
@@ -232,16 +224,39 @@ namespace WallpaperManager.ApplicationData
             return RankData.Count - 1; // note that RankData.Count includes rank 0 which makes this 1 higher than the actual max rank
         }
 
-        public static void SetMaxRank(int newRankMax, bool loadingData) //? This is the primary initializer for Rank Data
+        public static void SetMaxRank(int newRankMax) //? This is the primary initializer for Rank Data
         {
             if (newRankMax > 0) // note that rank 0 is reserved for unranked images
             {
-                SetRankData(newRankMax, loadingData);
+                SetRankData(newRankMax);
                 SetRankPercentiles(newRankMax);
             }
             else
             {
                 MessageBox.Show("The max rank cannot be equal to or less than 0");
+            }
+        }
+
+        //TODO Pretty sure this can just be split into 2 methods
+        private static void SetRankData(int newRankMax)
+        {
+            // Set RankData
+            if (RankData.Count == 0) // Initialize RankData
+            {
+                RankData.Add(new ReactiveList<string>());
+
+                for (int i = 0; i < newRankMax; i++)
+                {
+                    RankData.Add(new ReactiveList<string>());
+                }
+            }
+            else // Update RankData
+            {
+                if (IsLoadingData || MessageBox.Show("Are you sure you want to change the max rank?\n(All images will have their ranks adjusted according to this change)",
+                    "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    UpdateMaxRank(newRankMax, IsLoadingData);
+                }
             }
         }
 
@@ -287,29 +302,6 @@ namespace WallpaperManager.ApplicationData
             }
 
             //Debug.WriteLine(GetMaxRank());
-        }
-
-        //TODO Pretty sure this can just be split into 2 methods
-        private static void SetRankData(int newRankMax, bool loadingData)
-        {
-            // Set RankData
-            if (RankData.Count == 0) // Initialize RankData
-            {
-                RankData.Add(new ReactiveList<string>());
-
-                for (int i = 0; i < newRankMax; i++)
-                {
-                    RankData.Add(new ReactiveList<string>());
-                }
-            }
-            else // Update RankData
-            {
-                if (loadingData || MessageBox.Show("Are you sure you want to change the max rank?\n(All images will have their ranks adjusted according to this change)",
-                        "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    UpdateMaxRank(newRankMax, loadingData);
-                }
-            }
         }
 
         public static bool ContainsRank(int rank)
@@ -584,7 +576,7 @@ namespace WallpaperManager.ApplicationData
                 if (RankData.Count == 0) //? This is where RankData is initialized for new themes (when the first folder is added)
                 {
                     Debug.WriteLine("Initializing RankData for new theme");
-                    SetMaxRank(10, false); // default max rank
+                    SetMaxRank(10); // default max rank
                 }
 
                 if (active) //? Note that this also adds images to FileData if they have not yet been added

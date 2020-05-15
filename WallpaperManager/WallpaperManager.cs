@@ -213,27 +213,30 @@ namespace WallpaperManager
 
         public void NextWallpaper(bool ignoreErrorMessages)
         {
-            if (!WallpaperData.FileDataIsEmpty())
+            if (!WallpaperData.IsLoadingData) // Rank Percentiles won't be properly set-up until after a theme is loaded, which can cause a crash is NextWallpaper is called
             {
-                if (!WallpaperData.NoImagesActive() && WallpaperData.GetAllRankedImages().Length != 0)
+                if (!WallpaperData.FileDataIsEmpty())
                 {
-                    //TODO Find a way to prevent the first previous wallpaper from being filled with empty strings
-                    ResetTimer();
-                    string[] previousWallpapers = new string[PathData.ActiveWallpapers.Length];
-                    PathData.ActiveWallpapers.CopyTo(previousWallpapers, 0);
-                    PathData.PreviousWallpapers.Push(previousWallpapers);
+                    if (!WallpaperData.NoImagesActive() && WallpaperData.GetAllRankedImages().Length != 0)
+                    {
+                        //TODO Prevent the first previous wallpaper from being filled with empty strings
+                        ResetTimer();
+                        string[] previousWallpapers = new string[PathData.ActiveWallpapers.Length];
+                        PathData.ActiveWallpapers.CopyTo(previousWallpapers, 0);
+                        PathData.PreviousWallpapers.Push(previousWallpapers);
 
-                    PathData.RandomizeWallpapers();
-                    SetWallpaper();
+                        PathData.RandomizeWallpapers();
+                        SetWallpaper();
+                    }
+                    else
+                    {
+                        if (!ignoreErrorMessages) MessageBox.Show("No active wallpapers were found");
+                    }
                 }
                 else
                 {
-                    if (!ignoreErrorMessages) MessageBox.Show("No active wallpapers were found");
+                    if (!ignoreErrorMessages) MessageBox.Show("Add some wallpapers first! Use the Add Folder button to add a collection of images that'll be used as potential wallpapers");
                 }
-            }
-            else
-            {
-                if (!ignoreErrorMessages) MessageBox.Show("Add some wallpapers first! Use the Add Folder button to add a collection of images that'll be used as potential wallpapers");
             }
         }
 
