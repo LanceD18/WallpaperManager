@@ -21,6 +21,8 @@ namespace WallpaperManager.ApplicationData
 
         private static Dictionary<string, ImageData> FileData = new Dictionary<string, ImageData>();
         private static ReactiveList<ReactiveList<string>> RankData = new ReactiveList<ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
+        public static bool potentialWeightedRankUpdate;
+        public static bool potentialRegularRankUpdate;
         private static double[] rankPercentiles;
         private static Dictionary<int, double> modifiedRankPercentiles = new Dictionary<int, double>();
 
@@ -51,40 +53,9 @@ namespace WallpaperManager.ApplicationData
             {
                 LoadDefaultTheme();
             }
-        }
 
-        private static void RankData_OnParentListAddItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
-        {
-            e.Item.OnListAddItem += RankData_OnListAddItem;
-            e.Item.OnListRemoveItem += RankData_OnListRemoveItem;
-        }
-
-        private static void RankData_OnParentListRemoveItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
-        {
-            e.Item.OnListAddItem -= RankData_OnListAddItem;
-            e.Item.OnListRemoveItem -= RankData_OnListRemoveItem;
-        }
-
-        private static void RankData_OnListAddItem(object sender, ListChangedEventArgs<string> e)
-        {
-            if (!IsLoadingData) // UpdateRankPercentiles will be called once the loading ends
-            {
-                if ((sender as ReactiveList<string>).Count == 1) // allows the now unempty rank to be selected
-                {
-                    UpdateRankPercentiles();
-                }
-            }
-        }
-
-        private static void RankData_OnListRemoveItem(object sender, ListChangedEventArgs<string> e)
-        {
-            if (!IsLoadingData) // UpdateRankPercentiles will be called once the loading ends
-            {
-                if ((sender as ReactiveList<string>).Count == 0) // prevents the empty rank from being selected
-                {
-                    UpdateRankPercentiles();
-                }
-            }
+            RankData.OnListAddItem += RankData_OnParentListAddItem;
+            RankData.OnListRemoveItem += RankData_OnParentListRemoveItem;
         }
 
         // File Data
@@ -400,7 +371,47 @@ namespace WallpaperManager.ApplicationData
 
         public static void UpdateRankPercentiles()
         {
+            potentialWeightedRankUpdate = false;
+            potentialRegularRankUpdate = false;
             modifiedRankPercentiles = !OptionsData.ThemeOptions.WeightedRanks ? GetModifiedRankPercentiles() : GetWeightedRankPercentiles();
+        }
+        #endregion
+
+        #region Events
+        private static void RankData_OnParentListAddItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
+        {
+            e.Item.OnListAddItem += RankData_OnListAddItem;
+            e.Item.OnListRemoveItem += RankData_OnListRemoveItem;
+        }
+
+        private static void RankData_OnParentListRemoveItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
+        {
+            e.Item.OnListAddItem -= RankData_OnListAddItem;
+            e.Item.OnListRemoveItem -= RankData_OnListRemoveItem;
+        }
+
+        private static void RankData_OnListAddItem(object sender, ListChangedEventArgs<string> e)
+        {
+            if (!IsLoadingData) // UpdateRankPercentiles will be called once the loading ends
+            {
+                potentialWeightedRankUpdate = true;
+                if ((sender as ReactiveList<string>).Count == 1) // allows the now unempty rank to be selected
+                {
+                    potentialRegularRankUpdate = true;
+                }
+            }
+        }
+
+        private static void RankData_OnListRemoveItem(object sender, ListChangedEventArgs<string> e)
+        {
+            if (!IsLoadingData) // UpdateRankPercentiles will be called once the loading ends
+            {
+                potentialWeightedRankUpdate = true;
+                if ((sender as ReactiveList<string>).Count == 0) // prevents the empty rank from being selected
+                {
+                    potentialRegularRankUpdate = true;
+                }
+            }
         }
         #endregion
         #endregion Rank Data

@@ -80,6 +80,12 @@ namespace WallpaperManager.ApplicationData
         // Picks ranks based on their default percentiles (Where the highest rank is the most likely to appear and it goes down from there)
         private static int GetRandomRank(Random rand, Dictionary<int, double> modifiedRankPercentiles)
         {
+            if (WallpaperData.potentialWeightedRankUpdate && OptionsData.ThemeOptions.WeightedRanks || WallpaperData.potentialRegularRankUpdate) // the percentiles for weighted ranks change everytime an image's rank is altered
+            {
+                Debug.WriteLine("Updating Rank Percentiles");
+                WallpaperData.UpdateRankPercentiles(); // this method sets the above booleans to false
+            }
+
             int randomRank = -1;
             int[] rankPercentageKeys = modifiedRankPercentiles.Keys.ToArray();
             double[] rankPercentageValues = modifiedRankPercentiles.Values.ToArray();

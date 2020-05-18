@@ -25,14 +25,16 @@ namespace WallpaperManager.ApplicationData
 
                 set
                 {
-                    if (Active) // Rank Data does not include inactive images
+                    if (value <= GetMaxRank() && value >= 0) // prevents stepping out of valid rank bounds
                     {
-                        Debug.WriteLine("Adjusting Rank: " + Rank + " => " + value);
-                        RankData[Rank].Remove(Path);
-                        RankData[value].Add(Path);
-                    }
+                        if (Active) // Rank Data does not include inactive images
+                        {
+                            RankData[Rank].Remove(Path);
+                            RankData[value].Add(Path);
+                        }
 
-                    rank = value; // place this after the above if statement to ensure that the right image file path is found
+                        rank = value; // place this after the above if statement to ensure that the right image file path is found
+                    }
                 }
             }
 
@@ -52,7 +54,6 @@ namespace WallpaperManager.ApplicationData
                         {
                             RankData[Rank].Add(Path);
                             ActiveImages.Add(Path);
-
                         }
                         else  // Note that Rank Data does not include inactive images
                         {
