@@ -138,11 +138,11 @@ namespace WallpaperManager
                 {
                     if (folderCheckBox.Checked)
                     {
-                        ActivateFolderImages(folderPath);
+                        WallpaperData.ActivateFolder(folderPath);
                     }
                     else
                     {
-                        DeactivateFolderImages(folderPath);
+                        WallpaperData.DeactivateFolder(folderPath);
                     }
                 }
                 else // folder path does not exist, display error message and as if user wants to remove invalid folder
@@ -170,16 +170,6 @@ namespace WallpaperManager
             }
 
             flowLayoutPanelImageFolders.Focus(); // prevents the weird behavior where clicking on a checkbox resets the scroll every second
-        }
-
-        private void ActivateFolderImages(string folderPath)
-        {
-            WallpaperData.ActivateImages(folderPath);
-        }
-
-        private void DeactivateFolderImages(string folderPath)
-        {
-            WallpaperData.DeactivateImages(folderPath);
         }
 
         private string[] GetImageFolderPaths()

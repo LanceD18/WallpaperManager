@@ -32,6 +32,7 @@
             this.imageTagsFLP = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonAddTag = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.labelEnabled = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -72,12 +73,25 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Click on a tag to remove it or create a naming exception";
             // 
+            // labelEnabled
+            // 
+            this.labelEnabled.AutoSize = true;
+            this.labelEnabled.Cursor = System.Windows.Forms.Cursors.Default;
+            this.labelEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelEnabled.ForeColor = System.Drawing.Color.Lime;
+            this.labelEnabled.Location = new System.Drawing.Point(210, 431);
+            this.labelEnabled.Name = "labelEnabled";
+            this.labelEnabled.Size = new System.Drawing.Size(53, 13);
+            this.labelEnabled.TabIndex = 4;
+            this.labelEnabled.Text = "Enabled";
+            // 
             // ImageEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(684, 461);
+            this.Controls.Add(this.labelEnabled);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.buttonAddTag);
             this.Controls.Add(this.imageTagsFLP);
@@ -96,5 +110,6 @@
         private System.Windows.Forms.FlowLayoutPanel imageTagsFLP;
         private System.Windows.Forms.Button buttonAddTag;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelEnabled;
     }
 }

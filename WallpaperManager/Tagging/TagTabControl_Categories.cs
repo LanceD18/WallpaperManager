@@ -44,7 +44,7 @@ namespace WallpaperManager.Tagging
             {
                 tags = tags ?? new HashSet<TagData>();
                 CategoryData newCategory = new CategoryData(categoryName, tags, enabled, useForNaming);
-                newCategory.Initialize();
+                newCategory.Initialize(true);
             }
 
             SuspendLayout();

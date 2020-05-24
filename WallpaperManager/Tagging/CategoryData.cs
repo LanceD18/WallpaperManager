@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using WallpaperManager.ApplicationData;
 
@@ -35,14 +36,51 @@ namespace WallpaperManager.Tagging
                             }
                         }
                     }
+
+                    WallpaperData.UpdateRankPercentiles();
                 }
 
                 name = value;
             }
         }
 
-        public bool Enabled;
-        public bool UseForNaming;
+        private bool _Enabled;
+        public bool Enabled
+        {
+            get => _Enabled;
+
+            set
+            {
+                _Enabled = value;
+
+                foreach (TagData tag in Tags)
+                {
+                    WallpaperData.EvaluateImageActiveStates(tag.GetLinkedImages(), !value); // will forceDisable if the value is set to false
+                }
+            }
+        }
+
+        private bool _UseForNaming;
+        public bool UseForNaming
+        {
+            get => _UseForNaming;
+
+            set
+            {
+                _UseForNaming = value;
+
+                HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
+                foreach (TagData tag in Tags)
+                {
+                    foreach (string imagePath in tag.GetLinkedImages())
+                    {
+                        imagesToRename.Add(WallpaperData.GetImageData(imagePath));
+                    }
+                }
+
+                PathData.RenameAffectedImages(imagesToRename.ToArray());
+            }
+        }
 
         public HashSet<TagData> Tags;
 
@@ -51,14 +89,15 @@ namespace WallpaperManager.Tagging
 
         public CategoryData(string name, HashSet<TagData> tags = null, bool enabled = true, bool useForNaming = true)
         {
+            Tags = tags ?? new HashSet<TagData>(); //! must be placed first to avoid getter setter errors (ex: enabled's setter)
+
             Name = name;
             Enabled = enabled;
             UseForNaming = useForNaming;
-            Tags = tags ?? new HashSet<TagData>();
             Initialized = false;
         }
 
-        public void Initialize(bool initializeImages = true)
+        public void Initialize(bool initializeImages)
         {
             Initialized = true;
             WallpaperData.TaggingInfo.AddCategory(this);
@@ -76,15 +115,20 @@ namespace WallpaperManager.Tagging
 
         public bool ContainsTag(string tagName)
         {
+            return GetTag(tagName) != null;
+        }
+
+        public TagData GetTag(string tagName)
+        {
             foreach (TagData curTag in Tags)
             {
                 if (tagName == curTag.Name)
                 {
-                    return true;
+                    return curTag;
                 }
             }
 
-            return false;
+            return null;
         }
 
         public static bool operator ==(CategoryData category1, CategoryData category2)

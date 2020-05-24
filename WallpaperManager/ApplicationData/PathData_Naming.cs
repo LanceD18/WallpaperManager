@@ -19,6 +19,17 @@ namespace WallpaperManager.ApplicationData
             RenameImages(new WallpaperData.ImageData[] {image});
         }
 
+        public static void RenameAffectedImages(WallpaperData.ImageData[] images)
+        {
+            Debug.WriteLine("Woopsie");
+            return;
+            if (MessageBox.Show("Rename affected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                PathData.RenameImages(images.ToArray());
+
+            }
+        }
+
         public static void RenameImages(WallpaperData.ImageData[] images)
         {
             /*TODO
@@ -35,7 +46,8 @@ namespace WallpaperManager.ApplicationData
             Dictionary<string, Dictionary<string, HashSet<WallpaperData.ImageData>>> namingConflicts = GetRenameData(images, out int failedToNameCount);
             List<string> acceptedNames = new List<string>();
 
-            bool renamingAllowed = MessageBox.Show("Allow renaming?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
+            //bool renamingAllowed = MessageBox.Show("Allow renaming?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
+            bool groupRenamedImages = MessageBox.Show("Group renamed images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
 
             foreach (string curDirectory in namingConflicts.Keys)
             {
@@ -55,30 +67,35 @@ namespace WallpaperManager.ApplicationData
                     string startingName = directoryPath + curName + nameCount;
                     Debug.WriteLine("\nStarting Name: " + startingName);
 
-                    while (!canName)
+                    if (groupRenamedImages)
                     {
-                        while (filePaths.Contains(startingName.ToLower()))
-                        {
-                            nameCount++;
-                            startingName = directoryPath + curName + nameCount;
-                            Debug.WriteLine("Updating Starting Name: " + startingName);
-                        }
-
-                        Debug.WriteLine("Checkpoint Starting Name: " + startingName);
-
                         // Ensures that the group of images renamed can be renamed together
-                        //TODO Consider making it an option on whether or not the user wishes to group renamed images or have them fill in the next possible location
-                        canName = true;
-                        for (int i = 0; i < namingConflicts[curDirectory][curName].Count; i++)
+                        while (!canName)
                         {
-                            string testName = directoryPath + curName + nameCount + i;
-                            if (filePaths.Contains(testName.ToLower()))
+                            while (filePaths.Contains(startingName.ToLower()))
                             {
-                                canName = false;
-                                break;
+                                nameCount++;
+                                startingName = directoryPath + curName + nameCount;
+                                Debug.WriteLine("Updating Starting Name: " + startingName);
+                            }
+
+                            Debug.WriteLine("Checkpoint Starting Name: " + startingName);
+
+                            //TODO Consider making it an option on whether or not the user wishes to group renamed images or have them fill in the next possible location
+                            // Checks for the next fully available space
+                            canName = true;
+                            for (int i = 0; i < namingConflicts[curDirectory][curName].Count; i++)
+                            {
+                                string testName = directoryPath + curName + nameCount + i;
+                                if (filePaths.Contains(testName.ToLower()))
+                                {
+                                    canName = false;
+                                    break;
+                                }
                             }
                         }
                     }
+
                     Debug.WriteLine("Final Starting Name: " + startingName);
 
                     foreach (WallpaperData.ImageData curImage in namingConflicts[curDirectory][curName])
@@ -92,10 +109,13 @@ namespace WallpaperManager.ApplicationData
                         acceptedNames.Add(newPath);
                         nameCount++;
 
+                        Debug.WriteLine("You disabled renaming entirely with a comment");
+                        /*
                         if (renamingAllowed)
                         {
                             UpdateImagePath(oldPath, newPath, null);
                         }
+                        */
                     }
                 }
             }

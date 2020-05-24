@@ -66,16 +66,18 @@ namespace WallpaperManager
 
         public void RebuildImageSelector(string[] selectedImages, int imagesPerPage = 30, int maxLoadedTabs = 25)
         {
+            // Cancel the rebuild early if there were no images selected
             if (selectedImages == null)
             {
                 MessageBox.Show("No images were selected");
                 return;
             }
 
+            // Check for null images (The EnableDetectionOfInactiveImages function is handled further down)
             int invalidCounter = 0;
-            for (int i = 0; i < selectedImages.Length; i++)
+            foreach (string image in selectedImages)
             {
-                if (selectedImages[i] == null)
+                if (image == null)
                 {
                     invalidCounter++;
                 }
@@ -87,9 +89,9 @@ namespace WallpaperManager
                 return;
             }
 
-            if (invalidCounter > 1)
+            if (invalidCounter > 0)
             {
-                MessageBox.Show("Error, some of the images selected were null");
+                MessageBox.Show("Error, some of the images selected were null (Does not include disabled images)");
                 return;
             }
 
@@ -105,10 +107,11 @@ namespace WallpaperManager
                 HashSet<string> activeSelectedImages = new HashSet<string>();
                 foreach (string image in selectedImages)
                 {
-                    if (WallpaperData.ContainsImage(image))
+                    if (WallpaperData.ContainsImage(image)) // nothing's stopping you from seleting any image in the file explorer search
                     {
                         if (WallpaperData.GetImageData(image).Active)
                         {
+                            Debug.WriteLine("Active");
                             activeSelectedImages.Add(image);
                         }
                     }

@@ -64,10 +64,9 @@ namespace WallpaperManager.ApplicationData
                 {
                     ActiveWallpapers[i] = WallpaperData.GetRandomImageOfRank(randomRank, ref rand);
 
-                    if (!WallpaperData.GetImageData(ActiveWallpapers[i]).Active && !OptionsData.ThemeOptions.EnableDetectionOfInactiveImages)
+                    if (!WallpaperData.GetImageData(ActiveWallpapers[i]).Active)
                     {
-                        //TODO Test this code segment more thoroughly
-                        //! This error message can be deleted after you confirm that this works
+                        //? This shouldn't happen, if this does you have a bug to fix
                         MessageBox.Show("Attempted to set monitor " + i + " to an inactive wallpaper | A new wallpaper has been chosen");
                         i--; // find another wallpaper, the selected wallpaper is inactive
                     }

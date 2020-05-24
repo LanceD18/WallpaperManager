@@ -47,7 +47,7 @@
             // 
             // buttonAddTag
             // 
-            this.buttonAddTag.Location = new System.Drawing.Point(10, 422);
+            this.buttonAddTag.Location = new System.Drawing.Point(9, 434);
             this.buttonAddTag.Name = "buttonAddTag";
             this.buttonAddTag.Size = new System.Drawing.Size(101, 23);
             this.buttonAddTag.TabIndex = 13;
@@ -78,22 +78,22 @@
             // labelCategory
             // 
             this.labelCategory.AutoSize = true;
-            this.labelCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelCategory.ForeColor = System.Drawing.SystemColors.Control;
             this.labelCategory.Location = new System.Drawing.Point(6, 9);
             this.labelCategory.Name = "labelCategory";
-            this.labelCategory.Size = new System.Drawing.Size(84, 18);
+            this.labelCategory.Size = new System.Drawing.Size(95, 18);
             this.labelCategory.TabIndex = 16;
             this.labelCategory.Text = "Categories:";
             // 
             // labelTagging
             // 
             this.labelTagging.AutoSize = true;
-            this.labelTagging.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTagging.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelTagging.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelTagging.Location = new System.Drawing.Point(7, 391);
+            this.labelTagging.Location = new System.Drawing.Point(6, 403);
             this.labelTagging.Name = "labelTagging";
-            this.labelTagging.Size = new System.Drawing.Size(68, 18);
+            this.labelTagging.Size = new System.Drawing.Size(77, 18);
             this.labelTagging.TabIndex = 17;
             this.labelTagging.Text = "Tagging: ";
             // 
@@ -133,18 +133,18 @@
             this.labelDefaultSettingsInfo.AutoSize = true;
             this.labelDefaultSettingsInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDefaultSettingsInfo.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelDefaultSettingsInfo.Location = new System.Drawing.Point(6, 218);
+            this.labelDefaultSettingsInfo.Location = new System.Drawing.Point(8, 213);
             this.labelDefaultSettingsInfo.Name = "labelDefaultSettingsInfo";
-            this.labelDefaultSettingsInfo.Size = new System.Drawing.Size(111, 12);
+            this.labelDefaultSettingsInfo.Size = new System.Drawing.Size(98, 36);
             this.labelDefaultSettingsInfo.TabIndex = 21;
-            this.labelDefaultSettingsInfo.Text = "(Only applies to new tags)";
+            this.labelDefaultSettingsInfo.Text = "(Will only apply to new \r\ntags unless you press\r\nthe button below)";
             // 
             // checkBoxEnabled
             // 
             this.checkBoxEnabled.AutoSize = true;
             this.checkBoxEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBoxEnabled.ForeColor = System.Drawing.SystemColors.Control;
-            this.checkBoxEnabled.Location = new System.Drawing.Point(9, 240);
+            this.checkBoxEnabled.Location = new System.Drawing.Point(8, 252);
             this.checkBoxEnabled.Name = "checkBoxEnabled";
             this.checkBoxEnabled.Size = new System.Drawing.Size(65, 17);
             this.checkBoxEnabled.TabIndex = 23;
@@ -157,7 +157,7 @@
             this.checkBoxUseForNaming.AutoSize = true;
             this.checkBoxUseForNaming.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBoxUseForNaming.ForeColor = System.Drawing.SystemColors.Control;
-            this.checkBoxUseForNaming.Location = new System.Drawing.Point(9, 265);
+            this.checkBoxUseForNaming.Location = new System.Drawing.Point(8, 277);
             this.checkBoxUseForNaming.Name = "checkBoxUseForNaming";
             this.checkBoxUseForNaming.Size = new System.Drawing.Size(105, 17);
             this.checkBoxUseForNaming.TabIndex = 22;
@@ -167,7 +167,7 @@
             // 
             // buttonApplyDefaultSettings
             // 
-            this.buttonApplyDefaultSettings.Location = new System.Drawing.Point(9, 288);
+            this.buttonApplyDefaultSettings.Location = new System.Drawing.Point(8, 300);
             this.buttonApplyDefaultSettings.Name = "buttonApplyDefaultSettings";
             this.buttonApplyDefaultSettings.Size = new System.Drawing.Size(101, 48);
             this.buttonApplyDefaultSettings.TabIndex = 24;
@@ -188,7 +188,7 @@
             // 
             // buttonNamingOrderHelp
             // 
-            this.buttonNamingOrderHelp.Location = new System.Drawing.Point(9, 342);
+            this.buttonNamingOrderHelp.Location = new System.Drawing.Point(8, 354);
             this.buttonNamingOrderHelp.Name = "buttonNamingOrderHelp";
             this.buttonNamingOrderHelp.Size = new System.Drawing.Size(101, 34);
             this.buttonNamingOrderHelp.TabIndex = 26;
@@ -198,7 +198,7 @@
             // 
             // buttonRemoveTag
             // 
-            this.buttonRemoveTag.Location = new System.Drawing.Point(10, 451);
+            this.buttonRemoveTag.Location = new System.Drawing.Point(9, 463);
             this.buttonRemoveTag.Name = "buttonRemoveTag";
             this.buttonRemoveTag.Size = new System.Drawing.Size(101, 23);
             this.buttonRemoveTag.TabIndex = 28;

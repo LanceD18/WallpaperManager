@@ -63,6 +63,11 @@ namespace WallpaperManager.ImageSelector
             buttonPlus.Click += (o, i) => { imageData.Rank++; textBoxRankEditor.Text = imageData.Rank.ToString(); };
 
             WallpaperData.WallpaperManagerForm.LoadImage(this, imageData.Path);
+
+            if (!imageData.Active) // if EnableDetectionOfInactiveImages is true, this'll show which images are disabled
+            {
+                buttonSelectImage.FlatAppearance.BorderColor = Color.Red;
+            }
             ResumeLayout();
         }
 

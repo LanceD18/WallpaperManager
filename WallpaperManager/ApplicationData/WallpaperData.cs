@@ -60,8 +60,15 @@ namespace WallpaperManager.ApplicationData
 
         // File Data
         #region File Data
+        public static bool AddImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
+        {
+            tags = tags ?? new Dictionary<string, HashSet<string>>(); // if null, the right-hand side of ?? will be called
+            return AddImage(new ImageData(path, rank, active, tags));
+        }
+
         public static bool AddImage(ImageData newImageData)
         {
+            //TODO Implement a feature that checks if the image's file type is valid and either disables the image or offers to change it depending on this
             if (File.Exists(newImageData.Path))
             {
                 Tagging.LinkImageTags(newImageData);
@@ -75,21 +82,9 @@ namespace WallpaperManager.ApplicationData
             }
         }
 
-        public static bool AddImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
-        {
-            tags = tags ?? new Dictionary<string, HashSet<string>>(); // if null, the right-hand side of ?? will be called
-            return AddImage(new ImageData(path, rank, active, tags));
-        }
+        public static void RemoveImage(string path) => RemoveImages(new[] { path });
 
-        public static void RemoveImage(string path)
-        {
-            RemoveImages(new[] { path });
-        }
-
-        public static void RemoveImages(string folderPath)
-        {
-            RemoveImages(GetImagesOfFolder(folderPath));
-        }
+        public static void RemoveImages(string folderPath) => RemoveImages(GetImagesOfFolder(folderPath));
 
         public static void RemoveImages(string[] paths)
         {
@@ -103,38 +98,21 @@ namespace WallpaperManager.ApplicationData
             }
         }
 
-        public static ImageData GetImageData(string path)
-        {
-            return FileData[path];
-        }
+        public static ImageData GetImageData(string path) => FileData[path];
 
-        public static ImageData[] GetAllImageData()
-        {
-            return FileData.Values.ToArray();
-        }
+        public static ImageData[] GetAllImageData() => FileData.Values.ToArray();
 
-        public static int GetImageRank(string path)
-        {
-            return ContainsImage(path) ? FileData[path].Rank : -1;
-        }
+        public static int GetImageRank(string path) => ContainsImage(path) ? FileData[path].Rank : -1;
 
-        public static bool ContainsImage(string path)
-        {
-            return FileData.ContainsKey(path);
-        }
+        public static bool ContainsImage(string path) => FileData.ContainsKey(path);
 
-        public static bool FileDataIsEmpty()
-        {
-            return FileData.Count == 0;
-        }
+        public static bool FileDataIsEmpty() => FileData.Count == 0;
+
         #endregion File Data
 
         // Rank Data
         #region Rank Data
-        public static string[] GetImagesOfRank(int rank)
-        {
-            return RankData[rank].ToArray();
-        }
+        public static string[] GetImagesOfRank(int rank) => RankData[rank].ToArray();
 
         public static string[] GetAllRankedImages()
         {
@@ -180,20 +158,11 @@ namespace WallpaperManager.ApplicationData
 
         public static string GetRandomImageOfRank(int rank, ref Random rand)
         {
-            //! Remove this if statement at some point, once percentiles are properly implemented you won't need to check this. Don't forget to reference this error however!
-            if (RankData[rank].Count != 0) // without this if statement empty ranks will go out of bounds
-            {
-                int randomImage = rand.Next(0, RankData[rank].Count);
-                return RankData[rank][randomImage];
-            }
-
-            return "";
+            int randomImage = rand.Next(0, RankData[rank].Count);
+            return RankData[rank][randomImage];
         }
 
-        public static int GetMaxRank()
-        {
-            return RankData.Count - 1; // note that RankData.Count includes rank 0 which makes this 1 higher than the actual max rank
-        }
+        public static int GetMaxRank() => RankData.Count - 1;
 
         public static void SetMaxRank(int newRankMax) //? This is the primary initializer for Rank Data
         {
@@ -275,10 +244,7 @@ namespace WallpaperManager.ApplicationData
             //Debug.WriteLine(GetMaxRank());
         }
 
-        public static bool ContainsRank(int rank)
-        {
-            return rank >= 0 && rank < RankData.Count;
-        }
+        public static bool ContainsRank(int rank) => rank >= 0 && rank < RankData.Count;
 
         #region Percentiles
         private static void SetRankPercentiles(int newRankMax)
@@ -418,154 +384,44 @@ namespace WallpaperManager.ApplicationData
 
         // Active Images
         #region Active Images
-        public static bool IsActiveImage(string path)
-        {
-            return ActiveImages.Contains(path);
-        }
+        public static bool IsActiveImage(string path) => ActiveImages.Contains(path);
 
-        public static bool NoImagesActive()
-        {
-            return ActiveImages.Count == 0;
-        }
-
-        /// <summary>
-        /// Activate the given image
-        /// </summary>
-        /// <param name="path"></param>
-        public static void ActivateImage(string path)
-        {
-            ActivateImages(new string[] { path });
-        }
+        public static bool NoImagesActive() => ActiveImages.Count == 0;
 
         /// <summary>
         /// Activate all images within the given folder
         /// </summary>
         /// <param name="folderPath"></param>
-        public static void ActivateImages(string folderPath)
+        public static void ActivateFolder(string folderPath)
         {
-            ActivateImages(GetImagesOfFolder(folderPath));
-        }
-
-        /// <summary>
-        /// Activate all given images
-        /// </summary>
-        /// <param name="paths"></param>
-        public static void ActivateImages(string[] paths)
-        {
-            //? Not yet needed, I have yet to find any file types I'd deem unsupported
-            /*
-            string unsupportedFileTypes = "The following files are unusable due to their file types: \n";
-            string unsupportedFileTypesDefault = unsupportedFileTypes;
-            */
-
-            List<FileInfo> jpxFiles = new List<FileInfo>();
-            string jpxString = "";
-
-            //TODO Ensure that the message box doesn't go off screen!
-            /*TODO
-             * Also ensure that you don't load data for multiple folders:
-             * To do this, check if you are currently loading data, if so save the message and display it with all results combined after loading your data
-             * If not loafing, then it can just display one folder as normal since more than likely this won't be an issue
-            */
-
-            foreach (string path in paths)
-            {
-                if (path.Contains(".jpeg") || path.Contains(".jpg_large"))
-                {
-                    jpxFiles.Add(new FileInfo(path));
-                    jpxString += "\n" + path;
-                }
-
-                if (FileData.ContainsKey(path))
-                {
-                    bool canEnable = true;
-                    ImageData image = FileData[path];
-
-                    foreach (string category in image.Tags.Keys)
-                    {
-                        foreach (string tag in image.Tags[category])
-                        {
-                            if (!TaggingInfo.GetTag(category, tag).Enabled)
-                            {
-                                canEnable = false;
-                                break;
-                            }
-                        }
-
-                        if (!canEnable) { break; }
-                    }
-
-                    FileData[path].Active = canEnable;
-                }
-                else
-                {
-                    AddImage(path, 0, true);
-                }
-            }
-
-            //? Not yet needed, I have yet to find any file types I'd deem unsupported
-            /*
-            if (unsupportedFileTypesDefault == unsupportedFileTypes)
-            {
-                MessageBox.Show(unsupportedFileTypes);
-            }
-            */
-
-            if (jpxFiles.Count > 0)
-            {
-                /*
-                if (IsLoadingData)
-                {
-                    jpxToJpgWarning += jpxString;
-                }
-                else
-                {
-                    MessageBox.Show(jpxStringPrompt + jpxString);
-                }
-
-                DialogResult result = MessageBox.Show(jpxString, "Choose an option", MessageBoxButtons.YesNo);
-
-                if (result == DialogResult.Yes)
-                {
-                    jpxToJpg(jpxFiles);
-                }
-                */
-            }
-        }
-
-        /// <summary>
-        /// Deactivate the given image
-        /// </summary>
-        /// <param name="path"></param>
-        public static void DeactivateImage(string path)
-        {
-            DeactivateImages(new string[] { path });
+            //! NOTE that this also serves as an initializer for all image's active state on load
+            ImageFolders[folderPath] = true; // sets the folder's Active state to true
+            EvaluateImageActiveStates(GetImagesOfFolder(folderPath), false);
         }
 
         /// <summary>
         /// Deactivate all images within the given folder
         /// </summary>
         /// <param name="folderPath"></param>
-        public static void DeactivateImages(string folderPath)
+        public static void DeactivateFolder(string folderPath)
         {
-            DeactivateImages(GetImagesOfFolder(folderPath));
+            //! NOTE that this also serves as an initializer for all image's active state on load
+            ImageFolders[folderPath] = false; // sets the folder's Active state to false
+            EvaluateImageActiveStates(GetImagesOfFolder(folderPath), true);
         }
 
-        /// <summary>
-        /// Deactivate all given images
-        /// </summary>
-        /// <param name="paths"></param>
-        public static void DeactivateImages(string[] paths)
+        public static void EvaluateImageActiveStates(string[] imagePaths, bool forceDisable)
         {
-            foreach (string path in paths)
+            Debug.WriteLine("bruh");
+            foreach (string path in imagePaths)
             {
-                if (FileData.ContainsKey(path))
+                if (FileData.ContainsKey(path)) // newly added images that are not included can be detected too
                 {
-                    FileData[path].Active = false;
+                    FileData[path].EvaluateActiveState(forceDisable);
                 }
                 else
                 {
-                    AddImage(path);
+                    AddImage(path); // inserts newly added images into the theme, their active state will be determined in the constructor
                 }
             }
         }
@@ -592,11 +448,11 @@ namespace WallpaperManager.ApplicationData
 
                 if (active) //? Note that this also adds images to FileData if they have not yet been added
                 {
-                    ActivateImages(path);
+                    ActivateFolder(path);
                 }
                 else
                 {
-                    DeactivateImages(path);
+                    DeactivateFolder(path);
                 }
 
                 return true;

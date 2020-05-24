@@ -30,12 +30,14 @@ namespace WallpaperManager.ApplicationData
 
             [JsonProperty("TagData")] public CategoryData[] tagData;
 
+            //! ImageData MUST remain at the bottom at all times to ensure that the needed info above is loaded first
+            //! (This allows you to initialize more data in the constructor like the EvaluateActiveState() method)
             [JsonProperty("ImageData")] public ImageData[] imageData;
 
             public JsonWallpaperData(ImageData[] imageData, Dictionary<string, bool> imageFolders)
             {
-                //? This handles saving | Don't go to this code segment for modifying how data is loaded
-                themeOptions = Options.OptionsData.ThemeOptions;
+                //! This handles SAVING!!! | Don't go to this code segment for modifying how data is loaded!
+                themeOptions = OptionsData.ThemeOptions;
                 miscData = new MiscData(); // values are updated in the constructor
                 this.imageFolders = imageFolders;
                 tagData = TaggingInfo.GetAllCategories();
@@ -152,7 +154,7 @@ namespace WallpaperManager.ApplicationData
         {
             SetMaxRank(jsonWallpaperData.miscData.maxRank);
 
-            // Must be set before the foreach loop where AddImage is called so that the available tags and categories can exist
+            //? Must be set before the foreach loop where AddImage is called so that the available tags and categories can exist
             TaggingInfo = new TaggingInfo(jsonWallpaperData.tagData.ToList());
 
             foreach (CategoryData category in TaggingInfo.GetAllCategories())
@@ -175,7 +177,7 @@ namespace WallpaperManager.ApplicationData
                 MessageBox.Show(invalidImagesString);
             }
 
-            // Activates Images
+            //? Activates Images
             WallpaperManagerForm.LoadImageFolders(jsonWallpaperData.imageFolders);
         }
 

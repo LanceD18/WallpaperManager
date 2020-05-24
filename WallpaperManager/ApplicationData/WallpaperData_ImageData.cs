@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using WallpaperManager.Tagging;
 
 namespace WallpaperManager.ApplicationData
@@ -14,14 +16,17 @@ namespace WallpaperManager.ApplicationData
     {
         public class ImageData
         {
-            [DataMember(Name = "path")]
+            [DataMember(Name = "Path")]
             public string Path { get; private set; } //? If you need to change this, FileData's field must be changed into List<ImageData>
 
-            [DataMember(Name = "rank")]
-            private int rank;
+            [JsonIgnore]
+            public string PathFolder { get; private set; }
+            
+            [DataMember(Name = "Rank")]
+            private int _Rank;
             public int Rank
             {
-                get => rank;
+                get => _Rank;
 
                 set
                 {
@@ -33,22 +38,22 @@ namespace WallpaperManager.ApplicationData
                             RankData[value].Add(Path);
                         }
 
-                        rank = value; // place this after the above if statement to ensure that the right image file path is found
+                        _Rank = value; // place this after the above if statement to ensure that the right image file path is found
                     }
                 }
             }
 
-            [DataMember(Name = "active")]
-            private bool active;
+            [DataMember(Name = "Active")]
+            private bool _Active;
             public bool Active
             {
-                get => active;
+                get => _Active;
 
-                set
+                private set
                 {
-                    if (active != value) // Prevents element duplication whenever active is set to the same value
+                    if (_Active != value) // Prevents element duplication whenever active is set to the same value
                     {
-                        active = value;
+                        _Active = value;
 
                         if (value)
                         {
@@ -64,28 +69,41 @@ namespace WallpaperManager.ApplicationData
                 }
             }
 
-            [DataMember(Name = "Tags")] public Dictionary<string, HashSet<string>> Tags; // this should stay as a string for saving to JSON
+            [DataMember(Name = "Enabled")] 
+            private bool _Enabled = true;
+            public bool Enabled // this is the image's individual enabled state, if this is false then nothing else can make the image active
+            {
+                get => _Enabled;
+
+                set
+                {
+                    _Enabled = value;
+                    Active = value;
+                }
+            }
+
+            [DataMember(Name = "Tags")] public Dictionary<string, HashSet<string>> Tags; // this should stay as a string for saving to JSON | Represents: Dictionary<CategoryName, HashSet<TagName>>
 
             [DataMember(Name = "Tag Naming Exceptions")] public HashSet<Tuple<string, string>> TagNamingExceptions; // these tags be used for naming regardless of constraints
 
             public ImageData(string path, int rank, bool active, Dictionary<string, HashSet<string>> tags = null, HashSet<Tuple<string, string>> tagNamingExceptions = null)
             {
                 Path = path;
+                PathFolder = new FileInfo(path).Directory.FullName;
                 Rank = rank;
                 Active = active;
                 Tags = tags ?? new Dictionary<string, HashSet<string>>();
                 TagNamingExceptions = tagNamingExceptions ?? new HashSet<Tuple<string, string>>();
+                //! NOTE that EvaluateActiveState should be called on load through ImageFolder's initialization, effectively initializing every image
             }
 
             public void UpdatePath(string newPath)
             {
                 Path = newPath;
+                PathFolder = new FileInfo(Path).Directory.FullName;
             }
 
-            public void AddTag(CategoryData category, string tag)
-            {
-                AddTag(TaggingInfo.GetTag(category, tag));
-            }
+            public void AddTag(CategoryData category, string tag) => AddTag(TaggingInfo.GetTag(category, tag));
 
             public void AddTag(TagData tag)
             {
@@ -118,6 +136,8 @@ namespace WallpaperManager.ApplicationData
                 {
                     MessageBox.Show("Invalid Category: " + categoryName);
                 }
+
+                EvaluateActiveState(false);
             }
 
             public void RemoveTag(TagData tag)
@@ -133,6 +153,8 @@ namespace WallpaperManager.ApplicationData
                         TaggingInfo.GetTag(tag.ParentCategoryName, tagName).UnlinkImage(this);
                     }
                 }
+
+                EvaluateActiveState(false);
             }
 
             public TagData[] GetTags()
@@ -275,6 +297,76 @@ namespace WallpaperManager.ApplicationData
                 }
 
                 return false;
+            }
+
+            public void EvaluateActiveState(bool forceDisable) //? you CAN'T forceEnable, the image will have to go through the evaluation to be enabled
+            {
+                // the function that called this method intentionally disabled the image
+                if (forceDisable)
+                {
+                    Debug.WriteLine("Forcefully Disabled: " + Path);
+                    Active = false;
+                    return;
+                }
+
+                // Check the image's individual Active State
+                if (!Enabled)
+                {
+                    Debug.WriteLine("Disabled by Image: " + Path);
+                    Active = false;
+                    return;
+                }
+
+                // Check Active State of Image Folders
+                if (!ImageFolders[PathFolder])
+                { 
+                    Debug.WriteLine("Disabled by Image Folder: " + Path);
+                    Active = false;
+                    return;
+                }
+
+                List<string> categoriesToRemove = new List<string>();
+                // Check Active State of Tags
+                foreach (string category in Tags.Keys)
+                {
+                    CategoryData categoryData = TaggingInfo.GetCategory(category);
+                    if (Tags[category].Count != 0)
+                    {
+                        if (categoryData.Enabled)
+                        {
+                            // the category is enabled, however individual tags within that category may be disabled
+                            foreach (string tag in Tags[category])
+                            {
+                                if (!categoryData.GetTag(tag).Enabled)
+                                {
+                                    Debug.WriteLine("Disabled by Tag: " + Path);
+                                    Active = false;
+                                    return;
+                                }
+                            }
+                        }
+                        else // the category itself is not enabled so all tags here are disabled
+                        {
+                            Debug.WriteLine("Disabled by Category: " + Path);
+                            Active = false;
+                            return;
+                        }
+                    }
+                    else // this image no longer has any tags for this category, remove it
+                    {
+                        categoriesToRemove.Add(category);
+                        continue;
+                    }
+                }
+
+                foreach (string category in categoriesToRemove)
+                {
+                    Debug.WriteLine("Removing the Category: " + category);
+                    Tags.Remove(category);
+                }
+
+                //Debug.WriteLine("Enabled: " + Path);
+                Active = true; // if the program manages to get through the entire evaluation, then the image is active
             }
         }
     }

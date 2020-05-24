@@ -16,33 +16,48 @@ namespace WallpaperManager.Tagging
     {
         public string Name { get; private set; }
 
-        private bool enabled_;
+        private bool _Enabled;
         public bool Enabled
         {
-            get => enabled_;
+            get => _Enabled;
 
             set
             {
-                if (value != enabled_)
+                if (value != _Enabled) // ensures that you don't set the same properties twice
                 {
-                    enabled_ = value;
+                    _Enabled = value;
 
                     if (LinkedImages != null)
                     {
-                        if (value)
-                        {
-                            WallpaperData.ActivateImages(LinkedImages.ToArray());
-                        }
-                        else
-                        {
-                            WallpaperData.DeactivateImages(LinkedImages.ToArray());
-                        }
+                        WallpaperData.EvaluateImageActiveStates(LinkedImages.ToArray(), !value);  // will forceDisable if the value is set to false
                     }
+
+                    WallpaperData.UpdateRankPercentiles();
                 }
             }
         }
 
-        public bool UseForNaming;
+        private bool _UseForNaming;
+        public bool UseForNaming
+        {
+            get => _UseForNaming;
+
+            set
+            {
+                _UseForNaming = value;
+
+                if (LinkedImages != null)
+                {
+                    HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
+                    foreach (string imagePath in GetLinkedImages())
+                    {
+                        imagesToRename.Add(WallpaperData.GetImageData(imagePath));
+                    }
+
+                    PathData.RenameAffectedImages(imagesToRename.ToArray());
+                }
+            }
+        }
 
         public HashSet<Tuple<string, string>> ParentTags;
         public HashSet<Tuple<string, string>> ChildTags;
@@ -65,70 +80,12 @@ namespace WallpaperManager.Tagging
             }
         }
 
-        private void UpdateLinkedTagsCategoryName(string newCategoryName)
-        {
-            Tuple<string, string> activeTagInfo = new Tuple<string, string>(parentCategoryName, Name);
-
-            if (ChildTags != null)
-            {
-                foreach (Tuple<string, string> tagInfo in ChildTags)
-                {
-                    TagData childTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2) ?? WallpaperData.TaggingInfo.GetTag(parentCategoryName, tagInfo.Item2);
-
-                    if (childTag != null)
-                    {
-                        HashSet<Tuple<string, string>> updatedParentTags = new HashSet<Tuple<string, string>>();
-                        foreach (Tuple<string, string> parentTagInfo in childTag.ParentTags)
-                        {
-                            if (parentTagInfo.Item2 == Name)
-                            {
-                                Tuple<string, string> updatedTagInfo = new Tuple<string, string>(newCategoryName, Name);
-                                updatedParentTags.Add(updatedTagInfo);
-                            }
-                            else
-                            {
-                                updatedParentTags.Add(parentTagInfo);
-                            }
-                        }
-                        childTag.ParentTags = updatedParentTags;
-                    }
-                }
-            }
-
-            if (ParentTags != null)
-            {
-                foreach (Tuple<string, string> tagInfo in ParentTags)
-                {
-                    TagData parentTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2) ?? WallpaperData.TaggingInfo.GetTag(parentCategoryName, tagInfo.Item2);
-
-                    if (parentTag != null)
-                    {
-                        HashSet<Tuple<string, string>> updatedChildTags = new HashSet<Tuple<string, string>>();
-                        foreach (Tuple<string, string> childTagInfo in parentTag.ChildTags)
-                        {
-                            if (childTagInfo.Item2 == Name)
-                            {
-                                Tuple<string, string> updatedTagInfo = new Tuple<string, string>(newCategoryName, Name);
-                                updatedChildTags.Add(updatedTagInfo);
-                            }
-                            else
-                            {
-                                updatedChildTags.Add(childTagInfo);
-                            }
-                        }
-                        parentTag.ChildTags = updatedChildTags;
-                    }
-                }
-            }
-        }
-
         private HashSet<string> LinkedImages;
 
         [JsonIgnore] 
         public bool IsInitialized { get; private set; }
 
         [JsonConstructor]
-
         public TagData(string name, CategoryData parentCategory = null,
             bool enabled = true, bool useForNaming = true, HashSet<string> linkedImages = null, 
             HashSet<Tuple<string, string>> parentTags = null, HashSet<Tuple<string, string>> childTags = null)
@@ -137,7 +94,7 @@ namespace WallpaperManager.Tagging
             IsInitialized = false;
 
             //? This scenario only occurs when a tag has been added after loading, otherwise Enabled and UseForNaming will have already been set
-            if (parentCategory != null) // Adding New Tag
+            if (parentCategory != null) // Adding New Tag | New tags will have the default settings of the category
             {
                 ParentCategoryName = parentCategory.Name;
                 Enabled = parentCategory.Enabled;
@@ -357,5 +314,64 @@ namespace WallpaperManager.Tagging
         {
             return tag1?.ParentCategoryName != tag2?.ParentCategoryName && tag1?.Name != tag2?.Name;
         }
+
+
+        private void UpdateLinkedTagsCategoryName(string newCategoryName)
+        {
+            Tuple<string, string> activeTagInfo = new Tuple<string, string>(parentCategoryName, Name);
+
+            if (ChildTags != null)
+            {
+                foreach (Tuple<string, string> tagInfo in ChildTags)
+                {
+                    TagData childTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2) ?? WallpaperData.TaggingInfo.GetTag(parentCategoryName, tagInfo.Item2);
+
+                    if (childTag != null)
+                    {
+                        HashSet<Tuple<string, string>> updatedParentTags = new HashSet<Tuple<string, string>>();
+                        foreach (Tuple<string, string> parentTagInfo in childTag.ParentTags)
+                        {
+                            if (parentTagInfo.Item2 == Name)
+                            {
+                                Tuple<string, string> updatedTagInfo = new Tuple<string, string>(newCategoryName, Name);
+                                updatedParentTags.Add(updatedTagInfo);
+                            }
+                            else
+                            {
+                                updatedParentTags.Add(parentTagInfo);
+                            }
+                        }
+                        childTag.ParentTags = updatedParentTags;
+                    }
+                }
+            }
+
+            if (ParentTags != null)
+            {
+                foreach (Tuple<string, string> tagInfo in ParentTags)
+                {
+                    TagData parentTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2) ?? WallpaperData.TaggingInfo.GetTag(parentCategoryName, tagInfo.Item2);
+
+                    if (parentTag != null)
+                    {
+                        HashSet<Tuple<string, string>> updatedChildTags = new HashSet<Tuple<string, string>>();
+                        foreach (Tuple<string, string> childTagInfo in parentTag.ChildTags)
+                        {
+                            if (childTagInfo.Item2 == Name)
+                            {
+                                Tuple<string, string> updatedTagInfo = new Tuple<string, string>(newCategoryName, Name);
+                                updatedChildTags.Add(updatedTagInfo);
+                            }
+                            else
+                            {
+                                updatedChildTags.Add(childTagInfo);
+                            }
+                        }
+                        parentTag.ChildTags = updatedChildTags;
+                    }
+                }
+            }
+        }
+
     }
 }

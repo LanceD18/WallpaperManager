@@ -52,6 +52,19 @@ namespace WallpaperManager.ImageSelector
                 }
             }
             imageTagsFLP.ResumeLayout();
+
+            if (Options.OptionsData.ThemeOptions.EnableDetectionOfInactiveImages)
+            {
+                if (!activeImage.Active) // the Enabled setting already shows by default
+                {
+                    labelEnabled.Text = "Disabled";
+                    labelEnabled.ForeColor = Color.Red;
+                }
+            }
+            else // no need to see this labeled if you're only able to select enabled images
+            {
+                labelEnabled.Visible = false;
+            }
         }
 
         private void buttonAddTag_Click(object sender, EventArgs e)
