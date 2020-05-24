@@ -396,7 +396,7 @@ namespace WallpaperManager.ApplicationData
         {
             //! NOTE that this also serves as an initializer for all image's active state on load
             ImageFolders[folderPath] = true; // sets the folder's Active state to true
-            EvaluateImageActiveStates(GetImagesOfFolder(folderPath), false);
+            if (!IsLoadingData) { EvaluateImageActiveStates(GetImagesOfFolder(folderPath), false); }
         }
 
         /// <summary>
@@ -407,12 +407,11 @@ namespace WallpaperManager.ApplicationData
         {
             //! NOTE that this also serves as an initializer for all image's active state on load
             ImageFolders[folderPath] = false; // sets the folder's Active state to false
-            EvaluateImageActiveStates(GetImagesOfFolder(folderPath), true);
+            if (!IsLoadingData) { EvaluateImageActiveStates(GetImagesOfFolder(folderPath), true); }
         }
 
         public static void EvaluateImageActiveStates(string[] imagePaths, bool forceDisable)
         {
-            Debug.WriteLine("bruh");
             foreach (string path in imagePaths)
             {
                 if (FileData.ContainsKey(path)) // newly added images that are not included can be detected too

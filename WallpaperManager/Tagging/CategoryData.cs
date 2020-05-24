@@ -49,11 +49,17 @@ namespace WallpaperManager.Tagging
 
             set
             {
-                _Enabled = value;
-
-                foreach (TagData tag in Tags)
+                if (_Enabled != value) // prevents unnecessary calls
                 {
-                    WallpaperData.EvaluateImageActiveStates(tag.GetLinkedImages(), !value); // will forceDisable if the value is set to false
+                    _Enabled = value;
+
+                    foreach (TagData tag in Tags)
+                    {
+                        if (!WallpaperData.IsLoadingData)
+                        {
+                            WallpaperData.EvaluateImageActiveStates(tag.GetLinkedImages(), !value); // will forceDisable if the value is set to false
+                        }
+                    }
                 }
             }
         }
@@ -65,18 +71,19 @@ namespace WallpaperManager.Tagging
 
             set
             {
-                _UseForNaming = value;
-
-                HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
-                foreach (TagData tag in Tags)
+                if (_UseForNaming != value) // prevents unnecessary calls | and yes this can happen
                 {
-                    foreach (string imagePath in tag.GetLinkedImages())
+                    _UseForNaming = value;
+
+                    HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
+                    foreach (TagData tag in Tags)
                     {
-                        imagesToRename.Add(WallpaperData.GetImageData(imagePath));
+                        foreach (string imagePath in tag.GetLinkedImages())
+                        {
+                            imagesToRename.Add(WallpaperData.GetImageData(imagePath));
+                        }
                     }
                 }
-
-                PathData.RenameAffectedImages(imagesToRename.ToArray());
             }
         }
 

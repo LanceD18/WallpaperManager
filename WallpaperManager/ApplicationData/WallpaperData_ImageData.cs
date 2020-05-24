@@ -94,7 +94,6 @@ namespace WallpaperManager.ApplicationData
                 Active = active;
                 Tags = tags ?? new Dictionary<string, HashSet<string>>();
                 TagNamingExceptions = tagNamingExceptions ?? new HashSet<Tuple<string, string>>();
-                //! NOTE that EvaluateActiveState should be called on load through ImageFolder's initialization, effectively initializing every image
             }
 
             public void UpdatePath(string newPath)
@@ -304,7 +303,6 @@ namespace WallpaperManager.ApplicationData
                 // the function that called this method intentionally disabled the image
                 if (forceDisable)
                 {
-                    Debug.WriteLine("Forcefully Disabled: " + Path);
                     Active = false;
                     return;
                 }
@@ -312,7 +310,6 @@ namespace WallpaperManager.ApplicationData
                 // Check the image's individual Active State
                 if (!Enabled)
                 {
-                    Debug.WriteLine("Disabled by Image: " + Path);
                     Active = false;
                     return;
                 }
@@ -320,7 +317,6 @@ namespace WallpaperManager.ApplicationData
                 // Check Active State of Image Folders
                 if (!ImageFolders[PathFolder])
                 { 
-                    Debug.WriteLine("Disabled by Image Folder: " + Path);
                     Active = false;
                     return;
                 }
@@ -339,7 +335,6 @@ namespace WallpaperManager.ApplicationData
                             {
                                 if (!categoryData.GetTag(tag).Enabled)
                                 {
-                                    Debug.WriteLine("Disabled by Tag: " + Path);
                                     Active = false;
                                     return;
                                 }
@@ -347,7 +342,6 @@ namespace WallpaperManager.ApplicationData
                         }
                         else // the category itself is not enabled so all tags here are disabled
                         {
-                            Debug.WriteLine("Disabled by Category: " + Path);
                             Active = false;
                             return;
                         }
@@ -360,11 +354,9 @@ namespace WallpaperManager.ApplicationData
 
                 foreach (string category in categoriesToRemove) // this won't be removed until the image gets enabled at some point, but that shouldn't cause an issue
                 {
-                    Debug.WriteLine("Removing the Category: " + category);
                     Tags.Remove(category);
                 }
 
-                //Debug.WriteLine("Enabled: " + Path);
                 Active = true; // if the program manages to get through the entire evaluation, then the image is active
             }
         }

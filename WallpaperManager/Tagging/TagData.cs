@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,17 @@ namespace WallpaperManager.Tagging
 
             set
             {
-                _Enabled = value;
-
-                if (LinkedImages != null)
+                if (_Enabled != value)  // prevents unnecessary calls
                 {
-                    WallpaperData.EvaluateImageActiveStates(LinkedImages.ToArray(), !value);  // will forceDisable if the value is set to false
+                    _Enabled = value;
+
+                    if (LinkedImages != null)
+                    {
+                        if (!WallpaperData.IsLoadingData)
+                        {
+                            WallpaperData.EvaluateImageActiveStates(LinkedImages.ToArray(), !value); // will forceDisable if the value is set to false
+                        }
+                    }
                 }
             }
         }
@@ -39,17 +46,18 @@ namespace WallpaperManager.Tagging
 
             set
             {
-                _UseForNaming = value;
-
-                if (LinkedImages != null)
+                if (_UseForNaming != value)  // prevents unnecessary calls
                 {
-                    HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
-                    foreach (string imagePath in GetLinkedImages())
-                    {
-                        imagesToRename.Add(WallpaperData.GetImageData(imagePath));
-                    }
+                    _UseForNaming = value;
 
-                    PathData.RenameAffectedImages(imagesToRename.ToArray());
+                    if (LinkedImages != null)
+                    {
+                        HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
+                        foreach (string imagePath in GetLinkedImages())
+                        {
+                            imagesToRename.Add(WallpaperData.GetImageData(imagePath));
+                        }
+                    }
                 }
             }
         }

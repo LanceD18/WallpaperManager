@@ -89,7 +89,7 @@ namespace WallpaperManager.ApplicationData
         {
             if (File.Exists(path))
             {
-                IsLoadingData = true;
+                IsLoadingData = true; // used to speed up the loading process by preventing unnecessary calls
                 jpxToJpgWarning = "";
 
                 ResetWallpaperManager();
@@ -177,7 +177,6 @@ namespace WallpaperManager.ApplicationData
                 MessageBox.Show(invalidImagesString);
             }
 
-            //? Activates Images
             WallpaperManagerForm.LoadImageFolders(jsonWallpaperData.imageFolders);
         }
 

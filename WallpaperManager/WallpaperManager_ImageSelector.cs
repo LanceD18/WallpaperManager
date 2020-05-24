@@ -111,7 +111,6 @@ namespace WallpaperManager
                     {
                         if (WallpaperData.GetImageData(image).Active)
                         {
-                            Debug.WriteLine("Active");
                             activeSelectedImages.Add(image);
                         }
                     }

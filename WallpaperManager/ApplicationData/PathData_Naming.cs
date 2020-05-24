@@ -21,11 +21,9 @@ namespace WallpaperManager.ApplicationData
 
         public static void RenameAffectedImages(WallpaperData.ImageData[] images)
         {
-            Debug.WriteLine("Woopsie");
-            return;
             if (MessageBox.Show("Rename affected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                PathData.RenameImages(images.ToArray());
+                RenameImages(images.ToArray());
 
             }
         }

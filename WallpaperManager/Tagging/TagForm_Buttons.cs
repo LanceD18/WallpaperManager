@@ -84,27 +84,51 @@ namespace WallpaperManager.Tagging
         private void checkBoxEnabled_CheckedChanged(object sender, EventArgs e)
         { 
             WallpaperData.TaggingInfo.GetCategory(ActiveCategory.Name).Enabled = checkBoxEnabled.Checked;
-            ActiveCategory = WallpaperData.TaggingInfo.GetCategory(ActiveCategory.Name);
+            //ActiveCategory = WallpaperData.TaggingInfo.GetCategory(ActiveCategory.Name);
         }
 
         private void checkBoxUseForNaming_CheckedChanged(object sender, EventArgs e)
         {
             WallpaperData.TaggingInfo.GetCategory(ActiveCategory.Name).UseForNaming = checkBoxUseForNaming.Checked;
-            ActiveCategory = WallpaperData.TaggingInfo.GetCategory(ActiveCategory.Name);
+            //ActiveCategory = WallpaperData.TaggingInfo.GetCategory(ActiveCategory.Name);
         }
 
+        // Apply Default Settings
         private void buttonApplyDefaultSettings_Click(object sender, EventArgs e)
         {
+            bool renameAffectedImages = false;
+            HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
+
+            // Loop through and update all tags
             foreach (TagData tag in ActiveCategory.Tags)
             {
+                // If the UseForNaming property is changed, queue the tag's images for renaming
+                if (tag.UseForNaming != ActiveCategory.UseForNaming)
+                {
+                    renameAffectedImages = true;
+
+                    foreach (string image in tag.GetLinkedImages())
+                    {
+                        imagesToRename.Add(WallpaperData.GetImageData(image));
+                    }
+                }
+
+                // Update Tag
                 tag.Enabled = ActiveCategory.Enabled;
                 tag.UseForNaming = ActiveCategory.UseForNaming;
 
+                // Update Tag Colors
                 Button tagButton = TaggingTools.GetCategoryTagContainer(ActiveCategory, TabControlImageTagger).GetTagButton(tag);
                 if (tagButton != null)
                 {
                     TaggingTools.GetCategoryTagContainer(ActiveCategory, TabControlImageTagger).GetTagButton(tag).ForeColor = tag.Enabled ? Color.Black : Color.Red;
                 }
+            }
+
+            // Ask the user if they want to rename image's impacted by the UseForNaming change
+            if (renameAffectedImages)
+            {
+                PathData.RenameAffectedImages(imagesToRename.ToArray());
             }
         }
 
@@ -113,11 +137,14 @@ namespace WallpaperManager.Tagging
                                                "\n\n The naming order will then proceed to do the same with" +
                                                "\n each following category." +
                                                "\n\n (You can drag and drop each category to change their order)";
+
+        // Naming Order Help
         private void buttonNamingOrderHelp_Click(object sender, EventArgs e)
         {
             MessageBox.Show(namingOrderHelpString);
         }
 
+        // Add Tag
         private void buttonAddTag_Click(object sender, EventArgs e)
         {
             string tagName = Interaction.InputBox("Enter the name of the tag you'd like to add to the " + ActiveCategory.Name + " category", "Add Tag", "", -1, -1);
@@ -150,6 +177,7 @@ namespace WallpaperManager.Tagging
             }
         }
 
+        // Remove Tag
         private void buttonRemoveTag_Click(object sender, EventArgs e)
         {
             string tagName = Interaction.InputBox("Enter the name of the tag you'd like to remove from the  " + ActiveCategory.Name + " category", "Remove Tag", "", -1, -1);

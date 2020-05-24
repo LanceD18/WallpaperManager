@@ -43,6 +43,7 @@ namespace WallpaperManager.Tagging
         public void UpdateCategoryControls()
         {
             labelContainsTags.Text = "Contains " + ActiveCategory.Tags.Count + (ActiveCategory.Tags.Count != 1 ? " tags" : " tag");
+
             checkBoxEnabled.Checked = ActiveCategory.Enabled;
             checkBoxUseForNaming.Checked = ActiveCategory.UseForNaming;
         }
