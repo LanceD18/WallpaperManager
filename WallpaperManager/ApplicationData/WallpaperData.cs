@@ -339,7 +339,7 @@ namespace WallpaperManager.ApplicationData
         {
             potentialWeightedRankUpdate = false;
             potentialRegularRankUpdate = false;
-            modifiedRankPercentiles = !OptionsData.ThemeOptions.WeightedRanks ? GetModifiedRankPercentiles() : GetWeightedRankPercentiles();
+            modifiedRankPercentiles = OptionsData.ThemeOptions.WeightedRanks ? GetWeightedRankPercentiles() : GetModifiedRankPercentiles();
         }
         #endregion
 

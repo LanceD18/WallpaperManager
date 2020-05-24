@@ -36,8 +36,6 @@ namespace WallpaperManager.Tagging
                             }
                         }
                     }
-
-                    WallpaperData.UpdateRankPercentiles();
                 }
 
                 name = value;

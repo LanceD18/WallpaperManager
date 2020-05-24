@@ -53,7 +53,7 @@ namespace WallpaperManager.ApplicationData
             {
                 /*!int randomRank = GetRandomRank(rand, !OptionsData.ThemeOptions.WeightedRanks ?
                         WallpaperData.GetModifiedRankPercentiles() : WallpaperData.GetWeightedRankPercentiles());*/
-                int randomRank = GetRandomRank(rand, WallpaperData.GetRankPercentiles());
+                int randomRank = GetRandomRank(rand);
 
                 // Find random image path
                 if (randomRank == -1)
@@ -77,13 +77,14 @@ namespace WallpaperManager.ApplicationData
         }
 
         // Picks ranks based on their default percentiles (Where the highest rank is the most likely to appear and it goes down from there)
-        private static int GetRandomRank(Random rand, Dictionary<int, double> modifiedRankPercentiles)
+        private static int GetRandomRank(Random rand)
         {
-            if (WallpaperData.potentialWeightedRankUpdate && OptionsData.ThemeOptions.WeightedRanks || WallpaperData.potentialRegularRankUpdate) // the percentiles for weighted ranks change everytime an image's rank is altered
+            if ((WallpaperData.potentialWeightedRankUpdate && OptionsData.ThemeOptions.WeightedRanks) || WallpaperData.potentialRegularRankUpdate) // the percentiles for weighted ranks change everytime an image's rank is altered
             {
-                Debug.WriteLine("Updating Rank Percentiles");
-                WallpaperData.UpdateRankPercentiles(); // this method sets the above booleans to false
+                WallpaperData.UpdateRankPercentiles(); //? this method sets the above booleans to false
             }
+
+            Dictionary<int, double> modifiedRankPercentiles = WallpaperData.GetRankPercentiles();
 
             int randomRank = -1;
             int[] rankPercentageKeys = modifiedRankPercentiles.Keys.ToArray();

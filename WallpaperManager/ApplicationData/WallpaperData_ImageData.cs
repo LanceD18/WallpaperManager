@@ -355,11 +355,10 @@ namespace WallpaperManager.ApplicationData
                     else // this image no longer has any tags for this category, remove it
                     {
                         categoriesToRemove.Add(category);
-                        continue;
                     }
                 }
 
-                foreach (string category in categoriesToRemove)
+                foreach (string category in categoriesToRemove) // this won't be removed until the image gets enabled at some point, but that shouldn't cause an issue
                 {
                     Debug.WriteLine("Removing the Category: " + category);
                     Tags.Remove(category);

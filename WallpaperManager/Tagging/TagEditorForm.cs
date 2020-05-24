@@ -65,6 +65,7 @@ namespace WallpaperManager.Tagging
             UpdateTagButton();
         }
 
+        // Add Tag To Image
         private void AddTagToImage(string targetImage)
         {
             if (WallpaperData.ContainsImage(targetImage))
@@ -78,6 +79,7 @@ namespace WallpaperManager.Tagging
 
         }
 
+        // Add Tag To Images
         private void AddTagToImages(string[] targetImages)
         {
             if (targetImages.Length > 0)
@@ -123,6 +125,7 @@ namespace WallpaperManager.Tagging
             UpdateTagButton();
         }
 
+        // Remove Tag From Image
         private void RemoveTagFromImage(string targetImage, Button tagButton)
         {
             if (MessageBox.Show("Remove tag from active image?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -138,6 +141,8 @@ namespace WallpaperManager.Tagging
             }
         }
 
+
+        // Remove Tag From Images
         private void RemoveTagFromImages(string[] targetImages, Button tagButton)
         {
             if (MessageBox.Show("Remove tag from all selected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)

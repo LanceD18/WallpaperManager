@@ -186,7 +186,6 @@ namespace WallpaperManager.Tagging
         public void RemoveTagFromActiveCategory(Button tagButton)
         {
             TagData tagToDelete = WallpaperData.TaggingInfo.GetTag(ActiveCategory, tagButton.Text.Substring(0, tagButton.Text.LastIndexOf('(') - 1));
-
             RemoveTag(tagToDelete, tagButton);
         }
 

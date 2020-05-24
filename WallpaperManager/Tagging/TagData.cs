@@ -23,16 +23,11 @@ namespace WallpaperManager.Tagging
 
             set
             {
-                if (value != _Enabled) // ensures that you don't set the same properties twice
+                _Enabled = value;
+
+                if (LinkedImages != null)
                 {
-                    _Enabled = value;
-
-                    if (LinkedImages != null)
-                    {
-                        WallpaperData.EvaluateImageActiveStates(LinkedImages.ToArray(), !value);  // will forceDisable if the value is set to false
-                    }
-
-                    WallpaperData.UpdateRankPercentiles();
+                    WallpaperData.EvaluateImageActiveStates(LinkedImages.ToArray(), !value);  // will forceDisable if the value is set to false
                 }
             }
         }
