@@ -134,6 +134,7 @@ namespace WallpaperManager.ImageSelector
         public void TagButton_Remove(object sender, EventArgs e)
         {
             string tagName = TaggingTools.GetButtonTagName(activeButton);
+
             // Get the tag
             TagData tag = null;
             foreach (string category in tagButtons.Keys)

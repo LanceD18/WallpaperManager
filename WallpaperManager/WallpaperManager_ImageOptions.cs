@@ -73,7 +73,7 @@ namespace WallpaperManager
 
                     case SelectionType.All:
 
-                        if (MessageBox.Show("Are you sure you want to rename ALL selected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        if (MessageBox.Show("Are you sure you want to rename ALL " + selectedImages.Length + " selected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             HashSet<WallpaperData.ImageData> imageDatas = new HashSet<WallpaperData.ImageData>();
                             foreach (string image in selectedImages)

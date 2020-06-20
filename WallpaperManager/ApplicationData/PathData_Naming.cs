@@ -24,10 +24,10 @@ namespace WallpaperManager.ApplicationData
             if (MessageBox.Show("Rename affected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 RenameImages(images.ToArray());
-
             }
         }
 
+        // renames the given images within their respective folders
         public static void RenameImages(WallpaperData.ImageData[] images)
         {
             /*TODO
@@ -37,15 +37,18 @@ namespace WallpaperManager.ApplicationData
             }
             */
 
-            char[] nums = "0123456789".ToCharArray();
-            bool renamingMultipleImages = images.Length > 0;
+            //char[] nums = "0123456789".ToCharArray();
+            //bool renamingMultipleImages = images.Length > 1;
 
             // Dictionary<Directory, Dictionary<NewName, HashSet<ImageData>>>
             Dictionary<string, Dictionary<string, HashSet<WallpaperData.ImageData>>> namingConflicts = GetRenameData(images, out int failedToNameCount);
             List<string> acceptedNames = new List<string>();
 
             //bool renamingAllowed = MessageBox.Show("Allow renaming?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
-            bool groupRenamedImages = MessageBox.Show("Group renamed images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
+
+            // no need to group if there's only 1 image
+            //? I think it would be better if this was under OptionsData
+            bool groupRenamedImages = images.Length > 1 && MessageBox.Show("Group renamed images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
 
             foreach (string curDirectory in namingConflicts.Keys)
             {
@@ -65,29 +68,30 @@ namespace WallpaperManager.ApplicationData
                     string startingName = directoryPath + curName + nameCount;
                     Debug.WriteLine("\nStarting Name: " + startingName);
 
-                    if (groupRenamedImages)
+                    while (!canName)
                     {
-                        // Ensures that the group of images renamed can be renamed together
-                        while (!canName)
+                        while (filePaths.Contains(startingName.ToLower()))
                         {
-                            while (filePaths.Contains(startingName.ToLower()))
-                            {
-                                nameCount++;
-                                startingName = directoryPath + curName + nameCount;
-                                Debug.WriteLine("Updating Starting Name: " + startingName);
-                            }
+                            nameCount++;
+                            startingName = directoryPath + curName + nameCount;
+                            Debug.WriteLine("Updating Starting Name: " + startingName);
+                        }
 
-                            Debug.WriteLine("Checkpoint Starting Name: " + startingName);
+                        Debug.WriteLine("Checkpoint Starting Name: " + startingName);
 
-                            //TODO Consider making it an option on whether or not the user wishes to group renamed images or have them fill in the next possible location
-                            // Checks for the next fully available space
-                            canName = true;
+                        // Checks for the next fully available space
+                        // Ensures that the group of images renamed can be renamed together
+                        canName = true;
+                        if (groupRenamedImages)
+                        {
                             for (int i = 0; i < namingConflicts[curDirectory][curName].Count; i++)
                             {
-                                string testName = directoryPath + curName + nameCount + i;
+                                string testName = directoryPath + curName + (nameCount + i);
+                                Debug.WriteLine("Test Name: " + testName);
                                 if (filePaths.Contains(testName.ToLower()))
                                 {
                                     canName = false;
+                                    nameCount += i + 1;
                                     break;
                                 }
                             }
@@ -107,13 +111,8 @@ namespace WallpaperManager.ApplicationData
                         acceptedNames.Add(newPath);
                         nameCount++;
 
-                        Debug.WriteLine("You disabled renaming entirely with a comment");
-                        /*
-                        if (renamingAllowed)
-                        {
-                            UpdateImagePath(oldPath, newPath, null);
-                        }
-                        */
+                        //Debug.WriteLine("You disabled renaming entirely with a comment");
+                        UpdateImagePath(oldPath, newPath, curImage);
                     }
                 }
             }
@@ -276,7 +275,6 @@ namespace WallpaperManager.ApplicationData
                         }
                         throw;
                     }
-
                 }
                 else // This shouldn't happen, if it does then there was either an issue with the code or the user renamed an image in the middle of this process
                 {

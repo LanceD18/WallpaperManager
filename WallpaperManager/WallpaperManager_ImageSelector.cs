@@ -12,7 +12,6 @@ using LanceTools.FormUtil;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
 using WallpaperManager.Options;
-using LanceTools.FormUtil;
 
 namespace WallpaperManager
 {
@@ -54,6 +53,9 @@ namespace WallpaperManager
             tabControlImagePages.Flush();
             tabControlImagePages.Refresh();
             tabControlImagePages.ResumeLayout();
+
+            ClearLoadedImages();
+            loadedTabs.Clear();
         }
 
         private void InitializeImageSelector()
@@ -157,10 +159,7 @@ namespace WallpaperManager
             if (tabIndex != -1 && selectedImages != null) // tabIndex will equal -1 when resetting the tabControl | selectedImages may equal null when clearing
             {
                 tabControlImagePages.SuspendLayout();
-                while (loadedImages.Count > 0)
-                {
-                    loadedImages.Dequeue()?.Dispose();
-                }
+                ClearLoadedImages();
 
                 // Add controls to their panels
                 activeTabLayoutPanel?.Dispose();
@@ -220,6 +219,14 @@ namespace WallpaperManager
             labelSelectedImage.Text = inspectedImage = imageData.Path;
         }
 
+        private void ClearLoadedImages()
+        {
+            while (loadedImages.Count > 0)
+            {
+                loadedImages.Dequeue()?.Dispose();
+            }
+        }
+
         private void labelSelectedImage_TextChanged(object sender, EventArgs e) // resize if bounds extend too far to the right
         {
             //TODO Figure out how to do this properly
@@ -262,9 +269,15 @@ namespace WallpaperManager
         {
             Thread thread = new Thread(() =>
             {
-                Image image = Image.FromFile(imagePath);
+                //Image image = Image.FromFile(imagePath);
+                Image image;
+                using (Stream stream = File.OpenRead(imagePath))
+                {
+                    image = Image.FromStream(stream);
+                }
                 loadedImages.Enqueue(image);
                 parentEditorControl.SetBackgroundImage(image);
+                //image.Dispose();
             });
             thread.Start();
         }
