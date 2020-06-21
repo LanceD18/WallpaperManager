@@ -60,25 +60,25 @@ namespace WallpaperManager.ApplicationData
 
         // File Data
         #region File Data
-        public static bool AddImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
+        public static ImageData AddImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
         {
             tags = tags ?? new Dictionary<string, HashSet<string>>(); // if null, the right-hand side of ?? will be called
             return AddImage(new ImageData(path, rank, active, tags));
         }
 
-        public static bool AddImage(ImageData newImageData)
+        public static ImageData AddImage(ImageData newImageData)
         {
             //TODO Implement a feature that checks if the image's file type is valid and either disables the image or offers to change it depending on this
-            if (File.Exists(newImageData.Path))
+            if (File.Exists(newImageData.Path) && (ImageFolders.ContainsKey(newImageData.PathFolder) || IsLoadingData))
             {
                 Tagging.LinkImageTags(newImageData);
                 FileData.Add(newImageData.Path, newImageData);
-                return true;
+                return newImageData;
             }
             else
             {
                 Debug.WriteLine("Attempted to create an invalid image: " + newImageData.Path);
-                return false;
+                return null;
             }
         }
 
@@ -195,12 +195,12 @@ namespace WallpaperManager.ApplicationData
                 if (IsLoadingData || MessageBox.Show("Are you sure you want to change the max rank?\n(All images will have their ranks adjusted according to this change)",
                     "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    UpdateMaxRank(newRankMax, IsLoadingData);
+                    UpdateMaxRank(newRankMax);
                 }
             }
         }
 
-        private static void UpdateMaxRank(int newRankMax, bool loadingData)
+        private static void UpdateMaxRank(int newRankMax)
         {
             int oldRankMax = GetMaxRank();
             float rankChangeRatio = (float)newRankMax / oldRankMax;
@@ -215,7 +215,7 @@ namespace WallpaperManager.ApplicationData
                 }
             }
 
-            if (!loadingData) // no need to update ranks if you aren't actually changing anything
+            if (!IsLoadingData) // no need to update ranks if you aren't actually changing anything
             {
                 // Re-rank existing images
                 string[] images = FileData.Keys.ToArray();
@@ -396,7 +396,7 @@ namespace WallpaperManager.ApplicationData
         {
             //! NOTE that this also serves as an initializer for all image's active state on load
             ImageFolders[folderPath] = true; // sets the folder's Active state to true
-            if (!IsLoadingData) { EvaluateImageActiveStates(GetImagesOfFolder(folderPath), false); }
+            EvaluateImageActiveStates(GetImagesOfFolder(folderPath), folderPath, false);
         }
 
         /// <summary>
@@ -407,16 +407,21 @@ namespace WallpaperManager.ApplicationData
         {
             //! NOTE that this also serves as an initializer for all image's active state on load
             ImageFolders[folderPath] = false; // sets the folder's Active state to false
-            if (!IsLoadingData) { EvaluateImageActiveStates(GetImagesOfFolder(folderPath), true); }
+            EvaluateImageActiveStates(GetImagesOfFolder(folderPath), folderPath, true);
         }
 
-        public static void EvaluateImageActiveStates(string[] imagePaths, bool forceDisable)
+        public static void EvaluateImageActiveStates(string[] imagePaths, bool forceDisable) => EvaluateImageActiveStates(imagePaths, null, forceDisable);
+
+        public static void EvaluateImageActiveStates(string[] imagePaths, string folderPath, bool forceDisable)
         {
             foreach (string path in imagePaths)
             {
                 if (FileData.ContainsKey(path)) // newly added images that are not included can be detected too
                 {
-                    FileData[path].EvaluateActiveState(forceDisable);
+                    if (!IsLoadingData) // calling this is redundant while loading data
+                    {
+                        FileData[path].EvaluateActiveState(forceDisable);
+                    }
                 }
                 else
                 {

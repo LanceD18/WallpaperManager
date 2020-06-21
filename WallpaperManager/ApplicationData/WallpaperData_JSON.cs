@@ -17,6 +17,7 @@ namespace WallpaperManager.ApplicationData
     public static partial class WallpaperData
     {
         public static bool IsLoadingData { get; private set; } = false;
+        public static bool IsLoadingImageFolders { get; private set; } = false;
         public static readonly int LargestMaxRank = 1000;
         private static string jpxToJpgWarning;
 
@@ -166,7 +167,7 @@ namespace WallpaperManager.ApplicationData
             string invalidImagesString = "A few image files for your theme appear to be missing.\nThe following image's will not be saved to your theme: \n";
             foreach (ImageData image in jsonWallpaperData.imageData)
             {
-                if (!AddImage(image))
+                if (AddImage(image) == null)
                 {
                     invalidImagesString += "\n" + image.Path;
                 }
@@ -177,12 +178,15 @@ namespace WallpaperManager.ApplicationData
                 MessageBox.Show(invalidImagesString);
             }
 
+            // since activating an image folder also adds undeteced images, this needs to be loaded last
+            IsLoadingImageFolders = true; // this is used to override the IsLoading bool for new images added when loading image folders
             WallpaperManagerForm.LoadImageFolders(jsonWallpaperData.imageFolders);
+            IsLoadingImageFolders = false;
         }
 
         private static void LoadOptionsData(JsonWallpaperData jsonWallpaperData)
         {
-            Options.OptionsData.ThemeOptions = jsonWallpaperData.themeOptions;
+            OptionsData.ThemeOptions = jsonWallpaperData.themeOptions;
         }
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)

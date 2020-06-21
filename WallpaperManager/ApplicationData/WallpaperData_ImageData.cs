@@ -94,6 +94,11 @@ namespace WallpaperManager.ApplicationData
                 Active = active;
                 Tags = tags ?? new Dictionary<string, HashSet<string>>();
                 TagNamingExceptions = tagNamingExceptions ?? new HashSet<Tuple<string, string>>();
+
+                if (!IsLoadingData || IsLoadingImageFolders) // image that are loaded-in already have the proper settings | IsLoadingImageFolders overrides this for actual new images
+                {
+                    EvaluateActiveState(false);
+                }
             }
 
             public void UpdatePath(string newPath)
