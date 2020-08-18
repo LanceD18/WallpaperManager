@@ -491,6 +491,20 @@ namespace WallpaperManager.ApplicationData
 
             return new string[0];
         }
+
+        public static void EvaluateImageFolders() // scans for potential new images
+        {
+            foreach (string folderPath in ImageFolders.Keys)
+            {
+                foreach (string imagePath in GetImagesOfFolder(folderPath))
+                {
+                    if (!FileData.ContainsKey(imagePath))
+                    {
+                        AddImage(imagePath);
+                    }
+                }
+            }
+        }
         #endregion Image Folders
 
         // Misc
@@ -515,7 +529,7 @@ namespace WallpaperManager.ApplicationData
                     }
                     else
                     {
-                        //TODO Implement this with a more general system that'll be similar to whatever's used for taggin & moving images
+                        //TODO Implement this with a more general system that'll be similar to whatever's used for tagging & moving images
                         MessageBox.Show("Name adjustments for duplicate/overlapping file tags have not yet been implemented");
                     }
                 }

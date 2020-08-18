@@ -19,7 +19,7 @@ namespace WallpaperManager.ApplicationData
             RenameImages(new WallpaperData.ImageData[] {image});
         }
 
-        public static void RenameAffectedImages(WallpaperData.ImageData[] images)
+        public static void RenameAffectedImagesPrompt(WallpaperData.ImageData[] images)
         {
             if (MessageBox.Show("Rename affected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
@@ -30,18 +30,23 @@ namespace WallpaperManager.ApplicationData
         // renames the given images within their respective folders
         public static void RenameImages(WallpaperData.ImageData[] images)
         {
+            RenameImages(images, null);
+        }
+
+        public static void RenameImages(WallpaperData.ImageData[] images, DirectoryInfo moveDirectory)
+        {
             /*TODO
-            if (MessageBox.Show("hec", "yes", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                AddPotentialNamingExceptions();
-            }
-            */
+if (MessageBox.Show("hec", "yes", MessageBoxButtons.YesNo) == DialogResult.Yes)
+{
+    AddPotentialNamingExceptions();
+}
+*/
 
             //char[] nums = "0123456789".ToCharArray();
             //bool renamingMultipleImages = images.Length > 1;
 
             // Dictionary<Directory, Dictionary<NewName, HashSet<ImageData>>>
-            Dictionary<string, Dictionary<string, HashSet<WallpaperData.ImageData>>> namingConflicts = GetRenameData(images, out int failedToNameCount);
+            Dictionary<string, Dictionary<string, HashSet<WallpaperData.ImageData>>> namingConflicts = GetRenameData(images, moveDirectory, out int failedToNameCount);
             List<string> acceptedNames = new List<string>();
 
             //bool renamingAllowed = MessageBox.Show("Allow renaming?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes;
@@ -143,7 +148,7 @@ namespace WallpaperManager.ApplicationData
             //! DON'T FORGET TO UPDATE THE PATHS OF THE IMAGES USED!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
-        private static Dictionary<string, Dictionary<string, HashSet<WallpaperData.ImageData>>> GetRenameData(WallpaperData.ImageData[] images, out int failedToNameCount)
+        private static Dictionary<string, Dictionary<string, HashSet<WallpaperData.ImageData>>> GetRenameData(WallpaperData.ImageData[] images, DirectoryInfo moveDirectory, out int failedToNameCount)
         {
             HashSet<WallpaperData.ImageData> failedToName = new HashSet<WallpaperData.ImageData>();
             string failedToNameException = "No name could be created for the following images." +
@@ -207,7 +212,7 @@ namespace WallpaperManager.ApplicationData
                                     namingConflicts[imageDirectoryInfo].Add(potentialName, new HashSet<WallpaperData.ImageData> { image });
                                 }
                             }
-                            else // new directory found
+                            else // new directory with conflicts found, add the directory alongside the conflicting name & image
                             {
                                 Dictionary<string, HashSet<WallpaperData.ImageData>> namingConflictsInDirectory = new Dictionary<string, HashSet<WallpaperData.ImageData>>
                                 {

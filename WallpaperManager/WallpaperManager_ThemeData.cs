@@ -18,7 +18,7 @@ namespace WallpaperManager
             {
                 // dialog properties
                 dialog.Title = "Select a compatible json file to load";
-                dialog.Filter = "Wallpaper Data (*.json) | *.json";
+                dialog.Filter = "Wallpaper Data JSON (*.json) | *.json";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
@@ -33,7 +33,7 @@ namespace WallpaperManager
             using (SaveFileDialog dialog = new SaveFileDialog())
             {
                 dialog.Title = "Save data to json";
-                dialog.Filter = "Image files (*.json) | *.json";
+                dialog.Filter = "Wallpaper Data JSON (*.json) | *.json";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
@@ -44,6 +44,7 @@ namespace WallpaperManager
 
         private void buttonUpdateTheme_Click(object sender, EventArgs e)
         {
+            WallpaperData.EvaluateImageFolders(); // scans for new images
             WallpaperData.SaveData(PathData.ActiveWallpaperTheme);
         }
     }

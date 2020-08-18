@@ -128,7 +128,7 @@ namespace WallpaperManager.Tagging
             // Ask the user if they want to rename image's impacted by the UseForNaming change
             if (renameAffectedImages)
             {
-                PathData.RenameAffectedImages(imagesToRename.ToArray());
+                PathData.RenameAffectedImagesPrompt(imagesToRename.ToArray());
             }
         }
 
