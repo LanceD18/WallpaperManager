@@ -27,7 +27,7 @@ namespace WallpaperManager.ApplicationData
             }
         }
 
-        // renames the given images within their respective folders
+        // renames the given images within their respective folder/*s
         public static void RenameImages(WallpaperData.ImageData[] images)
         {
             RenameImages(images, null);
@@ -36,11 +36,11 @@ namespace WallpaperManager.ApplicationData
         public static void RenameImages(WallpaperData.ImageData[] images, DirectoryInfo moveDirectory)
         {
             /*TODO
-if (MessageBox.Show("hec", "yes", MessageBoxButtons.YesNo) == DialogResult.Yes)
-{
-    AddPotentialNamingExceptions();
-}
-*/
+            if (MessageBox.Show("hec", "yes", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                AddPotentialNamingExceptions();
+            }
+            */
 
             //char[] nums = "0123456789".ToCharArray();
             //bool renamingMultipleImages = images.Length > 1;
