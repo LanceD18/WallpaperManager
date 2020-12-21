@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WallpaperManager));
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyIconWallpaperManager = new System.Windows.Forms.NotifyIcon(this.components);
             this.buttonNextWallpaper = new System.Windows.Forms.Button();
             this.buttonPreviousWallpaper = new System.Windows.Forms.Button();
             this.buttonChangeDisplay = new System.Windows.Forms.Button();
@@ -74,10 +74,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.inspector_pictureBoxImage)).BeginInit();
             this.SuspendLayout();
             // 
-            // notifyIcon1
+            // notifyIconWallpaperManager
             // 
-            this.notifyIcon1.Text = "Wallpaper Manager";
-            this.notifyIcon1.Visible = true;
+            this.notifyIconWallpaperManager.Text = "Wallpaper Manager";
+            this.notifyIconWallpaperManager.Visible = true;
             // 
             // buttonNextWallpaper
             // 
@@ -325,7 +325,7 @@
             this.comboBoxSelectStyle.Items.AddRange(new object[] {
             "Fill",
             "Stretch",
-            "Tile"});
+            "Zoom"});
             this.comboBoxSelectStyle.Location = new System.Drawing.Point(12, 492);
             this.comboBoxSelectStyle.Name = "comboBoxSelectStyle";
             this.comboBoxSelectStyle.Size = new System.Drawing.Size(80, 21);
@@ -553,7 +553,7 @@
 
         #endregion
 
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.NotifyIcon notifyIconWallpaperManager;
         private System.Windows.Forms.Button buttonNextWallpaper;
         private System.Windows.Forms.Button buttonPreviousWallpaper;
         private System.Windows.Forms.Button buttonChangeDisplay;

@@ -27,6 +27,32 @@ namespace WallpaperManager.ApplicationData
         private static int displayNum;
         private static List<int> displayNumbering = new List<int>();
 
+        // Used to help set up monitor bounds & adjustments
+        public static int TotalMonitorWidth { get; private set; } // total width of all monitors combined
+        public static int MaxMonitorHeight { get; private set; } // height of the tallest monitor, maximum possible height
+        public static int MonitorXAdjustment { get; private set; }
+        public static int MinMonitorY { get; private set; } = int.MaxValue;
+
+        public static void Initialize()
+        {
+            // Set up monitor bounds & adjustments
+            foreach (Screen monitor in Screens)
+            {
+                if (monitor.Bounds.X < 0) // used to prevent wallpapers from being drawn off the screen
+                {
+                    MonitorXAdjustment += Math.Abs(monitor.Bounds.X);
+                }
+
+                if (monitor.Bounds.Y < MinMonitorY)
+                {
+                    MinMonitorY = monitor.Bounds.Y;
+                }
+
+                TotalMonitorWidth += monitor.Bounds.Width;
+                MaxMonitorHeight = Math.Max(MaxMonitorHeight, monitor.Bounds.Height);
+            }
+        }
+
         public static void ReorderMonitors()
         {
             Button[] monitorButtons = new Button[Screens.Length];

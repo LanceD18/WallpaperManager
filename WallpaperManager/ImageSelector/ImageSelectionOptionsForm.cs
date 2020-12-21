@@ -15,9 +15,9 @@ using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager.ImageSelector
 {
-    public partial class ImageSelectorOptionsForm : Form
+    public partial class ImageSelectionOptionsForm : Form
     {
-        public ImageSelectorOptionsForm()
+        public ImageSelectionOptionsForm()
         {
             InitializeComponent();
             checkBoxRandomize.Checked = WallpaperData.RandomizeSelection;

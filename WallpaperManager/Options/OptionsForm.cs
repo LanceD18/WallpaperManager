@@ -30,10 +30,9 @@ namespace WallpaperManager.Options
             checkBoxWeightedRanks.Checked = ThemeSettings.WeightedRanks;
 
             // Global Settings
-            labelDefaultThemePath.Text = OptionsData.DefaultTheme;
-
             if (File.Exists(OptionsData.DefaultTheme))
             {
+                labelDefaultThemePath.Text = OptionsData.DefaultTheme;
                 checkBoxEnableGlobalHotkey.Checked = OptionsData.EnableDefaultThemeHotkey;
             }
             else
@@ -68,7 +67,11 @@ namespace WallpaperManager.Options
             {
                 OptionsData.DefaultTheme = labelDefaultThemePath.Text;
                 OptionsData.EnableDefaultThemeHotkey = checkBoxEnableGlobalHotkey.Checked;
+                Properties.Settings.Default.DefaultTheme = labelDefaultThemePath.Text;
+                Properties.Settings.Default.DefaultThemeHotkey = checkBoxEnableGlobalHotkey.Checked;
             }
+
+            Properties.Settings.Default.Save();
         }
 
         private void buttonInspectRankDistribution_Click(object sender, EventArgs e)

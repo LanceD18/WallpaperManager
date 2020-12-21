@@ -93,6 +93,10 @@ namespace WallpaperManager
         //?-----ReleaseDC-----
         [DllImport("user32.dll")]
         public static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+        //?-----SetParent-----
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
     }
 
 }

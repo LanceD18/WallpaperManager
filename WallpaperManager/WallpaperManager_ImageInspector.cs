@@ -27,10 +27,20 @@ namespace WallpaperManager
 
                 if (File.Exists(value))
                 {
-                    using (Image image = Image.FromFile(value))
+                    try
                     {
-                        labelImageSize.Text = image.Width + "x" + image.Height;
-                        labelImageSize.Left = panelImageSelector.Location.X - labelImageSize.Size.Width - 5;
+                        using (Image image = Image.FromFile(value))
+                        {
+                            labelImageSize.Text = image.Width + "x" + image.Height;
+                            labelImageSize.Left = panelImageSelector.Location.X - labelImageSize.Size.Width - 5;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(value).Extension))
+                        {
+                            throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
+                        }
                     }
                 }
             }

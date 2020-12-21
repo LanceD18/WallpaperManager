@@ -16,13 +16,14 @@ namespace WallpaperManager
         Fit,
         Span,
         Stretch,
-        Tile,
+        Zoom,
         Center
     }
 
     public partial class WallpaperManager : Form
     {
         private PictureStyle WallpaperStyle;
+        private PictureBoxSizeMode _WallpaperStyle;
         private bool cancelWallpaperStyleUpdate;
 
         private void comboBoxSelectStyle_SelectedIndexChanged(object sender, EventArgs e)
@@ -31,11 +32,13 @@ namespace WallpaperManager
             {
                 UpdateWallpaperStyle();
 
+                /*
                 if (PathData.IsWallpapersValid())
                 {
                     SetWallpaper();
-                    Thread.Sleep(250);
+                    //?Thread.Sleep(250);
                 }
+                */
             }
             else
             {
@@ -49,15 +52,23 @@ namespace WallpaperManager
             {
                 case "Fill":
                     WallpaperStyle = PictureStyle.Fill;
+                    _WallpaperStyle = PictureBoxSizeMode.StretchImage;
                     break;
 
                 case "Stretch":
                     WallpaperStyle = PictureStyle.Stretch;
+                    _WallpaperStyle = PictureBoxSizeMode.StretchImage;
                     break;
 
-                case "Tile":
-                    WallpaperStyle = PictureStyle.Tile;
+                case "Zoom":
+                    WallpaperStyle = PictureStyle.Zoom;
+                    _WallpaperStyle = PictureBoxSizeMode.Zoom;
                     break;
+            }
+
+            foreach (WallpaperForm wallpaper in wallpapers)
+            {
+                wallpaper.SetWallpaperStyle(WallpaperStyle);
             }
         }
 
@@ -66,6 +77,7 @@ namespace WallpaperManager
             WallpaperStyle = newWallpaperStyle;
             comboBoxSelectStyle.Text = newWallpaperStyle.ToString();
             cancelWallpaperStyleUpdate = WallpaperData.IsLoadingData;
+            UpdateWallpaperStyle(); // TODO Refactor this and the above to remove redundant code
         }
 
         public PictureStyle GetWallpaperStyle()

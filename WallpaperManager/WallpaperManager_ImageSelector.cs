@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -265,19 +266,38 @@ namespace WallpaperManager
             */
         }
 
+        //? This allows the image to be disposed when changing pages, otherwise it would just be loaded in the ImageEditorControl
         public void LoadImage(ImageEditorControl parentEditorControl, string imagePath)
         {
             Thread thread = new Thread(() =>
             {
-                //Image image = Image.FromFile(imagePath);
                 Image image;
-                using (Stream stream = File.OpenRead(imagePath))
+                try
                 {
-                    image = Image.FromStream(stream);
+                    image = Image.FromFile(imagePath);
+                    /*
+                    Image image;
+                    using (Stream stream = File.OpenRead(imagePath))
+                    {
+                        image = Image.FromStream(stream);
+                    }
+                    */
                 }
-                loadedImages.Enqueue(image);
+                catch (Exception e)
+                {
+                    if (WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imagePath).Extension))
+                    {
+                        image = WallpaperManagerTools.GetFirstVideoFrame(imagePath);
+                    }
+                    else
+                    {
+                        throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
+                    }
+                }
+
+                loadedImages.Enqueue(image); //? Disposes images later
                 parentEditorControl.SetBackgroundImage(image);
-                //image.Dispose();
+
             });
             thread.Start();
         }

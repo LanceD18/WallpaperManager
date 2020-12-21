@@ -1,6 +1,6 @@
 ﻿namespace WallpaperManager.ImageSelector
 {
-    partial class ImageSelectorOptionsForm
+    partial class ImageSelectionOptionsForm
     {
         /// <summary>
         /// Required designer variable.

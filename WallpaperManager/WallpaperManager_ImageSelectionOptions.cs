@@ -25,7 +25,7 @@ namespace WallpaperManager
             Button optionalSelectionButton = new Button();
             optionalSelectionButton.AutoSize = true;
             optionalSelectionButton.Text = "Other Selection Options...";
-            optionalSelectionButton.Click += (o, i) => { new ImageSelectorOptionsForm().ShowDialog(); };
+            optionalSelectionButton.Click += (o, i) => { new ImageSelectionOptionsForm().ShowDialog(); };
 
             MessageBoxDynamic.Show("Choose a selection type", "Choose an option", new Button[] { regularSelectionButton, optionalSelectionButton }, true);
         }
@@ -37,7 +37,7 @@ namespace WallpaperManager
                 //dialog.InitialDirectory = lastSelectedPath;
                 dialog.Multiselect = true;
                 dialog.Title = "Select an Image";
-                dialog.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.gif) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png; *.gif";
+                dialog.Filter = WallpaperManagerTools.IMAGE_FILES_FILTER;
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {

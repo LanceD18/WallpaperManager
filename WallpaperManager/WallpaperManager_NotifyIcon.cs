@@ -37,8 +37,8 @@ namespace WallpaperManager
             cm.MenuItems.Add("Exit", notifyIcon1_Exit);
 
             // notifyIcon1 Properties
-            notifyIcon1.ContextMenu = cm;
-            notifyIcon1.Icon = SystemIcons.WinLogo;
+            notifyIconWallpaperManager.ContextMenu = cm;
+            notifyIconWallpaperManager.Icon = SystemIcons.WinLogo;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace WallpaperManager
         {
             Show();
             WindowState = FormWindowState.Normal;
-            notifyIcon1.Visible = false;
+            notifyIconWallpaperManager.Visible = false;
         }
 
         private void notifyIcon1_NextWallpaper(object sender, EventArgs e) { NextWallpaper(); }

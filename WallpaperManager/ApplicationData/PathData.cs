@@ -17,7 +17,8 @@ namespace WallpaperManager.ApplicationData
         public static string[] ActiveWallpapers = new string[Screen.AllScreens.Length]; // holds paths of the currently active wallpapers
         public static Stack<string[]> PreviousWallpapers = new Stack<string[]>(); // allows you to return back to every wallpaper encountered during the current session
         public static readonly string WallpaperDataDirectory = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData";
-        public static readonly string ActiveWallpaperImage = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\ActiveWallpaperImage.bmp";
+        public static readonly string ActiveWallpaperImageFile = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\ActiveWallpaperImage.bmp";
+        //?public static readonly string TempVideoThumbnailFile = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\TempVideoThumbnail.bmp";
         public static readonly string TempImageLocation = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\TempImageLocation.file";
         public static string ActiveWallpaperTheme; // the currently loaded wallpaper theme
 

@@ -27,6 +27,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,10 +51,43 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Emgu.CV.Bitmap, Version=4.4.0.4099, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.Bitmap.4.4.0.4099\lib\netstandard2.0\Emgu.CV.Bitmap.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Platform.NetStandard, Version=4.4.0.4099, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.4.4.0.4099\lib\netstandard2.0\Emgu.CV.Platform.NetStandard.dll</HintPath>
+    </Reference>
     <Reference Include="LanceTools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Code Library\C#\LanceTools\LanceTools\LanceTools\bin\Release\LanceTools.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaToolkit, Version=1.1.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaToolkit.1.1.0.1\lib\net40\MediaToolkit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -70,10 +105,38 @@
     <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.4.0.0.1\lib\PresentationFramework.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.2.0\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.4.0.0.1\lib\System.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.7.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -128,11 +191,11 @@
     <Compile Include="ImageSelector\ImageSelectorForm.Designer.cs">
       <DependentUpon>ImageSelectorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageSelector\ImageSelectorOptionsForm.cs">
+    <Compile Include="ImageSelector\ImageSelectionOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImageSelector\ImageSelectorOptionsForm.Designer.cs">
-      <DependentUpon>ImageSelectorOptionsForm.cs</DependentUpon>
+    <Compile Include="ImageSelector\ImageSelectionOptionsForm.Designer.cs">
+      <DependentUpon>ImageSelectionOptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Options\OptionsData.cs" />
     <Compile Include="Options\OptionsForm.cs">
@@ -203,17 +266,32 @@
     <Compile Include="Tagging\TagTabControl.Designer.cs">
       <DependentUpon>TagTabControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="WallpaperForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WallpaperForm.Designer.cs">
+      <DependentUpon>WallpaperForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="WallpaperManagerTools.cs" />
     <Compile Include="WallpaperManager_ImageInspector.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="WallpaperManager_ImageOptions.cs">
+    <Compile Include="WallpaperManager_ImageSelectionOptions.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WallpaperManager_ImageSelector.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WallpaperManager_SetWallpaper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WallpaperManager_SetWallpaper_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WallpaperManager_SetWallpaper_Overlay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WallpaperManager_SetWallpaper_SharpDX.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="WallpaperManager_Timer.cs">
@@ -249,8 +327,8 @@
     <EmbeddedResource Include="ImageSelector\ImageSelectorForm.resx">
       <DependentUpon>ImageSelectorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ImageSelector\ImageSelectorOptionsForm.resx">
-      <DependentUpon>ImageSelectorOptionsForm.cs</DependentUpon>
+    <EmbeddedResource Include="ImageSelector\ImageSelectionOptionsForm.resx">
+      <DependentUpon>ImageSelectionOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Options\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
@@ -286,6 +364,9 @@
     <EmbeddedResource Include="Tagging\TagTabControl.resx">
       <DependentUpon>TagTabControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WallpaperForm.resx">
+      <DependentUpon>WallpaperForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WallpaperManager.resx">
       <DependentUpon>WallpaperManager.cs</DependentUpon>
     </EmbeddedResource>
@@ -303,7 +384,25 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
@@ -324,4 +423,11 @@
     <EmbeddedResource Include="Resources\plusSign.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Emgu.CV.runtime.windows.4.4.0.4099\build\Emgu.CV.runtime.windows.targets" Condition="Exists('..\packages\Emgu.CV.runtime.windows.4.4.0.4099\build\Emgu.CV.runtime.windows.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Emgu.CV.runtime.windows.4.4.0.4099\build\Emgu.CV.runtime.windows.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Emgu.CV.runtime.windows.4.4.0.4099\build\Emgu.CV.runtime.windows.targets'))" />
+  </Target>
 </Project>

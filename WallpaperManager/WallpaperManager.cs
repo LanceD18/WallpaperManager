@@ -63,12 +63,16 @@ namespace WallpaperManager
             this.Load += OnLoad;
             this.Resize += OnResize;
 
+            MonitorData.Initialize();
+
             InitializeImageSelector();
             InitializeImageInspector();
 
             PathData.Validate(); // ensures that all needed folders exist
             WallpaperData.Initialize(this, false); // loads in all necessary data
             OptionsData.Initialize();
+
+            InitializeWallpapers();
 
             InitializeTimer();
             InitializeKeys();
@@ -77,11 +81,17 @@ namespace WallpaperManager
 
         private void OnApplicationExit(object sender, EventArgs e)
         {
-            Debug.WriteLine("OnApplicationExit is incomplete");
+            foreach (WallpaperForm wallpaper in wallpapers)
+            {
+                wallpaper.Close();
+                //wallpaper.BackColor = Color.Magenta;
+                //wallpaper.TransparencyKey = Color.Magenta;
+                //wallpaper.SetWallpaper("");
+            }
 
-            //WallpaperData.SaveDefaultData();
+            //? WallpaperData.SaveDefaultData(); | I feel like this is prone to overwrite accidents
 
-            // Set Default theme if enabled
+            // TODO Set Default theme if enabled
             /*
             if (setDefaultThemeOnExit)
             {
@@ -89,7 +99,7 @@ namespace WallpaperManager
             }
             */
 
-            // Unregister keys
+            // TODO Unregister keys (Not sure if this is needed actually but won't hurt to add)
             /*
             foreach (GlobalHotKey key in hotkeys)
             {
@@ -127,7 +137,7 @@ namespace WallpaperManager
             if (WindowState == FormWindowState.Minimized && minimizeToSystemTray)
             {
                 Hide();
-                notifyIcon1.Visible = true;
+                notifyIconWallpaperManager.Visible = true;
             }
         }
 
