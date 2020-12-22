@@ -73,7 +73,6 @@ namespace WallpaperManager
             OptionsData.Initialize();
 
             InitializeWallpapers();
-
             InitializeTimer();
             InitializeKeys();
             InitializeNotifyIcon();

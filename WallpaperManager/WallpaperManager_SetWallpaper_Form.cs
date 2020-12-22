@@ -18,8 +18,6 @@ namespace WallpaperManager
         // Derived from: https://www.codeproject.com/Articles/856020/Draw-Behind-Desktop-Icons-in-Windows-plus
         private IntPtr GetWorkerW()
         {
-            //TODO wallpapers[0].BackgroundImage
-
             //?-----Fetch the Program window-----
             IntPtr program = Win32.FindWindow("Program");
 
@@ -82,7 +80,7 @@ namespace WallpaperManager
             wallpapers = new WallpaperForm[monitorCount];
             for (int i = 0; i < monitorCount; i++)
             {
-                wallpapers[i] = new WallpaperForm(MonitorData.Screens[i], workerw, WallpaperStyle);
+                wallpapers[i] = new WallpaperForm(MonitorData.Screens[i], workerw);
             }
         }
 
@@ -90,15 +88,9 @@ namespace WallpaperManager
         {
             for (int i = 0; i < wallpapers.Length; i++)
             {
-                //wallpapers[i].SetWallpaper(Image.FromFile(PathData.ActiveWallpapers[i]));
+                //? This needs to be above the call to SetWallpaper() otherwise the form will call its load event second & override some settings
+                if (!wallpapers[i].Visible) wallpapers[i].Show(); // this is processed only once after the first wallpaper change
                 wallpapers[i].SetWallpaper(PathData.ActiveWallpapers[i]);
-
-                Debug.WriteLine("Is Wallpaper " + i + " visible? " + wallpapers[i].Visible);
-                if (!wallpapers[i].Visible)
-                {
-                    Debug.WriteLine("Showing Wallpaper " + i);
-                    wallpapers[i].Show();
-                }
             }
         }
     }

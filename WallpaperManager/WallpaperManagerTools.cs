@@ -13,26 +13,12 @@ using System.Windows.Media.Imaging;
 using LanceTools.FormUtil;
 using Microsoft.WindowsAPICodePack.Shell;
 
-/*
-using Windows.Devices.Enumeration;
-using Windows.Media.Capture;
-using Windows.Media.Devices;
-using Windows.Media.MediaProperties;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Graphics.Imaging;
-*/
 using Emgu.CV;
 using MediaToolkit;
 using MediaToolkit.Model;
 using MediaToolkit.Options;
-using SharpDX.Direct2D1;
 using WallpaperManager.ApplicationData;
 using Bitmap = System.Drawing.Bitmap;
-using PixelFormat = SharpDX.Direct2D1.PixelFormat;
 
 namespace WallpaperManager
 {
@@ -41,6 +27,13 @@ namespace WallpaperManager
         None,
         Active,
         All
+    }
+
+    public enum ImageType
+    {
+        Static,
+        GIF,
+        Video
     }
 
     public static class WallpaperManagerTools

@@ -23,28 +23,8 @@ namespace WallpaperManager
     public partial class WallpaperManager : Form
     {
         private PictureStyle WallpaperStyle;
-        private PictureBoxSizeMode _WallpaperStyle;
-        private bool cancelWallpaperStyleUpdate;
 
-        private void comboBoxSelectStyle_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!cancelWallpaperStyleUpdate)
-            {
-                UpdateWallpaperStyle();
-
-                /*
-                if (PathData.IsWallpapersValid())
-                {
-                    SetWallpaper();
-                    //?Thread.Sleep(250);
-                }
-                */
-            }
-            else
-            {
-                cancelWallpaperStyleUpdate = false;
-            }
-        }
+        private void comboBoxSelectStyle_SelectedIndexChanged(object sender, EventArgs e) => UpdateWallpaperStyle();
 
         private void UpdateWallpaperStyle()
         {
@@ -52,17 +32,14 @@ namespace WallpaperManager
             {
                 case "Fill":
                     WallpaperStyle = PictureStyle.Fill;
-                    _WallpaperStyle = PictureBoxSizeMode.StretchImage;
                     break;
 
                 case "Stretch":
                     WallpaperStyle = PictureStyle.Stretch;
-                    _WallpaperStyle = PictureBoxSizeMode.StretchImage;
                     break;
 
                 case "Zoom":
                     WallpaperStyle = PictureStyle.Zoom;
-                    _WallpaperStyle = PictureBoxSizeMode.Zoom;
                     break;
             }
 
@@ -76,13 +53,9 @@ namespace WallpaperManager
         {
             WallpaperStyle = newWallpaperStyle;
             comboBoxSelectStyle.Text = newWallpaperStyle.ToString();
-            cancelWallpaperStyleUpdate = WallpaperData.IsLoadingData;
-            UpdateWallpaperStyle(); // TODO Refactor this and the above to remove redundant code
+            UpdateWallpaperStyle();
         }
 
-        public PictureStyle GetWallpaperStyle()
-        {
-            return WallpaperStyle;
-        }
+        public PictureStyle GetWallpaperStyle() => WallpaperStyle;
     }
 }

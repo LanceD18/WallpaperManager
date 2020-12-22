@@ -142,6 +142,10 @@ namespace WallpaperManager.ApplicationData
             ImageFolders.Clear();
             TaggingInfo = new TaggingInfo();
 
+            StaticImages.Clear();
+            GifImages.Clear();
+            VideoImages.Clear();
+
             // This is needed if loading otherwise images with invalid ranks will crash the program
             SetRankData(LargestMaxRank);
         }

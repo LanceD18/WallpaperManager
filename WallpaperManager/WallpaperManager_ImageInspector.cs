@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AxWMPLib;
 using LanceTools;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
@@ -16,6 +17,8 @@ namespace WallpaperManager
 {
     public partial class WallpaperManager : Form
     {
+        private const int inspectionVolume = 5;
+
         private string InspectedImage;
         private string inspectedImage
         {
@@ -52,6 +55,12 @@ namespace WallpaperManager
             panelImageInspector.BringToFront();
 
             SuspendLayout();
+            inspector_axWindowsMediaPlayer.stretchToFit = true;
+            //inspector_axWindowsMediaPlayer.uiMode = "none";
+            inspector_axWindowsMediaPlayer.settings.volume = inspectionVolume;
+            inspector_axWindowsMediaPlayer.settings.setMode("loop", true);
+            inspector_axWindowsMediaPlayer.settings.autoStart = true;
+
             inspector_textBoxRankEditor.LostFocus += (o, i) =>
             {
                 try
@@ -138,8 +147,26 @@ namespace WallpaperManager
         {
             panelImageInspector.SuspendLayout();
             buttonInspectImage.Text = "Close Inspector";
-            inspector_pictureBoxImage.ImageLocation = inspectedImage;
+
+            if (!WallpaperData.GetAllVideoImages().Contains(inspectedImage)) // display image
+            {
+                inspector_axWindowsMediaPlayer.Visible = false;
+
+                inspector_pictureBoxImage.Visible = true;
+                inspector_pictureBoxImage.ImageLocation = inspectedImage;
+            }
+            else // display video
+            {
+                inspector_pictureBoxImage.Visible = false;
+
+                inspector_axWindowsMediaPlayer.Visible = true;
+                inspector_axWindowsMediaPlayer.URL = inspectedImage;
+                inspector_axWindowsMediaPlayer.settings.volume = inspectionVolume;
+                inspector_axWindowsMediaPlayer.Enabled = true;
+            }
+
             inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(inspectedImage).Rank.ToString();
+
             panelImageInspector.ResumeLayout();
 
             panelImageInspector.Visible = true;
@@ -147,6 +174,9 @@ namespace WallpaperManager
 
         private void DeactivateImageInspector()
         {
+            inspector_axWindowsMediaPlayer.settings.volume = 0;
+            inspector_axWindowsMediaPlayer.Enabled = false;
+
             buttonInspectImage.Text = "Inspect Image";
             panelImageInspector.Visible = false;
             UpdateImageRanks();

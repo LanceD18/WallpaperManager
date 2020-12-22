@@ -288,12 +288,6 @@
     <Compile Include="WallpaperManager_SetWallpaper_Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="WallpaperManager_SetWallpaper_Overlay.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="WallpaperManager_SetWallpaper_SharpDX.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="WallpaperManager_Timer.cs">
       <SubType>Form</SubType>
     </Compile>

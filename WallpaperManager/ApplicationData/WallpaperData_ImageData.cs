@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 using Newtonsoft.Json;
 using WallpaperManager.Tagging;
 
@@ -14,6 +15,15 @@ namespace WallpaperManager.ApplicationData
 {
     public static partial class WallpaperData
     {
+        // the following 3 dictionaries are used to give the user more customization over how various image types are drawn
+        private static Dictionary<string, ImageData> StaticImages = new Dictionary<string, ImageData>();
+        private static Dictionary<string, ImageData> GifImages = new Dictionary<string, ImageData>();
+        private static Dictionary<string, ImageData> VideoImages = new Dictionary<string, ImageData>();
+
+        public static string[] GetAllStaticImages() => StaticImages.Keys.ToArray();
+        public static string[] GetAllGifImages() => GifImages.Keys.ToArray();
+        public static string[] GetAllVideoImages() => VideoImages.Keys.ToArray();
+
         public class ImageData
         {
             [DataMember(Name = "Path")]
@@ -88,12 +98,30 @@ namespace WallpaperManager.ApplicationData
 
             public ImageData(string path, int rank, bool active, Dictionary<string, HashSet<string>> tags = null, HashSet<Tuple<string, string>> tagNamingExceptions = null)
             {
+                FileInfo file = new FileInfo(path);
+
                 Path = path;
-                PathFolder = new FileInfo(path).Directory.FullName;
+                PathFolder = file.Directory.FullName;
                 Rank = rank;
                 Active = active;
                 Tags = tags ?? new Dictionary<string, HashSet<string>>();
                 TagNamingExceptions = tagNamingExceptions ?? new HashSet<Tuple<string, string>>();
+
+                if (!WallpaperManagerTools.IsSupportedVideoType(file.Extension))
+                {
+                    if (file.Extension != ".gif")
+                    {
+                        StaticImages.Add(path, this);
+                    }
+                    else
+                    {
+                        GifImages.Add(path, this);
+                    }
+                }
+                else
+                {
+                    VideoImages.Add(path, this);
+                }
 
                 if (!IsLoadingData || IsLoadingImageFolders) // image that are loaded-in already have the proper settings | IsLoadingImageFolders overrides this for actual new images
                 {

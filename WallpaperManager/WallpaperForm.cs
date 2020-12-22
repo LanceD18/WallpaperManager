@@ -34,14 +34,16 @@ namespace WallpaperManager
 
         private Rectangle pictureBoxBounds;
 
-        private PictureStyle pictureStyle;
+        private int volume = 25;
 
-        private int volume = 50;
+        private const int TASKBAR_SIZE = 40;
 
-        public WallpaperForm(Screen monitor, IntPtr workerw, PictureStyle pictureStyle)
+        // TODO Check why this is claiming that it's functioning on a different thread yet no thread is made when calling this? Finding this out will determine if the Invokes remain
+        public WallpaperForm(Screen monitor, IntPtr workerw)
         {
             this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             InitializeComponent();
+
 
             // TODO Use this later for other optional features
             axWindowsMediaPlayerWallpaper.PlayStateChange += (ax_s, ax_e) =>
@@ -54,35 +56,35 @@ namespace WallpaperManager
 
             Load += (s, e) =>
             {
-                BackColor = Color.Black;
+                this.Invoke((MethodInvoker) delegate
+                {
+                    Debug.WriteLine("Load");
+                    BackColor = Color.Black;
 
-                // Sets bounds of the form
-                Width = monitor.Bounds.Width;
-                Height = monitor.Bounds.Height;
-                Left = monitor.Bounds.X + MonitorData.MonitorXAdjustment;
-                Top = monitor.Bounds.Y + MonitorData.MinMonitorY;
+                    // Sets bounds of the form
+                    Width = monitor.Bounds.Width;
+                    Height = monitor.Bounds.Height;
+                    Left = monitor.Bounds.X + MonitorData.MonitorXAdjustment;
+                    Top = monitor.Bounds.Y + MonitorData.MinMonitorY;
+                    pictureBoxBounds = new Rectangle(0, 0, Width, Height);
 
-                // Sets bounds of the wallpaper
-                pictureBoxBounds = new Rectangle(0, 0, Size.Width, Size.Height); //? Used further under SetWallpaperStyle
-                pictureBoxWallpaper.Bounds = pictureBoxBounds;
-                //pictureBoxWallpaper.Top = 0;
-                //pictureBoxWallpaper.Left = 0;
-                //pictureBoxWallpaper.Size = Size;
-                //pictureBoxWallpaper.SizeMode = PictureBoxSizeMode.StretchImage;
+                    // Sets bounds of the wallpaper
+                    pictureBoxWallpaper.Bounds = pictureBoxBounds;
 
-                axWindowsMediaPlayerWallpaper.Bounds = pictureBoxBounds;
-                //axWindowsMediaPlayerWallpaper.Ctlenabled = false;
-                axWindowsMediaPlayerWallpaper.stretchToFit = true;
-                axWindowsMediaPlayerWallpaper.uiMode = "none";
-                axWindowsMediaPlayerWallpaper.settings.volume = 0;
-                axWindowsMediaPlayerWallpaper.settings.setMode("loop", true);
+                    axWindowsMediaPlayerWallpaper.Bounds = pictureBoxBounds;
+                    axWindowsMediaPlayerWallpaper.stretchToFit = true;
+                    axWindowsMediaPlayerWallpaper.uiMode = "none";
+                    axWindowsMediaPlayerWallpaper.settings.volume = 0;
+                    axWindowsMediaPlayerWallpaper.settings.setMode("loop", true);
+                    axWindowsMediaPlayerWallpaper.Ctlenabled = false;
 
-                SetWallpaperStyle(pictureStyle);
+                    ResetWallpaperStyle();
 
-                // This line makes the form a child of the WorkerW window, thus putting it behind the desktop icons and out of reach 
-                // for any user input. The form will just be rendered, no keyboard or mouse input will reach it.
-                // (Would have to use WH_KEYBOARD_LL and WH_MOUSE_LL hooks to capture mouse and keyboard input)
-                Win32.SetParent(Handle, workerw);
+                    // This line makes the form a child of the WorkerW window, thus putting it behind the desktop icons and out of reach 
+                    // for any user input. The form will just be rendered, no keyboard or mouse input will reach it.
+                    // (Would have to use WH_KEYBOARD_LL and WH_MOUSE_LL hooks to capture mouse and keyboard input)
+                    Win32.SetParent(Handle, workerw);
+                });
             };
 
             Closing += (s, e) =>
@@ -105,8 +107,11 @@ namespace WallpaperManager
         }
         */
 
+        // TODO Create a queue that stores pictureBoxes/axWindowMediaPlayers for each wallpaper. This will be used to allow transitions & prevent flickering from
+        // TODO style readjustment when changing wallpapers by *locking* the previous wallpaper in place
         public void SetWallpaper(string imageLocation)
         {
+            Debug.WriteLine("Set Wallpaper");
             if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imageLocation).Extension))
             {
                 pictureBoxWallpaper.Invoke((MethodInvoker) delegate
@@ -136,22 +141,30 @@ namespace WallpaperManager
                     axWindowsMediaPlayerWallpaper.settings.volume = volume;
                 });
             }
+
+            ResetWallpaperStyle();  // this needs to be readjusted with each image
+        }
+
+        public void ResetWallpaperStyle()
+        {
+            Debug.WriteLine("Reset");
+            SetWallpaperStyle(WallpaperData.WallpaperManagerForm.GetWallpaperStyle());
         }
 
         public void SetWallpaperStyle(PictureStyle wallpaperStyle)
         {
-            pictureStyle = wallpaperStyle;
+            Debug.WriteLine("Setting Style");
             pictureBoxWallpaper.Invoke((MethodInvoker) delegate
             {
                 if (pictureBoxWallpaper.Visible)
                 {
                     pictureBoxWallpaper.SuspendLayout();
-                    switch (pictureStyle)
+                    switch (wallpaperStyle)
                     {
                         case PictureStyle.Fill:
                             using (Image image = Image.FromFile(pictureBoxWallpaper.ImageLocation))
                             {
-                                int heightDiff = Math.Abs(Height - image.Height);
+                                int heightDiff = GetFillHeightDiff(image.Width, image.Height);
                                 pictureBoxWallpaper.Width = Width; // scales the image to its width
                                 pictureBoxWallpaper.Height = Height + heightDiff; // any additional height will be pushed offscreen
                                 pictureBoxWallpaper.Top = -heightDiff / 2; // centers the height pushed offscreen
@@ -165,7 +178,7 @@ namespace WallpaperManager
                             break;
 
                         case PictureStyle.Zoom:
-                            pictureBoxWallpaper.Bounds = pictureBoxBounds;
+                            pictureBoxWallpaper.Bounds = new Rectangle(pictureBoxBounds.X, pictureBoxBounds.Y, pictureBoxBounds.Width, pictureBoxBounds.Height - TASKBAR_SIZE);
                             pictureBoxWallpaper.SizeMode = PictureBoxSizeMode.Zoom;
                             break;
                     }
@@ -183,16 +196,12 @@ namespace WallpaperManager
 
                     Mat m = new Mat();
                     video.Read(m);
-                    video.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosAviRatio, 0);
-                    int videoWidth = video.Width;
-                    int videoHeight = video.Height;
-                    Debug.WriteLine("Width: " + videoWidth + " | Height: " + videoHeight);
+                    //video.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosAviRatio, 0);
 
-                    switch (pictureStyle)
+                    switch (wallpaperStyle)
                     {
                         case PictureStyle.Fill:
-                            int heightDiff = Math.Abs(Height - videoHeight);
-                            //int heightDiff = Math.Abs(Height - image.Height);
+                            int heightDiff = GetFillHeightDiff(video.Width, video.Height);
                             axWindowsMediaPlayerWallpaper.Width = Width; // scales the image to its width
                             axWindowsMediaPlayerWallpaper.Height = Height + heightDiff; // any additional height will be pushed offscreen
                             axWindowsMediaPlayerWallpaper.Top = -heightDiff / 2; // centers the height pushed offscreen
@@ -204,7 +213,7 @@ namespace WallpaperManager
                             break;
 
                         case PictureStyle.Zoom:
-                            axWindowsMediaPlayerWallpaper.Bounds = pictureBoxBounds;
+                            axWindowsMediaPlayerWallpaper.Bounds = GetZoomBounds(video.Width, video.Height);
                             break;
                     }
 
@@ -212,6 +221,50 @@ namespace WallpaperManager
 
                 }
             });
+        }
+
+        private int GetFillHeightDiff(int imageWidth, int imageHeight)
+        {
+            float imageRatio = (float)imageWidth / imageHeight;
+            float monitorRatio = (float)Width / Height;
+
+            float combinedRatio = monitorRatio / imageRatio;
+            float rescaledImageHeight = Height * combinedRatio;
+
+            return (int)Math.Abs(Height - rescaledImageHeight);
+        }
+
+        private Rectangle GetZoomBounds(int videoWidth, int videoHeight) // images can do this automatically with the pictureBox
+        {
+            // it's best to check with ratios rather than the exact ImageHeight & ImageWidth in order to avoid scaling out of the monitor
+            float widthRatio = (float)videoWidth / Width;
+            float heightRatio = (float)videoHeight / Height;
+
+            int TaskBarHeight = TASKBAR_SIZE; // TODO Calculate this based on the actual object & reposition it for different TaskBar positions
+
+            // if both are equal heightRatio should be preferred
+            if (heightRatio >= widthRatio) // scale image to match the monitor height and let the width have gaps 
+            {
+                float adjustedHeight = Height - TaskBarHeight;
+                float adjustedWidth = videoWidth * ((float)Height / videoHeight) * (adjustedHeight / Height);
+                //float adjustedWidth = MonitorWidth * ((float) ImageWidth / ImageHeight);
+
+                float widthDifference = Width - adjustedWidth;
+                float leftGap = widthDifference / 2;
+                float xPos = 0 + widthDifference - leftGap;
+
+                return new Rectangle((int)xPos, 0, (int)adjustedWidth, (int)adjustedHeight);
+            }
+            else // scale image to match the monitor width and let the height have gaps
+            {
+                float adjustedHeight = videoHeight * ((float)Width / videoWidth);
+
+                float heightDifference = Height - adjustedHeight;
+                float bottomGap = heightDifference / 2;
+                float yPos = heightDifference - bottomGap;
+
+                return new Rectangle(0, (int)yPos, Width, (int)adjustedHeight);
+            }
         }
     }
 }

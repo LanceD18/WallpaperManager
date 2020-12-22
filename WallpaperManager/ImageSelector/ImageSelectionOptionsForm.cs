@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LanceTools;
+using LanceTools.FormUtil;
 using Microsoft.VisualBasic;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using WallpaperManager.ApplicationData;
@@ -17,6 +18,7 @@ namespace WallpaperManager.ImageSelector
 {
     public partial class ImageSelectionOptionsForm : Form
     {
+        //? Note, the option for selecting images by file explorer is *not* here, this is a sub-page for more categorized selections
         public ImageSelectionOptionsForm()
         {
             InitializeComponent();
@@ -28,6 +30,12 @@ namespace WallpaperManager.ImageSelector
             buttonSelectRankedInFolder.Click += buttonClickClose;
             buttonSelectActiveImages.Click += buttonClickClose;
             buttonSelectImagesOfRank.Click += buttonClickClose;
+            buttonSelectImagesOfType.Click += buttonClickClose;
+
+            buttonSelectImages.Click += buttonClickClose;
+            buttonSelectImagesInFolder.Click += buttonClickClose;
+
+            radioButtonAll.Select();
         }
 
         private void buttonClickClose(object sender, EventArgs e)
@@ -35,17 +43,22 @@ namespace WallpaperManager.ImageSelector
             Close();
         }
 
-        private void buttonSelectUnrankedImages_Click(object sender, EventArgs e)
+        private void checkBoxRandomize_CheckedChanged(object sender, EventArgs e)
         {
-            string[] imagesSelected = checkBoxRandomize.Checked ? WallpaperData.GetImagesOfRank(0).Randomize().ToArray() : WallpaperData.GetImagesOfRank(0);
-            WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesSelected);
+            WallpaperData.RandomizeSelection = checkBoxRandomize.Checked;
         }
 
-        private void buttonSelectRankedImages_Click(object sender, EventArgs e)
+        private void RebuildImageSelector_CheckRandomizer(string[] imagesToSelect)
         {
-            string[] imagesSelected = checkBoxRandomize.Checked ? WallpaperData.GetAllRankedImages().Randomize().ToArray() : WallpaperData.GetAllRankedImages();
-            WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesSelected);
+            if (imagesToSelect != null) // this can occur when the selection is cancelled
+            {
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect);
+            }
         }
+
+        private void buttonSelectUnrankedImages_Click(object sender, EventArgs e) => RebuildImageSelector_CheckRandomizer(WallpaperData.GetImagesOfRank(0));
+
+        private void buttonSelectRankedImages_Click(object sender, EventArgs e) => RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllRankedImages());
 
         private void buttonSelectUnrankedinFolder_Click(object sender, EventArgs e)
         {
@@ -64,8 +77,7 @@ namespace WallpaperManager.ImageSelector
                         }
                     }
 
-                    string[] imagesSelected = checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect.ToArray();
-                    WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesSelected);
+                    RebuildImageSelector_CheckRandomizer(imagesToSelect.ToArray());
                 }
             }
         }
@@ -87,22 +99,14 @@ namespace WallpaperManager.ImageSelector
                         }
                     }
 
-                    string[] imagesSelected = checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect.ToArray();
-                    WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesSelected);
+                    RebuildImageSelector_CheckRandomizer(imagesToSelect.ToArray());
                 }
             }
         }
 
-        private void buttonSelectActiveImages_Click(object sender, EventArgs e)
-        {
-            string[] imagesSelected = checkBoxRandomize.Checked ? PathData.ActiveWallpapers.Randomize().ToArray() : PathData.ActiveWallpapers;
-            WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesSelected);
-        }
+        private void buttonSelectActiveImages_Click(object sender, EventArgs e) => RebuildImageSelector_CheckRandomizer(PathData.ActiveWallpapers);
 
-        private void buttonSelectImagesOfRank_Click(object sender, EventArgs e)
-        {
-            SelectAllImagesOfRank();
-        }
+        private void buttonSelectImagesOfRank_Click(object sender, EventArgs e) => SelectAllImagesOfRank();
 
         private void SelectAllImagesOfRank()
         {
@@ -120,8 +124,8 @@ namespace WallpaperManager.ImageSelector
             if (WallpaperData.ContainsRank(selectedRank))
             {
                 string[] imagesToSelect = WallpaperData.GetImagesOfRank(selectedRank);
-                string[] imagesSelected = checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect;
-                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesSelected);
+                RebuildImageSelector_CheckRandomizer(imagesToSelect);
+
             }
             else
             {
@@ -131,9 +135,53 @@ namespace WallpaperManager.ImageSelector
             }
         }
 
-        private void checkBoxRandomize_CheckedChanged(object sender, EventArgs e)
+        private void buttonSelectImagesOfType_Click(object sender, EventArgs e)
         {
-            WallpaperData.RandomizeSelection = checkBoxRandomize.Checked;
+            string[] imagesToSelect = null;
+            Button staticImage = new Button() {Text = "Static"};
+            staticImage.Click += (obj, args) => { imagesToSelect = SelectAllImagesOfType(ImageType.Static); };
+
+            Button gifImage = new Button() { Text = "GIF" };
+            gifImage.Click += (obj, args) => { imagesToSelect = SelectAllImagesOfType(ImageType.GIF); };
+
+            Button videoImage = new Button() { Text = "Video" };
+            videoImage.Click += (obj, args) => { imagesToSelect = SelectAllImagesOfType(ImageType.Video); };
+
+            MessageBoxDynamic.Show("Type selector", "Select a type", new Button[] {staticImage, gifImage, videoImage}, true);
+
+            RebuildImageSelector_CheckRandomizer(imagesToSelect);
+        }
+
+        private string[] SelectAllImagesOfType(ImageType imageType)
+        {
+            switch (imageType)
+            {
+                case ImageType.Static:
+                    return WallpaperData.GetAllStaticImages();
+
+                case ImageType.GIF:
+                    return WallpaperData.GetAllGifImages();
+
+                case ImageType.Video:
+                    return WallpaperData.GetAllVideoImages();
+
+                default:
+                    return null;
+            }
+        }
+
+        private void buttonSelectImages_Click(object sender, EventArgs e)
+        {
+            if (radioButtonAll.Checked) RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllImages());
+
+            if (radioButtonUnranked.Checked) RebuildImageSelector_CheckRandomizer(WallpaperData.GetImagesOfRank(0));
+
+            if (radioButtonRanked.Checked) RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllRankedImages());
+        }
+
+        private void buttonSelectImagesInFolder_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

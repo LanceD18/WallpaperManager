@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,7 @@ using WallpaperManager.Options;
 
 namespace WallpaperManager.ApplicationData
 {
+    // TODO Refactor this file's major components x: | Also attempt to refactor the way ImageData is handled
     public static partial class WallpaperData
     {
         public static WallpaperManager WallpaperManagerForm;
@@ -95,12 +97,18 @@ namespace WallpaperManager.ApplicationData
                 RankData[FileData[path].Rank].Remove(path);
                 FileData.Remove(path);
                 ActiveImages.Remove(path);
+
+                if (StaticImages.ContainsKey(path)) StaticImages.Remove(path);
+                if (GifImages.ContainsKey(path)) GifImages.Remove(path);
+                if (VideoImages.ContainsKey(path)) VideoImages.Remove(path);
             }
         }
 
         public static ImageData GetImageData(string path) => FileData[path];
 
         public static ImageData[] GetAllImageData() => FileData.Values.ToArray();
+
+        public static string[] GetAllImages() => FileData.Keys.ToArray();
 
         public static int GetImageRank(string path) => ContainsImage(path) ? FileData[path].Rank : -1;
 
