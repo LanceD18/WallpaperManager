@@ -28,10 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.buttonSelectRankedInFolder = new System.Windows.Forms.Button();
-            this.buttonSelectUnrankedinFolder = new System.Windows.Forms.Button();
-            this.buttonSelectRankedImages = new System.Windows.Forms.Button();
-            this.buttonSelectUnrankedImages = new System.Windows.Forms.Button();
             this.buttonSelectActiveImages = new System.Windows.Forms.Button();
             this.buttonSelectImagesOfRank = new System.Windows.Forms.Button();
             this.checkBoxRandomize = new System.Windows.Forms.CheckBox();
@@ -41,56 +37,14 @@
             this.radioButtonRanked = new System.Windows.Forms.RadioButton();
             this.buttonSelectImages = new System.Windows.Forms.Button();
             this.buttonSelectImagesInFolder = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // buttonSelectRankedInFolder
-            // 
-            this.buttonSelectRankedInFolder.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectRankedInFolder.Location = new System.Drawing.Point(152, 64);
-            this.buttonSelectRankedInFolder.Name = "buttonSelectRankedInFolder";
-            this.buttonSelectRankedInFolder.Size = new System.Drawing.Size(135, 25);
-            this.buttonSelectRankedInFolder.TabIndex = 41;
-            this.buttonSelectRankedInFolder.Text = "Sel. Ranked in Folder";
-            this.buttonSelectRankedInFolder.UseVisualStyleBackColor = true;
-            this.buttonSelectRankedInFolder.Click += new System.EventHandler(this.buttonSelectRankedInFolder_Click);
-            // 
-            // buttonSelectUnrankedinFolder
-            // 
-            this.buttonSelectUnrankedinFolder.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectUnrankedinFolder.Location = new System.Drawing.Point(12, 64);
-            this.buttonSelectUnrankedinFolder.Name = "buttonSelectUnrankedinFolder";
-            this.buttonSelectUnrankedinFolder.Size = new System.Drawing.Size(135, 25);
-            this.buttonSelectUnrankedinFolder.TabIndex = 40;
-            this.buttonSelectUnrankedinFolder.Text = "Sel. Unranked in Folder";
-            this.buttonSelectUnrankedinFolder.UseVisualStyleBackColor = true;
-            this.buttonSelectUnrankedinFolder.Click += new System.EventHandler(this.buttonSelectUnrankedinFolder_Click);
-            // 
-            // buttonSelectRankedImages
-            // 
-            this.buttonSelectRankedImages.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectRankedImages.Location = new System.Drawing.Point(152, 35);
-            this.buttonSelectRankedImages.Name = "buttonSelectRankedImages";
-            this.buttonSelectRankedImages.Size = new System.Drawing.Size(135, 25);
-            this.buttonSelectRankedImages.TabIndex = 39;
-            this.buttonSelectRankedImages.Text = "Select Ranked Images";
-            this.buttonSelectRankedImages.UseVisualStyleBackColor = true;
-            this.buttonSelectRankedImages.Click += new System.EventHandler(this.buttonSelectRankedImages_Click);
-            // 
-            // buttonSelectUnrankedImages
-            // 
-            this.buttonSelectUnrankedImages.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectUnrankedImages.Location = new System.Drawing.Point(12, 35);
-            this.buttonSelectUnrankedImages.Name = "buttonSelectUnrankedImages";
-            this.buttonSelectUnrankedImages.Size = new System.Drawing.Size(135, 25);
-            this.buttonSelectUnrankedImages.TabIndex = 38;
-            this.buttonSelectUnrankedImages.Text = "Select Unranked Images";
-            this.buttonSelectUnrankedImages.UseVisualStyleBackColor = true;
-            this.buttonSelectUnrankedImages.Click += new System.EventHandler(this.buttonSelectUnrankedImages_Click);
             // 
             // buttonSelectActiveImages
             // 
             this.buttonSelectActiveImages.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectActiveImages.Location = new System.Drawing.Point(12, 271);
+            this.buttonSelectActiveImages.Location = new System.Drawing.Point(12, 138);
             this.buttonSelectActiveImages.Name = "buttonSelectActiveImages";
             this.buttonSelectActiveImages.Size = new System.Drawing.Size(135, 25);
             this.buttonSelectActiveImages.TabIndex = 42;
@@ -101,7 +55,7 @@
             // buttonSelectImagesOfRank
             // 
             this.buttonSelectImagesOfRank.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectImagesOfRank.Location = new System.Drawing.Point(153, 271);
+            this.buttonSelectImagesOfRank.Location = new System.Drawing.Point(153, 138);
             this.buttonSelectImagesOfRank.Name = "buttonSelectImagesOfRank";
             this.buttonSelectImagesOfRank.Size = new System.Drawing.Size(135, 25);
             this.buttonSelectImagesOfRank.TabIndex = 43;
@@ -124,7 +78,7 @@
             // buttonSelectImagesOfType
             // 
             this.buttonSelectImagesOfType.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectImagesOfType.Location = new System.Drawing.Point(12, 124);
+            this.buttonSelectImagesOfType.Location = new System.Drawing.Point(3, 34);
             this.buttonSelectImagesOfType.Name = "buttonSelectImagesOfType";
             this.buttonSelectImagesOfType.Size = new System.Drawing.Size(135, 25);
             this.buttonSelectImagesOfType.TabIndex = 45;
@@ -136,7 +90,7 @@
             // 
             this.radioButtonAll.AutoSize = true;
             this.radioButtonAll.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.radioButtonAll.Location = new System.Drawing.Point(308, 35);
+            this.radioButtonAll.Location = new System.Drawing.Point(179, 15);
             this.radioButtonAll.Name = "radioButtonAll";
             this.radioButtonAll.Size = new System.Drawing.Size(36, 17);
             this.radioButtonAll.TabIndex = 46;
@@ -148,7 +102,7 @@
             // 
             this.radioButtonUnranked.AutoSize = true;
             this.radioButtonUnranked.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.radioButtonUnranked.Location = new System.Drawing.Point(308, 58);
+            this.radioButtonUnranked.Location = new System.Drawing.Point(179, 38);
             this.radioButtonUnranked.Name = "radioButtonUnranked";
             this.radioButtonUnranked.Size = new System.Drawing.Size(72, 17);
             this.radioButtonUnranked.TabIndex = 47;
@@ -160,7 +114,7 @@
             // 
             this.radioButtonRanked.AutoSize = true;
             this.radioButtonRanked.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.radioButtonRanked.Location = new System.Drawing.Point(308, 81);
+            this.radioButtonRanked.Location = new System.Drawing.Point(179, 61);
             this.radioButtonRanked.Name = "radioButtonRanked";
             this.radioButtonRanked.Size = new System.Drawing.Size(63, 17);
             this.radioButtonRanked.TabIndex = 48;
@@ -171,7 +125,7 @@
             // buttonSelectImages
             // 
             this.buttonSelectImages.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectImages.Location = new System.Drawing.Point(12, 168);
+            this.buttonSelectImages.Location = new System.Drawing.Point(3, 3);
             this.buttonSelectImages.Name = "buttonSelectImages";
             this.buttonSelectImages.Size = new System.Drawing.Size(135, 25);
             this.buttonSelectImages.TabIndex = 49;
@@ -182,7 +136,7 @@
             // buttonSelectImagesInFolder
             // 
             this.buttonSelectImagesInFolder.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSelectImagesInFolder.Location = new System.Drawing.Point(12, 199);
+            this.buttonSelectImagesInFolder.Location = new System.Drawing.Point(3, 65);
             this.buttonSelectImagesInFolder.Name = "buttonSelectImagesInFolder";
             this.buttonSelectImagesInFolder.Size = new System.Drawing.Size(135, 25);
             this.buttonSelectImagesInFolder.TabIndex = 50;
@@ -190,38 +144,41 @@
             this.buttonSelectImagesInFolder.UseVisualStyleBackColor = true;
             this.buttonSelectImagesInFolder.Click += new System.EventHandler(this.buttonSelectImagesInFolder_Click);
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.buttonSelectImagesOfType);
+            this.panel1.Controls.Add(this.radioButtonRanked);
+            this.panel1.Controls.Add(this.buttonSelectImagesInFolder);
+            this.panel1.Controls.Add(this.radioButtonUnranked);
+            this.panel1.Controls.Add(this.buttonSelectImages);
+            this.panel1.Controls.Add(this.radioButtonAll);
+            this.panel1.Location = new System.Drawing.Point(12, 35);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(276, 97);
+            this.panel1.TabIndex = 51;
+            // 
             // ImageSelectionOptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(449, 308);
-            this.Controls.Add(this.buttonSelectImagesInFolder);
-            this.Controls.Add(this.buttonSelectImages);
-            this.Controls.Add(this.radioButtonRanked);
-            this.Controls.Add(this.radioButtonUnranked);
-            this.Controls.Add(this.radioButtonAll);
-            this.Controls.Add(this.buttonSelectImagesOfType);
+            this.ClientSize = new System.Drawing.Size(304, 179);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.checkBoxRandomize);
             this.Controls.Add(this.buttonSelectImagesOfRank);
             this.Controls.Add(this.buttonSelectActiveImages);
-            this.Controls.Add(this.buttonSelectRankedInFolder);
-            this.Controls.Add(this.buttonSelectUnrankedinFolder);
-            this.Controls.Add(this.buttonSelectRankedImages);
-            this.Controls.Add(this.buttonSelectUnrankedImages);
             this.Name = "ImageSelectionOptionsForm";
             this.Text = "Image Selector";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button buttonSelectRankedInFolder;
-        private System.Windows.Forms.Button buttonSelectUnrankedinFolder;
-        private System.Windows.Forms.Button buttonSelectRankedImages;
-        private System.Windows.Forms.Button buttonSelectUnrankedImages;
         private System.Windows.Forms.Button buttonSelectImagesOfRank;
         private System.Windows.Forms.CheckBox checkBoxRandomize;
         private System.Windows.Forms.Button buttonSelectActiveImages;
@@ -231,5 +188,6 @@
         private System.Windows.Forms.RadioButton radioButtonRanked;
         private System.Windows.Forms.Button buttonSelectImages;
         private System.Windows.Forms.Button buttonSelectImagesInFolder;
+        private System.Windows.Forms.Panel panel1;
     }
 }

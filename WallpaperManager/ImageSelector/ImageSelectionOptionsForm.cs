@@ -22,26 +22,11 @@ namespace WallpaperManager.ImageSelector
         public ImageSelectionOptionsForm()
         {
             InitializeComponent();
-            checkBoxRandomize.Checked = WallpaperData.RandomizeSelection;
-
-            buttonSelectUnrankedImages.Click += buttonClickClose;
-            buttonSelectRankedImages.Click += buttonClickClose;
-            buttonSelectUnrankedinFolder.Click += buttonClickClose;
-            buttonSelectRankedInFolder.Click += buttonClickClose;
-            buttonSelectActiveImages.Click += buttonClickClose;
-            buttonSelectImagesOfRank.Click += buttonClickClose;
-            buttonSelectImagesOfType.Click += buttonClickClose;
-
-            buttonSelectImages.Click += buttonClickClose;
-            buttonSelectImagesInFolder.Click += buttonClickClose;
 
             radioButtonAll.Select();
+            checkBoxRandomize.Checked = WallpaperData.RandomizeSelection;
         }
 
-        private void buttonClickClose(object sender, EventArgs e)
-        {
-            Close();
-        }
 
         private void checkBoxRandomize_CheckedChanged(object sender, EventArgs e)
         {
@@ -50,58 +35,8 @@ namespace WallpaperManager.ImageSelector
 
         private void RebuildImageSelector_CheckRandomizer(string[] imagesToSelect)
         {
-            if (imagesToSelect != null) // this can occur when the selection is cancelled
-            {
-                WallpaperData.WallpaperManagerForm.RebuildImageSelector(checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect);
-            }
-        }
-
-        private void buttonSelectUnrankedImages_Click(object sender, EventArgs e) => RebuildImageSelector_CheckRandomizer(WallpaperData.GetImagesOfRank(0));
-
-        private void buttonSelectRankedImages_Click(object sender, EventArgs e) => RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllRankedImages());
-
-        private void buttonSelectUnrankedinFolder_Click(object sender, EventArgs e)
-        {
-            using(CommonOpenFileDialog dialog = new CommonOpenFileDialog())
-            {
-                dialog.IsFolderPicker = true;
-
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    List<string> imagesToSelect = new List<string>();
-                    foreach (string imagePath in WallpaperData.GetImagesOfFolder(dialog.FileName))
-                    {
-                        if (WallpaperData.GetImageRank(imagePath) == 0)
-                        {
-                            imagesToSelect.Add(imagePath);
-                        }
-                    }
-
-                    RebuildImageSelector_CheckRandomizer(imagesToSelect.ToArray());
-                }
-            }
-        }
-
-        private void buttonSelectRankedInFolder_Click(object sender, EventArgs e)
-        {
-            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
-            {
-                dialog.IsFolderPicker = true;
-
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    List<string> imagesToSelect = new List<string>();
-                    foreach (string imagePath in WallpaperData.GetImagesOfFolder(dialog.FileName))
-                    {
-                        if (WallpaperData.GetImageRank(imagePath) != 0)
-                        {
-                            imagesToSelect.Add(imagePath);
-                        }
-                    }
-
-                    RebuildImageSelector_CheckRandomizer(imagesToSelect.ToArray());
-                }
-            }
+            WallpaperData.WallpaperManagerForm.RebuildImageSelector(checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect);
+            Close(); // if the program got to this point then the selection was complete so close the selection window
         }
 
         private void buttonSelectActiveImages_Click(object sender, EventArgs e) => RebuildImageSelector_CheckRandomizer(PathData.ActiveWallpapers);
@@ -149,7 +84,8 @@ namespace WallpaperManager.ImageSelector
 
             MessageBoxDynamic.Show("Type selector", "Select a type", new Button[] {staticImage, gifImage, videoImage}, true);
 
-            RebuildImageSelector_CheckRandomizer(imagesToSelect);
+            if (imagesToSelect == null) return; // process was cancelled
+            RebuildImageSelector_CheckRandomizer(FilterImages(imagesToSelect));
         }
 
         private string[] SelectAllImagesOfType(ImageType imageType)
@@ -172,16 +108,66 @@ namespace WallpaperManager.ImageSelector
 
         private void buttonSelectImages_Click(object sender, EventArgs e)
         {
-            if (radioButtonAll.Checked) RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllImages());
-
-            if (radioButtonUnranked.Checked) RebuildImageSelector_CheckRandomizer(WallpaperData.GetImagesOfRank(0));
-
-            if (radioButtonRanked.Checked) RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllRankedImages());
+            if (radioButtonAll.Checked) // All
+            {
+                RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllImages());
+            }
+            else if (radioButtonUnranked.Checked) // Unranked
+            {
+                RebuildImageSelector_CheckRandomizer(WallpaperData.GetImagesOfRank(0));
+            }
+            else if (radioButtonRanked.Checked) // Ranked
+            {
+                RebuildImageSelector_CheckRandomizer(WallpaperData.GetAllRankedImages());
+            }
         }
 
         private void buttonSelectImagesInFolder_Click(object sender, EventArgs e)
         {
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
+            {
+                dialog.IsFolderPicker = true;
 
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    RebuildImageSelector_CheckRandomizer(FilterImages(WallpaperData.GetImagesOfFolder(dialog.FileName)));
+                }
+            }
+        }
+
+        // Filters a subset of images based on the active radio button (Not needed if your input is not already filtered in some way, there are functions for that)
+        private string[] FilterImages(string[] imagesToFilter)
+        {
+            List<string> imagesToSelect = new List<string>();
+            if (radioButtonAll.Checked) // All
+            {
+                foreach (string imagePath in imagesToFilter)
+                {
+                    imagesToSelect.Add(imagePath);
+                }
+            }
+            else if (radioButtonUnranked.Checked) // Unranked
+            {
+                foreach (string imagePath in imagesToFilter)
+                {
+                    if (WallpaperData.GetImageRank(imagePath) == 0)
+                    {
+                        imagesToSelect.Add(imagePath);
+                    }
+                }
+            }
+            else if (radioButtonRanked.Checked) // Ranked
+            {
+                foreach (string imagePath in imagesToFilter)
+                {
+                    if (WallpaperData.GetImageRank(imagePath) != 0)
+                    {
+                        imagesToSelect.Add(imagePath);
+                    }
+                }
+            }
+
+            return imagesToSelect.ToArray();
         }
     }
 }
