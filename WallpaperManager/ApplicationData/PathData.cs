@@ -174,13 +174,14 @@ namespace WallpaperManager.ApplicationData
                 reorderedWallpapers = conflictResolvedOrder.ToArray();
             }
         }
-            
+        
         private static string[] LargestImagesWithCustomFilePath(string[] CustomFilePath)
         {
-            Image[] images = (from f in CustomFilePath select Image.FromFile(f)).ToArray();
+            Image[] images = (from f in CustomFilePath select WallpaperManagerTools.GetImageFromFile(f)).ToArray();
 
             for (int i = 0; i < CustomFilePath.Length; i++) // sets file path for image objects
             {
+                //? Note that the tag is empty beforehand | This is used to organize the images below based on their width and height
                 images[i].Tag = CustomFilePath[i];
             }
 

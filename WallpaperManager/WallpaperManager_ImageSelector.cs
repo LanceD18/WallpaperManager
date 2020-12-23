@@ -271,29 +271,7 @@ namespace WallpaperManager
         {
             Thread thread = new Thread(() =>
             {
-                Image image;
-                try
-                {
-                    image = Image.FromFile(imagePath);
-                    /*
-                    Image image;
-                    using (Stream stream = File.OpenRead(imagePath))
-                    {
-                        image = Image.FromStream(stream);
-                    }
-                    */
-                }
-                catch (Exception e)
-                {
-                    if (WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imagePath).Extension))
-                    {
-                        image = WallpaperManagerTools.GetFirstVideoFrame(imagePath);
-                    }
-                    else
-                    {
-                        throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
-                    }
-                }
+                Image image = WallpaperManagerTools.GetImageFromFile(imagePath);
 
                 loadedImages.Enqueue(image); //? Disposes images later
                 parentEditorControl.SetBackgroundImage(image);

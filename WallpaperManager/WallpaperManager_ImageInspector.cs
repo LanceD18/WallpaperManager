@@ -32,7 +32,7 @@ namespace WallpaperManager
                 {
                     try
                     {
-                        using (Image image = Image.FromFile(value))
+                        using (Image image = WallpaperManagerTools.GetImageFromFile(value))
                         {
                             labelImageSize.Text = image.Width + "x" + image.Height;
                             labelImageSize.Left = panelImageSelector.Location.X - labelImageSize.Size.Width - 5;
@@ -40,10 +40,7 @@ namespace WallpaperManager
                     }
                     catch (Exception e)
                     {
-                        if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(value).Extension))
-                        {
-                            throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
-                        }
+                        throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
                     }
                 }
             }

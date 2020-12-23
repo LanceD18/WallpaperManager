@@ -50,23 +50,23 @@ namespace WallpaperManager
 
         public static bool IsSupportedVideoType(string extension) => extension == ".mp4" || extension == ".webm" || extension == ".avi";
 
-        public static SelectionType ChooseSelectionType()
+        public static Image GetImageFromFile(string filePath)
         {
-            SelectionType selectionType = SelectionType.None;
-
-            Button selectedImageButton = new Button();
-            selectedImageButton.AutoSize = true;
-            selectedImageButton.Text = "Active Selected Image";
-            selectedImageButton.Click += (o, i) => { selectionType = SelectionType.Active; };
-
-            Button allImagesButton = new Button();
-            allImagesButton.AutoSize = true;
-            allImagesButton.Text = "All Selected Images";
-            allImagesButton.Click += (o, i) => { selectionType = SelectionType.All; };
-
-            MessageBoxDynamic.Show("Choose a selection type", "Choose an option", new Button[] { selectedImageButton, allImagesButton }, true);
-
-            return selectionType;
+            try
+            {
+                if (!IsSupportedVideoType(new FileInfo(filePath).Extension))
+                {
+                    return Image.FromFile(filePath);
+                }
+                else
+                {
+                    return GetFirstVideoFrame(filePath);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
+            }
         }
 
         public static Bitmap GetFirstVideoFrame(string videoPath)
@@ -84,6 +84,25 @@ namespace WallpaperManager
             }
 
             return bitmap;
+        }
+
+        public static SelectionType ChooseSelectionType()
+        {
+            SelectionType selectionType = SelectionType.None;
+
+            Button selectedImageButton = new Button();
+            selectedImageButton.AutoSize = true;
+            selectedImageButton.Text = "Active Selected Image";
+            selectedImageButton.Click += (o, i) => { selectionType = SelectionType.Active; };
+
+            Button allImagesButton = new Button();
+            allImagesButton.AutoSize = true;
+            allImagesButton.Text = "All Selected Images";
+            allImagesButton.Click += (o, i) => { selectionType = SelectionType.All; };
+
+            MessageBoxDynamic.Show("Choose a selection type", "Choose an option", new Button[] { selectedImageButton, allImagesButton }, true);
+
+            return selectionType;
         }
     }
 }

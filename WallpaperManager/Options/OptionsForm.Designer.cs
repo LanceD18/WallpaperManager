@@ -232,7 +232,7 @@
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.textBoxExactVideo);
             this.panel1.Controls.Add(this.textBoxExactGIF);
@@ -248,7 +248,7 @@
             this.panel1.Controls.Add(this.labelFrequency);
             this.panel1.Location = new System.Drawing.Point(9, 98);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(279, 136);
+            this.panel1.Size = new System.Drawing.Size(269, 126);
             this.panel1.TabIndex = 51;
             // 
             // textBoxExactVideo
