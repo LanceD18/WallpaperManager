@@ -12,12 +12,10 @@ namespace WallpaperManager
         //?-----FindWindow-----
         // For Windows Mobile, replace user32.dll with coredll.dll
         [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
-        public static IntPtr FindWindow(string caption)
-        {
-            return FindWindow(String.Empty, caption);
-        }
+        public static IntPtr FindWindow(string caption) => FindWindow(caption, null);
+        //?public static IntPtr FindWindow(string caption) => FindWindow(String.Empty, caption);
 
         //?-----SendMessageTimeout-----
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]

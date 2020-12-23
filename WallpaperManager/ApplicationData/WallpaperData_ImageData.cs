@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Navigation;
+using LanceTools;
 using Newtonsoft.Json;
 using WallpaperManager.Tagging;
 
@@ -15,14 +16,16 @@ namespace WallpaperManager.ApplicationData
 {
     public static partial class WallpaperData
     {
-        // the following 3 dictionaries are used to give the user more customization over how various image types are drawn
-        private static Dictionary<string, ImageData> StaticImages = new Dictionary<string, ImageData>();
-        private static Dictionary<string, ImageData> GifImages = new Dictionary<string, ImageData>();
-        private static Dictionary<string, ImageData> VideoImages = new Dictionary<string, ImageData>();
+        // TODO Consider merging ImagesOfType & ImagesOfTypeRankData with FileData & RankData [NOTE, this will add more loops to your general functions so I'd honestly advise against the merge]
+        // used to give the user more selection options
+        private static Dictionary<ImageType, Dictionary<string, ImageData>> ImagesOfType;
 
-        public static string[] GetAllStaticImages() => StaticImages.Keys.ToArray();
-        public static string[] GetAllGifImages() => GifImages.Keys.ToArray();
-        public static string[] GetAllVideoImages() => VideoImages.Keys.ToArray();
+        //? this doesn't need ot be reactive lists since the regular RankData does enough to handle the issue presented (Checking if rank percentiles should be updated)
+        private static Dictionary<ImageType, List<List<string>>> ImagesOfTypeRankData;
+
+        public static string[] GetAllStaticImages() => ImagesOfType[ImageType.Static].Keys.ToArray();
+        public static string[] GetAllGifImages() => ImagesOfType[ImageType.GIF].Keys.ToArray();
+        public static string[] GetAllVideoImages() => ImagesOfType[ImageType.Video].Keys.ToArray();
 
         public class ImageData
         {
@@ -44,8 +47,11 @@ namespace WallpaperManager.ApplicationData
                     {
                         if (Active) // Rank Data does not include inactive images
                         {
-                            RankData[Rank].Remove(Path);
+                            RankData[_Rank].Remove(Path);
                             RankData[value].Add(Path);
+
+                            ImagesOfTypeRankData[imageType][_Rank].Remove(Path);
+                            ImagesOfTypeRankData[imageType][value].Add(Path);
                         }
 
                         _Rank = value; // place this after the above if statement to ensure that the right image file path is found
@@ -67,12 +73,16 @@ namespace WallpaperManager.ApplicationData
 
                         if (value)
                         {
-                            RankData[Rank].Add(Path);
+                            RankData[_Rank].Add(Path);
+                            ImagesOfTypeRankData[imageType][_Rank].Add(Path);
+
                             ActiveImages.Add(Path);
                         }
                         else  // Note that Rank Data does not include inactive images
                         {
-                            RankData[Rank].Remove(Path);
+                            RankData[_Rank].Remove(Path);
+                            ImagesOfTypeRankData[imageType][_Rank].Remove(Path);
+
                             ActiveImages.Remove(Path);
                         }
                     }
@@ -96,9 +106,13 @@ namespace WallpaperManager.ApplicationData
 
             [DataMember(Name = "Tag Naming Exceptions")] public HashSet<Tuple<string, string>> TagNamingExceptions; // these tags be used for naming regardless of constraints
 
+            [DataMember(Name = "Image Type")] public ImageType imageType;
+
             public ImageData(string path, int rank, bool active, Dictionary<string, HashSet<string>> tags = null, HashSet<Tuple<string, string>> tagNamingExceptions = null)
             {
                 FileInfo file = new FileInfo(path);
+
+                InitializeImageType(file, path); //? needs to be done before a rank is set
 
                 Path = path;
                 PathFolder = file.Directory.FullName;
@@ -107,25 +121,37 @@ namespace WallpaperManager.ApplicationData
                 Tags = tags ?? new Dictionary<string, HashSet<string>>();
                 TagNamingExceptions = tagNamingExceptions ?? new HashSet<Tuple<string, string>>();
 
-                if (!WallpaperManagerTools.IsSupportedVideoType(file.Extension))
-                {
-                    if (file.Extension != ".gif")
-                    {
-                        StaticImages.Add(path, this);
-                    }
-                    else
-                    {
-                        GifImages.Add(path, this);
-                    }
-                }
-                else
-                {
-                    VideoImages.Add(path, this);
-                }
-
                 if (!IsLoadingData || IsLoadingImageFolders) // image that are loaded-in already have the proper settings | IsLoadingImageFolders overrides this for actual new images
                 {
                     EvaluateActiveState(false);
+                }
+            }
+
+            private void InitializeImageType(FileInfo file, string path)
+            {
+                if (imageType != ImageType.None)
+                {
+                    ImagesOfType[imageType].Add(path, this);
+                }
+                else
+                {
+                    if (!WallpaperManagerTools.IsSupportedVideoType(file.Extension))
+                    {
+                        if (file.Extension != ".gif")
+                        {
+                            imageType = ImageType.Static;
+                        }
+                        else
+                        {
+                            imageType = ImageType.GIF;
+                        }
+                    }
+                    else
+                    {
+                        imageType = ImageType.Video;
+                    }
+
+                    ImagesOfType[imageType].Add(path, this);
                 }
             }
 

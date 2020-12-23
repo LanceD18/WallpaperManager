@@ -122,7 +122,7 @@ namespace WallpaperManager.ApplicationData
 
                 IsLoadingData = false;
                 PathData.ActiveWallpaperTheme = path;
-                UpdateRankPercentiles();
+                UpdateRankPercentiles(ImageType.None);  //! Now that image types exist this preemptive change may not be worth it
                 return true;
             }
             else  //! MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
@@ -142,9 +142,10 @@ namespace WallpaperManager.ApplicationData
             ImageFolders.Clear();
             TaggingInfo = new TaggingInfo();
 
-            StaticImages.Clear();
-            GifImages.Clear();
-            VideoImages.Clear();
+            ImagesOfType.Clear();
+            ImagesOfTypeRankData.Clear();
+
+            InitializeImagesOfType();
 
             // This is needed if loading otherwise images with invalid ranks will crash the program
             SetRankData(LargestMaxRank);
@@ -181,7 +182,7 @@ namespace WallpaperManager.ApplicationData
             {
                 MessageBox.Show(invalidImagesString);
             }
-
+            
             // since activating an image folder also adds undeteced images, this needs to be loaded last
             IsLoadingImageFolders = true; // this is used to override the IsLoading bool for new images added when loading image folders
             WallpaperManagerForm.LoadImageFolders(jsonWallpaperData.imageFolders);
@@ -191,6 +192,9 @@ namespace WallpaperManager.ApplicationData
         private static void LoadOptionsData(JsonWallpaperData jsonWallpaperData)
         {
             OptionsData.ThemeOptions = jsonWallpaperData.themeOptions;
+
+            // this is only really needed when adding in new options, a minor convenience feature to prevent errors when loading the default theme
+            OptionsData.InitializePotentialNulls();
         }
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)

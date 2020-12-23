@@ -58,7 +58,6 @@ namespace WallpaperManager
             {
                 this.Invoke((MethodInvoker) delegate
                 {
-                    Debug.WriteLine("Load");
                     BackColor = Color.Black;
 
                     // Sets bounds of the form
@@ -111,7 +110,6 @@ namespace WallpaperManager
         // TODO style readjustment when changing wallpapers by *locking* the previous wallpaper in place
         public void SetWallpaper(string imageLocation)
         {
-            Debug.WriteLine("Set Wallpaper");
             if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imageLocation).Extension))
             {
                 pictureBoxWallpaper.Invoke((MethodInvoker) delegate
@@ -147,7 +145,6 @@ namespace WallpaperManager
 
         public void ResetWallpaperStyle()
         {
-            Debug.WriteLine("Reset");
             SetWallpaperStyle(WallpaperData.WallpaperManagerForm.GetWallpaperStyle());
         }
 

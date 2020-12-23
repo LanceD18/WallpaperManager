@@ -31,9 +31,16 @@ namespace WallpaperManager
 
     public enum ImageType
     {
+        None,
         Static,
         GIF,
         Video
+    }
+
+    public enum FrequencyType
+    {
+        Relative,
+        Exact
     }
 
     public static class WallpaperManagerTools

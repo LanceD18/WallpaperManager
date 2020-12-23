@@ -22,11 +22,12 @@ namespace WallpaperManager.ApplicationData
         public static WallpaperManager WallpaperManagerForm;
 
         private static Dictionary<string, ImageData> FileData = new Dictionary<string, ImageData>();
+
         private static ReactiveList<ReactiveList<string>> RankData = new ReactiveList<ReactiveList<string>>(); //? Add and removal should be automated, you should only need to retrieve data from this
+        private static Dictionary<int, double> modifiedRankPercentiles = new Dictionary<int, double>();
+        private static double[] rankPercentiles;
         public static bool potentialWeightedRankUpdate;
         public static bool potentialRegularRankUpdate;
-        private static double[] rankPercentiles;
-        private static Dictionary<int, double> modifiedRankPercentiles = new Dictionary<int, double>();
 
         private static List<string> ActiveImages = new List<string>(); //? Add and removal should be automated, you should only need to retrieve data from this
         private static Dictionary<string, bool> ImageFolders = new Dictionary<string, bool>();
@@ -51,13 +52,25 @@ namespace WallpaperManager.ApplicationData
         {
             WallpaperManagerForm = wallpaperManager;
 
-            if (useLastLoadedTheme)
-            {
-                LoadDefaultTheme();
-            }
+            InitializeImagesOfType();
 
             RankData.OnListAddItem += RankData_OnParentListAddItem;
             RankData.OnListRemoveItem += RankData_OnParentListRemoveItem;
+
+            if (useLastLoadedTheme) LoadDefaultTheme(); //! This should be placed at the very end
+        }
+
+        public static void InitializeImagesOfType() // this needs to be reloaded whenever a theme is loaded
+        {
+            ImagesOfType = new Dictionary<ImageType, Dictionary<string, ImageData>>();
+            ImagesOfType.Add(ImageType.Static, new Dictionary<string, ImageData>());
+            ImagesOfType.Add(ImageType.GIF, new Dictionary<string, ImageData>());
+            ImagesOfType.Add(ImageType.Video, new Dictionary<string, ImageData>());
+
+            ImagesOfTypeRankData = new Dictionary<ImageType, List<List<string>>>();
+            ImagesOfTypeRankData.Add(ImageType.Static, new List<List<string>>());
+            ImagesOfTypeRankData.Add(ImageType.GIF, new List<List<string>>());
+            ImagesOfTypeRankData.Add(ImageType.Video, new List<List<string>>());
         }
 
         // File Data
@@ -94,13 +107,16 @@ namespace WallpaperManager.ApplicationData
             {
                 Tagging.UnlinkImageTags(FileData[path]);
 
-                RankData[FileData[path].Rank].Remove(path);
-                FileData.Remove(path);
-                ActiveImages.Remove(path);
+                ImageData image = FileData[path];
+                ImageType imageType = image.imageType;
 
-                if (StaticImages.ContainsKey(path)) StaticImages.Remove(path);
-                if (GifImages.ContainsKey(path)) GifImages.Remove(path);
-                if (VideoImages.ContainsKey(path)) VideoImages.Remove(path);
+                ImagesOfType[imageType].Remove(path);
+                ImagesOfTypeRankData[imageType][image.Rank].Remove(path);
+
+                RankData[image.Rank].Remove(path);
+                FileData.Remove(path);
+
+                ActiveImages.Remove(path);
             }
         }
 
@@ -164,10 +180,18 @@ namespace WallpaperManager.ApplicationData
             return rankedImageData;
         }
 
-        public static string GetRandomImageOfRank(int rank, ref Random rand)
+        public static string GetRandomImageOfRank(int rank, ref Random rand, ImageType imageType)
         {
-            int randomImage = rand.Next(0, RankData[rank].Count);
-            return RankData[rank][randomImage];
+            if (imageType == ImageType.None) // regular procedure, select any image
+            {
+                int randomImage = rand.Next(0, RankData[rank].Count);
+                return RankData[rank][randomImage];
+            }
+            else // limits selection to an image type
+            {
+                int randomImage = rand.Next(0, ImagesOfTypeRankData[imageType][rank].Count);
+                return ImagesOfTypeRankData[imageType][rank][randomImage];
+            }
         }
 
         public static int GetMaxRank() => RankData.Count - 1;
@@ -279,14 +303,22 @@ namespace WallpaperManager.ApplicationData
         /// </summary>
         /// <returns></returns>
         //? You should call UpdateRankPercentiles instead if that's what's you need
-        private static Dictionary<int, double> GetModifiedRankPercentiles()
+        private static Dictionary<int, double> GetModifiedRankPercentiles(ImageType imageType)
         {
             double rankPercentagesTotal = 0;
             List<int> validRanks = new List<int>();
             for (int i = 0; i < RankData.Count; i++) // i == rank
             {
-                if (RankData[i].Count != 0 && i != 0)
+                if (RankData[i].Count != 0 && i != 0) // The use of i != 0 excludes unranked images
                 {
+                    if (imageType != ImageType.None) // if an image type is being searched for, check if contains any values
+                    {
+                        if (ImagesOfTypeRankData[imageType][i].Count == 0)
+                        {
+                            continue; // this rank is not valid since the selected image type is not present
+                        }
+                    }
+
                     rankPercentagesTotal += rankPercentiles[i - 1];
                     validRanks.Add(i);
                 }
@@ -298,6 +330,7 @@ namespace WallpaperManager.ApplicationData
             foreach (int rank in validRanks)
             {
                 modifiedRankPercentiles.Add(rank, rankPercentiles[rank - 1] / rankPercentagesTotal);
+                //xDebug.WriteLine("Rank: " + rank + " | Percentile: " + modifiedRankPercentiles[rank]);
             }
 
             return modifiedRankPercentiles;
@@ -307,9 +340,11 @@ namespace WallpaperManager.ApplicationData
         /// Weights rank percentiles on both how high the rank is and how many images are in a rank
         /// </summary>
         //? You should call UpdateRankPercentiles instead if that's what's you need
-        private static Dictionary<int, double> GetWeightedRankPercentiles()
+        // TODO Modify this in a way that doesn't need GetModifiedRankPercentiles(), removing the need to loop twice. I doubt this will have much of a performance
+        // TODO impact however considering how fast it already is. It may be best to just leave it as is for convenience
+        private static Dictionary<int, double> GetWeightedRankPercentiles(ImageType imageType)
         {
-            Dictionary<int, double> modifiedRankPercentiles = GetModifiedRankPercentiles();
+            Dictionary<int, double> modifiedRankPercentiles = GetModifiedRankPercentiles(imageType);
             int[] validRanks = modifiedRankPercentiles.Keys.ToArray();
 
             int rankedImageCount = GetAllRankedImages().Length;
@@ -318,36 +353,41 @@ namespace WallpaperManager.ApplicationData
             // sets the individual weighted percentage of each rank
             foreach (int rank in validRanks)
             {
-                // modifiedRankPercentile * (imagesInRank / rankedImagesTotalCount)
-                modifiedRankPercentiles[rank] = modifiedRankPercentiles[rank] * ((double)GetImagesOfRank(rank).Length / rankedImageCount);
+                // If an image type is being searched for then only include the number of images from said image type
+                double percentileModifier = imageType == ImageType.None ? 
+                    ((double) RankData[rank].Count / rankedImageCount) : 
+                    ((double) ImagesOfTypeRankData[imageType][rank].Count / rankedImageCount);
+
+                modifiedRankPercentiles[rank] *= percentileModifier;
                 newRankPercentageTotal += modifiedRankPercentiles[rank];
             }
 
             // rescales the percentages to account for weighting
             foreach (int rank in validRanks)
             {
-                modifiedRankPercentiles[rank] = modifiedRankPercentiles[rank] / newRankPercentageTotal;
+                modifiedRankPercentiles[rank] /= newRankPercentageTotal;
+                //xDebug.WriteLine("Rank: " + rank + " | Weighted Percentile: " + modifiedRankPercentiles[rank]);
             }
 
             return modifiedRankPercentiles;
         }
 
-        public static Dictionary<int, double> GetRankPercentiles()
+        public static Dictionary<int, double> GetRankPercentiles(ImageType imageType)
         {
             // sets up the modifiedRankPercentiles variable if it's empty
             if (modifiedRankPercentiles.Count == 0)
             {
-                UpdateRankPercentiles();
+                UpdateRankPercentiles(imageType);
             }
 
             return modifiedRankPercentiles;
         }
 
-        public static void UpdateRankPercentiles()
+        public static void UpdateRankPercentiles(ImageType imageType)
         {
             potentialWeightedRankUpdate = false;
             potentialRegularRankUpdate = false;
-            modifiedRankPercentiles = OptionsData.ThemeOptions.WeightedRanks ? GetWeightedRankPercentiles() : GetModifiedRankPercentiles();
+            modifiedRankPercentiles = OptionsData.ThemeOptions.WeightedRanks ? GetWeightedRankPercentiles(imageType) : GetModifiedRankPercentiles(imageType);
         }
         #endregion
 
@@ -356,12 +396,20 @@ namespace WallpaperManager.ApplicationData
         {
             e.Item.OnListAddItem += RankData_OnListAddItem;
             e.Item.OnListRemoveItem += RankData_OnListRemoveItem;
+
+            ImagesOfTypeRankData[ImageType.Static].Insert(e.Index, new List<string>());
+            ImagesOfTypeRankData[ImageType.GIF].Insert(e.Index, new List<string>());
+            ImagesOfTypeRankData[ImageType.Video].Insert(e.Index, new List<string>());
         }
 
         private static void RankData_OnParentListRemoveItem(object sender, ListChangedEventArgs<ReactiveList<string>> e)
         {
             e.Item.OnListAddItem -= RankData_OnListAddItem;
             e.Item.OnListRemoveItem -= RankData_OnListRemoveItem;
+
+            ImagesOfTypeRankData[ImageType.Static].RemoveAt(e.Index);
+            ImagesOfTypeRankData[ImageType.GIF].RemoveAt(e.Index);
+            ImagesOfTypeRankData[ImageType.Video].RemoveAt(e.Index);
         }
 
         private static void RankData_OnListAddItem(object sender, ListChangedEventArgs<string> e)

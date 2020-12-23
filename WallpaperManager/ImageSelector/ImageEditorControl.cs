@@ -27,6 +27,7 @@ namespace WallpaperManager.ImageSelector
             SuspendLayout();
             buttonSelectImage.Click += (o, i) => { WallpaperData.WallpaperManagerForm.UpdateSelectedImage(imageData); };
 
+            // Rank Editor Lost Focus Event (Updates rank upon losing focus of the control)
             textBoxRankEditor.Text = imageData.Rank.ToString();
             textBoxRankEditor.LostFocus += (o, i) =>
             {
@@ -41,6 +42,7 @@ namespace WallpaperManager.ImageSelector
                 }
             };
 
+            // Rank Editor Key Down Event (Updates rank upon pressing the enter key)
             textBoxRankEditor.KeyDown += (o, i) =>
             {
                 if (i.KeyCode == Keys.Enter)

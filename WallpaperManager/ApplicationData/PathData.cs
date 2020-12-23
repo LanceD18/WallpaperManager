@@ -50,11 +50,23 @@ namespace WallpaperManager.ApplicationData
         {
             Random rand = new Random();
 
+            // Gather potential wallpapers
             for (int i = 0; i < MonitorData.Screens.Length; i++)
             {
-                /*!int randomRank = GetRandomRank(rand, !OptionsData.ThemeOptions.WeightedRanks ?
-                        WallpaperData.GetModifiedRankPercentiles() : WallpaperData.GetWeightedRankPercentiles());*/
-                int randomRank = GetRandomRank(rand);
+                ImageType imageTypeToSearchFor = ImageType.None;
+                if (!OptionsData.IsFrequencyEqual())
+                {
+                    double staticChance = OptionsData.GetExactFrequency(ImageType.Static);
+                    double gifChance = OptionsData.GetExactFrequency(ImageType.GIF);
+                    double videoChance = OptionsData.GetExactFrequency(ImageType.Video);
+
+                    ImageType[] imageTypeIndexes = {ImageType.Static, ImageType.GIF, ImageType.Video};
+                    double[] imageTypePercentages = {staticChance, gifChance, videoChance};
+
+                    imageTypeToSearchFor = rand.NextInWeightedArray(imageTypeIndexes, imageTypePercentages);
+                }
+
+                int randomRank = GetRandomRank(ref rand, imageTypeToSearchFor);
 
                 // Find random image path
                 if (randomRank == -1)
@@ -63,7 +75,7 @@ namespace WallpaperManager.ApplicationData
                 }
                 else
                 {
-                    ActiveWallpapers[i] = WallpaperData.GetRandomImageOfRank(randomRank, ref rand);
+                    ActiveWallpapers[i] = WallpaperData.GetRandomImageOfRank(randomRank, ref rand, imageTypeToSearchFor);
 
                     if (!WallpaperData.GetImageData(ActiveWallpapers[i]).Active)
                     {
@@ -78,37 +90,17 @@ namespace WallpaperManager.ApplicationData
         }
 
         // Picks ranks based on their default percentiles (Where the highest rank is the most likely to appear and it goes down from there)
-        private static int GetRandomRank(Random rand)
+        private static int GetRandomRank(ref Random rand, ImageType imageType)
         {
-            if ((WallpaperData.potentialWeightedRankUpdate && OptionsData.ThemeOptions.WeightedRanks) || WallpaperData.potentialRegularRankUpdate) // the percentiles for weighted ranks change everytime an image's rank is altered
+            Debug.WriteLine("Searching for: " + imageType);
+            // the percentiles for weighted ranks change everytime an image's rank is altered or if the image type is not none
+            if ((WallpaperData.potentialWeightedRankUpdate && OptionsData.ThemeOptions.WeightedRanks) || WallpaperData.potentialRegularRankUpdate || imageType != ImageType.None)
             {
-                WallpaperData.UpdateRankPercentiles(); //? this method sets the above booleans to false
+                WallpaperData.UpdateRankPercentiles(imageType); //? this method sets the above booleans to false
             }
 
-            Dictionary<int, double> modifiedRankPercentiles = WallpaperData.GetRankPercentiles();
-
-            int randomRank = -1;
-            int[] rankPercentageKeys = modifiedRankPercentiles.Keys.ToArray();
-            double[] rankPercentageValues = modifiedRankPercentiles.Values.ToArray();
-
-            double randomPercentage = rand.NextDouble(); // determines which rank is chosen
-            //TODO check if this needs to be set to the "percentage total" of the modifiedRankPercentiles
-            double percentageCounter = 1.0; // used to "traverse" through rank percentages
-
-            // Find random rank based on percentiles
-            for (int j = rankPercentageValues.Length - 1; j >= 0; j--)
-            {
-                if (randomPercentage.InRange(percentageCounter - rankPercentageValues[j], percentageCounter))
-                {
-                    randomRank = rankPercentageKeys[j];
-                    break;
-                }
-
-                // since randomPercentage is a static value in this loop, this is needed to ensure that all values from 0.0 to 1.0 are checked
-                percentageCounter -= rankPercentageValues[j];
-            }
-
-            return randomRank;
+            Dictionary<int, double> modifiedRankPercentiles = WallpaperData.GetRankPercentiles(imageType);
+            return rand.NextInWeightedArray(modifiedRankPercentiles.Keys.ToArray(), modifiedRankPercentiles.Values.ToArray());
         }
 
         #region Wallpaper Order Modifiers

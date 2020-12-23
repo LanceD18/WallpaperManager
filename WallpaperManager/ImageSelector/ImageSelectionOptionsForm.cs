@@ -66,7 +66,7 @@ namespace WallpaperManager.ImageSelector
             {
                 MessageBox.Show("Invalid Rank");
                 SelectAllImagesOfRank();
-                return;
+                return; //? keep this here for just in case code is added below this segment in the future
             }
         }
 
