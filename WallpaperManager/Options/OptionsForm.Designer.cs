@@ -58,6 +58,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.labelFrequency = new System.Windows.Forms.Label();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageThemeOptions.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -234,6 +235,7 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.textBoxExactVideo);
             this.panel1.Controls.Add(this.textBoxExactGIF);
             this.panel1.Controls.Add(this.textBoxExactStatic);
@@ -402,6 +404,17 @@
             this.tabPageGlobalOptions.TabIndex = 1;
             this.tabPageGlobalOptions.Text = "Global Options";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label4.Location = new System.Drawing.Point(3, 10);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(129, 12);
+            this.label4.TabIndex = 52;
+            this.label4.Text = "(Press Enter to save changes)";
+            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -453,5 +466,6 @@
         private System.Windows.Forms.Label labelVideo;
         private System.Windows.Forms.TextBox textBoxRelativeVideo;
         private System.Windows.Forms.Label labelGIF;
+        private System.Windows.Forms.Label label4;
     }
 }

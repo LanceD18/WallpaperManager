@@ -50,10 +50,7 @@ namespace WallpaperManager
             panelImageInspector.BringToFront();
 
             SuspendLayout();
-            inspector_axWindowsMediaPlayer.stretchToFit = true;
-            //inspector_axWindowsMediaPlayer.uiMode = "none";
-            inspector_axWindowsMediaPlayer.settings.setMode("loop", true);
-            inspector_axWindowsMediaPlayer.settings.autoStart = true;
+            inspector_axWindowsMediaPlayer = WallpaperManagerTools.InitializeWindowsMediaPlayer(inspector_axWindowsMediaPlayer, true);
 
             inspector_textBoxRankEditor.LostFocus += (o, i) =>
             {
@@ -154,7 +151,7 @@ namespace WallpaperManager
                 inspector_pictureBoxImage.Visible = false;
                 inspector_axWindowsMediaPlayer.Visible = true;
 
-                inspector_axWindowsMediaPlayer = WallpaperManagerTools.InitializeWindowMediaPlayer(inspector_axWindowsMediaPlayer, inspectedImage);
+                inspector_axWindowsMediaPlayer = WallpaperManagerTools.UpdateWindowsMediaPlayer(inspector_axWindowsMediaPlayer, inspectedImage);
             }
 
             inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(inspectedImage).Rank.ToString();

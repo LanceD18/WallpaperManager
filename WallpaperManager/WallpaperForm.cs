@@ -70,11 +70,8 @@ namespace WallpaperManager
                     // Sets bounds of the wallpaper
                     pictureBoxWallpaper.Bounds = pictureBoxBounds;
 
+                    axWindowsMediaPlayerWallpaper = WallpaperManagerTools.InitializeWindowsMediaPlayer(axWindowsMediaPlayerWallpaper, false);
                     axWindowsMediaPlayerWallpaper.Bounds = pictureBoxBounds;
-                    axWindowsMediaPlayerWallpaper.stretchToFit = true;
-                    axWindowsMediaPlayerWallpaper.uiMode = "none";
-                    axWindowsMediaPlayerWallpaper.settings.volume = 0;
-                    axWindowsMediaPlayerWallpaper.settings.setMode("loop", true);
                     axWindowsMediaPlayerWallpaper.Ctlenabled = false;
 
                     ResetWallpaperStyle();
@@ -141,7 +138,7 @@ namespace WallpaperManager
                     //?axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker) delegate
                     //?{
                         axWindowsMediaPlayerWallpaper.Visible = true;
-                        axWindowsMediaPlayerWallpaper = WallpaperManagerTools.InitializeWindowMediaPlayer(axWindowsMediaPlayerWallpaper, imageLocation);
+                        axWindowsMediaPlayerWallpaper = WallpaperManagerTools.UpdateWindowsMediaPlayer(axWindowsMediaPlayerWallpaper, imageLocation);
 
                     //?});
                 }

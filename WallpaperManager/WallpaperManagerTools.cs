@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -89,7 +90,31 @@ namespace WallpaperManager
             return bitmap;
         }
 
-        public static AxWindowsMediaPlayer InitializeWindowMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, string videoPath)
+        public static AxWindowsMediaPlayer InitializeWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, bool editable)
+        {
+            axWindowsMediaPlayer.stretchToFit = true;
+            axWindowsMediaPlayer.settings.setMode("loop", true);
+            axWindowsMediaPlayer.settings.autoStart = true;
+
+            if (editable) // If editable, allow the volume slider to be saved
+            {
+                //? The MouseDownEvent will only save the volume at the time of clicking while the MouseUpEvent won't work while using the slider
+                //TODO To improve this you'll need to make your own slider and attach it to the control
+                axWindowsMediaPlayer.MouseMoveEvent += (s, e) =>
+                {
+                    //! This event should only be added once!!!
+                    WallpaperData.GetImageData(axWindowsMediaPlayer.URL).VideoSettings.volume = axWindowsMediaPlayer.settings.volume;
+                };
+            }
+            else // Not editable, disable UI
+            {
+                axWindowsMediaPlayer.uiMode = "none";
+            }
+
+            return axWindowsMediaPlayer;
+        }
+
+        public static AxWindowsMediaPlayer UpdateWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, string videoPath)
         {
             axWindowsMediaPlayer.URL = videoPath;
 
@@ -97,10 +122,6 @@ namespace WallpaperManager
             axWindowsMediaPlayer.settings.volume = image.VideoSettings.volume;
             axWindowsMediaPlayer.settings.rate = image.VideoSettings.playbackSpeed;
             axWindowsMediaPlayer.Enabled = true;
-
-            //? The MouseDownEvent will only save the volume at the time of clicking while the MouseUpEvent won't work while using the slider
-            //TODO To improve this you'll need to make your own slider and attach it to the control
-            axWindowsMediaPlayer.MouseMoveEvent += (s, e) => image.VideoSettings.volume = axWindowsMediaPlayer.settings.volume;
 
             return axWindowsMediaPlayer;
         }

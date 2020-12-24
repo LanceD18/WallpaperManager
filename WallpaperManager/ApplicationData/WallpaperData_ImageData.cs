@@ -32,7 +32,6 @@ namespace WallpaperManager.ApplicationData
 
         public static string[] GetAllImagesOfType(ImageType imageType) => ImagesOfType[imageType].Keys.ToArray();
 
-
         public static bool IsAllImagesOfTypeUnranked(ImageType imageType) => ImagesOfTypeRankData[imageType][0].Count == ImagesOfType[imageType].Count;
 
         public struct VideoSettings

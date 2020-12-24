@@ -38,7 +38,8 @@ namespace WallpaperManager.ImageSelector
             {
                 pictureBoxImage.Visible = false; axWindowsMediaPlayerImage.Visible = true;
 
-                axWindowsMediaPlayerImage = WallpaperManagerTools.InitializeWindowMediaPlayer(axWindowsMediaPlayerImage, imageData.Path);
+                axWindowsMediaPlayerImage = WallpaperManagerTools.InitializeWindowsMediaPlayer(axWindowsMediaPlayerImage, true);
+                axWindowsMediaPlayerImage = WallpaperManagerTools.UpdateWindowsMediaPlayer(axWindowsMediaPlayerImage, imageData.Path);
             }
 
             imageTagsFLP.SuspendLayout();
