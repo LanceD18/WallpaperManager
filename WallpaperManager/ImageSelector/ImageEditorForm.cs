@@ -28,7 +28,18 @@ namespace WallpaperManager.ImageSelector
             InitializeComponent();
 
             activeImage = imageData;
-            pictureBoxImage.ImageLocation = imageData.Path;
+
+            if (activeImage.imageType != ImageType.Video)
+            {
+                pictureBoxImage.ImageLocation = imageData.Path;
+                pictureBoxImage.Visible = true; axWindowsMediaPlayerImage.Visible = false;
+            }
+            else
+            {
+                pictureBoxImage.Visible = false; axWindowsMediaPlayerImage.Visible = true;
+
+                axWindowsMediaPlayerImage = WallpaperManagerTools.InitializeWindowMediaPlayer(axWindowsMediaPlayerImage, imageData.Path);
+            }
 
             imageTagsFLP.SuspendLayout();
             foreach (CategoryData category in WallpaperData.TaggingInfo.GetAllCategories())

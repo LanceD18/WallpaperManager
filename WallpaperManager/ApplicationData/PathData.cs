@@ -187,10 +187,7 @@ namespace WallpaperManager.ApplicationData
 
             CustomFilePath = (from f in images orderby f.Width + f.Height descending select f.Tag.ToString()).ToArray();
 
-            foreach (Image image in images)
-            {
-                image.Dispose();
-            }
+            foreach (Image image in images) image.Dispose();
 
             return CustomFilePath;
         }

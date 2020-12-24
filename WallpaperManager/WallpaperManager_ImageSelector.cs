@@ -272,6 +272,7 @@ namespace WallpaperManager
             Thread thread = new Thread(() =>
             {
                 Image image = WallpaperManagerTools.GetImageFromFile(imagePath);
+                if (image == null) return; // this will happen to unsupported file types
 
                 loadedImages.Enqueue(image); //? Disposes images later
                 parentEditorControl.SetBackgroundImage(image);

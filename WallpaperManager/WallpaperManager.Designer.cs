@@ -59,6 +59,7 @@
             this.tabControlImagePages = new System.Windows.Forms.TabControl();
             this.labelSelectedImage = new System.Windows.Forms.Label();
             this.panelImageInspector = new System.Windows.Forms.Panel();
+            this.inspector_axWindowsMediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.inspector_buttonRight = new System.Windows.Forms.Button();
             this.inspector_buttonLeft = new System.Windows.Forms.Button();
             this.inspector_buttonPlus = new System.Windows.Forms.Button();
@@ -67,13 +68,12 @@
             this.inspector_pictureBoxImage = new System.Windows.Forms.PictureBox();
             this.labelImageSize = new System.Windows.Forms.Label();
             this.timerVisualUpdater = new System.Windows.Forms.Timer(this.components);
-            this.inspector_axWindowsMediaPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.panelImageFolders.SuspendLayout();
             this.panelImageSettings.SuspendLayout();
             this.panelImageSelector.SuspendLayout();
             this.panelImageInspector.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.inspector_pictureBoxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.inspector_axWindowsMediaPlayer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.inspector_pictureBoxImage)).BeginInit();
             this.SuspendLayout();
             // 
             // notifyIconWallpaperManager
@@ -439,6 +439,15 @@
             this.panelImageInspector.TabIndex = 39;
             this.panelImageInspector.Visible = false;
             // 
+            // inspector_axWindowsMediaPlayer
+            // 
+            this.inspector_axWindowsMediaPlayer.Enabled = true;
+            this.inspector_axWindowsMediaPlayer.Location = new System.Drawing.Point(0, 0);
+            this.inspector_axWindowsMediaPlayer.Name = "inspector_axWindowsMediaPlayer";
+            this.inspector_axWindowsMediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("inspector_axWindowsMediaPlayer.OcxState")));
+            this.inspector_axWindowsMediaPlayer.Size = new System.Drawing.Size(645, 576);
+            this.inspector_axWindowsMediaPlayer.TabIndex = 34;
+            // 
             // inspector_buttonRight
             // 
             this.inspector_buttonRight.Location = new System.Drawing.Point(620, 582);
@@ -515,15 +524,6 @@
             this.timerVisualUpdater.Interval = 1000;
             this.timerVisualUpdater.Tick += new System.EventHandler(this.timerVisualUpdater_Tick);
             // 
-            // inspector_axWindowsMediaPlayer
-            // 
-            this.inspector_axWindowsMediaPlayer.Enabled = true;
-            this.inspector_axWindowsMediaPlayer.Location = new System.Drawing.Point(0, 0);
-            this.inspector_axWindowsMediaPlayer.Name = "inspector_axWindowsMediaPlayer";
-            this.inspector_axWindowsMediaPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("inspector_axWindowsMediaPlayer.OcxState")));
-            this.inspector_axWindowsMediaPlayer.Size = new System.Drawing.Size(645, 576);
-            this.inspector_axWindowsMediaPlayer.TabIndex = 34;
-            // 
             // WallpaperManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -557,8 +557,8 @@
             this.panelImageSelector.PerformLayout();
             this.panelImageInspector.ResumeLayout(false);
             this.panelImageInspector.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.inspector_pictureBoxImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.inspector_axWindowsMediaPlayer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.inspector_pictureBoxImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

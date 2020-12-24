@@ -110,37 +110,40 @@ namespace WallpaperManager
         // TODO style readjustment when changing wallpapers by *locking* the previous wallpaper in place
         public void SetWallpaper(string imageLocation)
         {
-            if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imageLocation).Extension))
+            this.Invoke((MethodInvoker) delegate
             {
-                pictureBoxWallpaper.Invoke((MethodInvoker) delegate
+                if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imageLocation).Extension))
                 {
-                    pictureBoxWallpaper.ImageLocation = imageLocation;
-                    pictureBoxWallpaper.Visible = true;
-                });
+                    //?pictureBoxWallpaper.Invoke((MethodInvoker) delegate
+                    //?{
+                        pictureBoxWallpaper.ImageLocation = imageLocation;
+                        pictureBoxWallpaper.Visible = true;
+                    //?});
 
-                axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker) delegate
+                    //?axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker) delegate
+                    //?{
+                        axWindowsMediaPlayerWallpaper.Visible = axWindowsMediaPlayerWallpaper.Enabled = false;
+                        axWindowsMediaPlayerWallpaper.settings.volume = 0; // the audio still plays even after disabling everything, and no, the mute method didn't work
+                    //?});
+
+                }
+                else
                 {
-                    axWindowsMediaPlayerWallpaper.Visible = axWindowsMediaPlayerWallpaper.Enabled = false;
-                    axWindowsMediaPlayerWallpaper.settings.volume = 0; // the audio still plays even after disabling everything, and no, the mute method didn't work
-                });
+                    //?pictureBoxWallpaper.Invoke((MethodInvoker) delegate
+                    //?{
+                        pictureBoxWallpaper.Visible = false;
+                    //?});
 
-            }
-            else
-            {
-                pictureBoxWallpaper.Invoke((MethodInvoker)delegate
-                {
-                    pictureBoxWallpaper.Visible = false;
-                });
+                    //?axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker) delegate
+                    //?{
+                        axWindowsMediaPlayerWallpaper.Visible = true;
+                        axWindowsMediaPlayerWallpaper = WallpaperManagerTools.InitializeWindowMediaPlayer(axWindowsMediaPlayerWallpaper, imageLocation);
 
-                axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker)delegate
-                {
-                    axWindowsMediaPlayerWallpaper.URL = imageLocation;
-                    axWindowsMediaPlayerWallpaper.Visible = axWindowsMediaPlayerWallpaper.Enabled = true;
-                    axWindowsMediaPlayerWallpaper.settings.volume = volume;
-                });
-            }
+                    //?});
+                }
+            });
 
-            ResetWallpaperStyle();  // this needs to be readjusted with each image
+            ResetWallpaperStyle(); // this needs to be readjusted with each image
         }
 
         public void ResetWallpaperStyle()

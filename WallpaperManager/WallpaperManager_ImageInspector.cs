@@ -17,8 +17,6 @@ namespace WallpaperManager
 {
     public partial class WallpaperManager : Form
     {
-        private const int inspectionVolume = 5;
-
         private string InspectedImage;
         private string inspectedImage
         {
@@ -54,7 +52,6 @@ namespace WallpaperManager
             SuspendLayout();
             inspector_axWindowsMediaPlayer.stretchToFit = true;
             //inspector_axWindowsMediaPlayer.uiMode = "none";
-            inspector_axWindowsMediaPlayer.settings.volume = inspectionVolume;
             inspector_axWindowsMediaPlayer.settings.setMode("loop", true);
             inspector_axWindowsMediaPlayer.settings.autoStart = true;
 
@@ -155,17 +152,14 @@ namespace WallpaperManager
             else // display video
             {
                 inspector_pictureBoxImage.Visible = false;
-
                 inspector_axWindowsMediaPlayer.Visible = true;
-                inspector_axWindowsMediaPlayer.URL = inspectedImage;
-                inspector_axWindowsMediaPlayer.settings.volume = inspectionVolume;
-                inspector_axWindowsMediaPlayer.Enabled = true;
+
+                inspector_axWindowsMediaPlayer = WallpaperManagerTools.InitializeWindowMediaPlayer(inspector_axWindowsMediaPlayer, inspectedImage);
             }
 
             inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(inspectedImage).Rank.ToString();
 
             panelImageInspector.ResumeLayout();
-
             panelImageInspector.Visible = true;
         }
 

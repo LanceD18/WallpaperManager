@@ -27,6 +27,18 @@ namespace WallpaperManager.ApplicationData
         public static string[] GetAllGifImages() => ImagesOfType[ImageType.GIF].Keys.ToArray();
         public static string[] GetAllVideoImages() => ImagesOfType[ImageType.Video].Keys.ToArray();
 
+        public struct VideoSettings
+        {
+            public int volume;
+            public double playbackSpeed;
+
+            public VideoSettings(int volume, double playbackSpeed)
+            {
+                this.volume = volume;
+                this.playbackSpeed = playbackSpeed;
+            }
+        }
+
         public class ImageData
         {
             [DataMember(Name = "Path")]
@@ -108,6 +120,8 @@ namespace WallpaperManager.ApplicationData
 
             [DataMember(Name = "Image Type")] public ImageType imageType;
 
+            [DataMember(Name = "Video Settings")] public VideoSettings VideoSettings = new VideoSettings(50, 1); // only applicable to images with the corresponding image type
+
             public ImageData(string path, int rank, bool active, Dictionary<string, HashSet<string>> tags = null, HashSet<Tuple<string, string>> tagNamingExceptions = null)
             {
                 FileInfo file = new FileInfo(path);
@@ -129,11 +143,7 @@ namespace WallpaperManager.ApplicationData
 
             private void InitializeImageType(FileInfo file, string path)
             {
-                if (imageType != ImageType.None)
-                {
-                    ImagesOfType[imageType].Add(path, this);
-                }
-                else
+                if (imageType == ImageType.None)
                 {
                     if (!WallpaperManagerTools.IsSupportedVideoType(file.Extension))
                     {
@@ -150,9 +160,9 @@ namespace WallpaperManager.ApplicationData
                     {
                         imageType = ImageType.Video;
                     }
-
-                    ImagesOfType[imageType].Add(path, this);
                 }
+
+                ImagesOfType[imageType].Add(path, this);
             }
 
             public void UpdatePath(string newPath)

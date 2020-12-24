@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageEditorForm));
             this.pictureBoxImage = new System.Windows.Forms.PictureBox();
             this.imageTagsFLP = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonAddTag = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.labelEnabled = new System.Windows.Forms.Label();
+            this.axWindowsMediaPlayerImage = new AxWMPLib.AxWindowsMediaPlayer();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayerImage)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBoxImage
@@ -85,12 +88,22 @@
             this.labelEnabled.TabIndex = 4;
             this.labelEnabled.Text = "Enabled";
             // 
+            // axWindowsMediaPlayerImage
+            // 
+            this.axWindowsMediaPlayerImage.Enabled = true;
+            this.axWindowsMediaPlayerImage.Location = new System.Drawing.Point(300, 0);
+            this.axWindowsMediaPlayerImage.Name = "axWindowsMediaPlayerImage";
+            this.axWindowsMediaPlayerImage.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayerImage.OcxState")));
+            this.axWindowsMediaPlayerImage.Size = new System.Drawing.Size(383, 462);
+            this.axWindowsMediaPlayerImage.TabIndex = 35;
+            // 
             // ImageEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(684, 461);
+            this.Controls.Add(this.axWindowsMediaPlayerImage);
             this.Controls.Add(this.labelEnabled);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.buttonAddTag);
@@ -99,6 +112,7 @@
             this.Name = "ImageEditorForm";
             this.Text = "ImageEditorForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayerImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -111,5 +125,6 @@
         private System.Windows.Forms.Button buttonAddTag;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelEnabled;
+        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayerImage;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media.Imaging;
+using AxWMPLib;
 using LanceTools.FormUtil;
 using Microsoft.WindowsAPICodePack.Shell;
 
@@ -65,7 +67,8 @@ namespace WallpaperManager
             }
             catch (Exception e)
             {
-                throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
+                Debug.WriteLine("Attempted to load an unsupported file type: " + filePath + "\n" + e.Message);
+                return null;
             }
         }
 
@@ -84,6 +87,22 @@ namespace WallpaperManager
             }
 
             return bitmap;
+        }
+
+        public static AxWindowsMediaPlayer InitializeWindowMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, string videoPath)
+        {
+            axWindowsMediaPlayer.URL = videoPath;
+
+            WallpaperData.ImageData image = WallpaperData.GetImageData(videoPath);
+            axWindowsMediaPlayer.settings.volume = image.VideoSettings.volume;
+            axWindowsMediaPlayer.settings.rate = image.VideoSettings.playbackSpeed;
+            axWindowsMediaPlayer.Enabled = true;
+
+            //? The MouseDownEvent will only save the volume at the time of clicking while the MouseUpEvent won't work while using the slider
+            //TODO To improve this you'll need to make your own slider and attach it to the control
+            axWindowsMediaPlayer.MouseMoveEvent += (s, e) => image.VideoSettings.volume = axWindowsMediaPlayer.settings.volume;
+
+            return axWindowsMediaPlayer;
         }
 
         public static SelectionType ChooseSelectionType()
