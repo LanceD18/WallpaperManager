@@ -62,15 +62,26 @@ namespace WallpaperManager.ApplicationData
 
         public static void InitializeImagesOfType() // this needs to be reloaded whenever a theme is loaded
         {
-            ImagesOfType = new Dictionary<ImageType, Dictionary<string, ImageData>>();
-            ImagesOfType.Add(ImageType.Static, new Dictionary<string, ImageData>());
-            ImagesOfType.Add(ImageType.GIF, new Dictionary<string, ImageData>());
-            ImagesOfType.Add(ImageType.Video, new Dictionary<string, ImageData>());
+            ImagesOfType = new Dictionary<ImageType, Dictionary<string, ImageData>>()
+            {
+                {ImageType.Static, new Dictionary<string, ImageData>()},
+                {ImageType.GIF, new Dictionary<string, ImageData>()},
+                {ImageType.Video, new Dictionary<string, ImageData>()}
+            };
 
-            ImagesOfTypeRankData = new Dictionary<ImageType, List<List<string>>>();
-            ImagesOfTypeRankData.Add(ImageType.Static, new List<List<string>>());
-            ImagesOfTypeRankData.Add(ImageType.GIF, new List<List<string>>());
-            ImagesOfTypeRankData.Add(ImageType.Video, new List<List<string>>());
+            ImagesOfTypeRankData = new Dictionary<ImageType, List<List<string>>>()
+            {
+                {ImageType.Static, new List<List<string>>()},
+                {ImageType.GIF, new List<List<string>>()},
+                {ImageType.Video, new List<List<string>>()}
+            };
+
+            ActiveImagesOfType = new Dictionary<ImageType, List<string>>()
+            {
+                {ImageType.Static, new List<string>()},
+                {ImageType.GIF, new List<string>()},
+                {ImageType.Video, new List<string>()}
+            };
         }
 
         // File Data
@@ -118,6 +129,7 @@ namespace WallpaperManager.ApplicationData
                 FileData.Remove(path);
 
                 ActiveImages.Remove(path);
+                ActiveImagesOfType[imageType].Remove(path);
             }
         }
 

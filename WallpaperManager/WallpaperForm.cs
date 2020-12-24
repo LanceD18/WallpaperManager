@@ -110,6 +110,10 @@ namespace WallpaperManager
         // TODO style readjustment when changing wallpapers by *locking* the previous wallpaper in place
         public void SetWallpaper(string imageLocation)
         {
+            //! The below conditions were removed but I may consider re-adding this in the future when monitor-specific settings are added, although other methods of handling
+            //! not changing a monitor's wallpaper would probably be better than this
+            //!if (imageLocation == null) return; //? Under certain conditions a wallpaper won't be selected, this prevents the program from crashing over this
+
             this.Invoke((MethodInvoker) delegate
             {
                 if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imageLocation).Extension))

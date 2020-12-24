@@ -93,13 +93,13 @@ namespace WallpaperManager.ImageSelector
             switch (imageType)
             {
                 case ImageType.Static:
-                    return WallpaperData.GetAllStaticImages();
+                    return WallpaperData.GetAllImagesOfType(ImageType.Static);
 
                 case ImageType.GIF:
-                    return WallpaperData.GetAllGifImages();
+                    return WallpaperData.GetAllImagesOfType(ImageType.GIF);
 
                 case ImageType.Video:
-                    return WallpaperData.GetAllVideoImages();
+                    return WallpaperData.GetAllImagesOfType(ImageType.Video);
 
                 default:
                     return null;

@@ -142,7 +142,7 @@ namespace WallpaperManager
             panelImageInspector.SuspendLayout();
             buttonInspectImage.Text = "Close Inspector";
 
-            if (!WallpaperData.GetAllVideoImages().Contains(inspectedImage)) // display image
+            if (!WallpaperData.GetAllImagesOfType(ImageType.Video).Contains(inspectedImage)) // display image
             {
                 inspector_axWindowsMediaPlayer.Visible = false;
 

@@ -144,6 +144,7 @@ namespace WallpaperManager.ApplicationData
 
             ImagesOfType.Clear();
             ImagesOfTypeRankData.Clear();
+            ActiveImagesOfType.Clear();
 
             InitializeImagesOfType();
 

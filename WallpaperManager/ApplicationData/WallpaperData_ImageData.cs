@@ -17,15 +17,23 @@ namespace WallpaperManager.ApplicationData
     public static partial class WallpaperData
     {
         // TODO Consider merging ImagesOfType & ImagesOfTypeRankData with FileData & RankData [NOTE, this will add more loops to your general functions so I'd honestly advise against the merge]
+
+        //! These ImageOfType variables are initialized under WallpaperData.InitializeImagesOfType() due to the fact that every time a theme is loaded these will be cleared so its
+        //! best to have them initialized there instead of here
+
         // used to give the user more selection options
         private static Dictionary<ImageType, Dictionary<string, ImageData>> ImagesOfType;
 
-        //? this doesn't need ot be reactive lists since the regular RankData does enough to handle the issue presented (Checking if rank percentiles should be updated)
+        //? this doesn't need to be reactive lists since the regular RankData does enough to handle the issue presented (Checking if rank percentiles should be updated)
         private static Dictionary<ImageType, List<List<string>>> ImagesOfTypeRankData;
 
-        public static string[] GetAllStaticImages() => ImagesOfType[ImageType.Static].Keys.ToArray();
-        public static string[] GetAllGifImages() => ImagesOfType[ImageType.GIF].Keys.ToArray();
-        public static string[] GetAllVideoImages() => ImagesOfType[ImageType.Video].Keys.ToArray();
+        //! No longer needed currently, consider removing this in the future
+        private static Dictionary<ImageType, List<string>> ActiveImagesOfType;
+
+        public static string[] GetAllImagesOfType(ImageType imageType) => ImagesOfType[imageType].Keys.ToArray();
+
+
+        public static bool IsAllImagesOfTypeUnranked(ImageType imageType) => ImagesOfTypeRankData[imageType][0].Count == ImagesOfType[imageType].Count;
 
         public struct VideoSettings
         {
@@ -89,6 +97,7 @@ namespace WallpaperManager.ApplicationData
                             ImagesOfTypeRankData[imageType][_Rank].Add(Path);
 
                             ActiveImages.Add(Path);
+                            ActiveImagesOfType[imageType].Add(Path);
                         }
                         else  // Note that Rank Data does not include inactive images
                         {
@@ -96,6 +105,7 @@ namespace WallpaperManager.ApplicationData
                             ImagesOfTypeRankData[imageType][_Rank].Remove(Path);
 
                             ActiveImages.Remove(Path);
+                            ActiveImagesOfType[imageType].Remove(Path);
                         }
                     }
                 }

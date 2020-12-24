@@ -234,8 +234,7 @@ namespace WallpaperManager
                         PathData.ActiveWallpapers.CopyTo(previousWallpapers, 0);
                         PathData.PreviousWallpapers.Push(previousWallpapers);
 
-                        PathData.RandomizeWallpapers();
-                        SetWallpaper();
+                        if (PathData.RandomizeWallpapers()) SetWallpaper(); // randomize wallpaper will check if it even can randomize the wallpapers first
                     }
                     else
                     {

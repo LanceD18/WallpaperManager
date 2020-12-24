@@ -46,7 +46,7 @@ namespace WallpaperManager.ApplicationData
             return true;
         }
 
-        public static void RandomizeWallpapers()
+        public static bool RandomizeWallpapers()
         {
             Random rand = new Random();
 
@@ -64,6 +64,14 @@ namespace WallpaperManager.ApplicationData
                     double[] imageTypePercentages = {staticChance, gifChance, videoChance};
 
                     imageTypeToSearchFor = rand.NextInWeightedArray(imageTypeIndexes, imageTypePercentages);
+
+                    if (WallpaperData.IsAllImagesOfTypeUnranked(imageTypeToSearchFor))
+                    {
+                        MessageBox.Show("Attempted to set a wallpaper to an image type with no valid/ranked images. Wallpaper Change Cancelled [IMAGE TYPE: " + imageTypeToSearchFor + "]" +
+                                        "\n\nEither change relative frequency chance of the above image type to 0% (Under Frequency in the options menu)" +
+                                        "or activate some wallpapers of the above image type (Unranked images with a rank of 0 are inactive");
+                        return false;
+                    }
                 }
 
                 int randomRank = GetRandomRank(ref rand, imageTypeToSearchFor);
@@ -79,7 +87,7 @@ namespace WallpaperManager.ApplicationData
 
                     if (!WallpaperData.GetImageData(ActiveWallpapers[i]).Active)
                     {
-                        //? This shouldn't happen, if this does you have a bug to fix
+                        //! This shouldn't happen, if this does you have a bug to fix
                         MessageBox.Show("Attempted to set monitor " + i + " to an inactive wallpaper | A new wallpaper has been chosen");
                         i--; // find another wallpaper, the selected wallpaper is inactive
                     }
@@ -87,6 +95,8 @@ namespace WallpaperManager.ApplicationData
             }
 
             ModifyWallpaperOrder();
+
+            return true;
         }
 
         // Picks ranks based on their default percentiles (Where the highest rank is the most likely to appear and it goes down from there)
@@ -100,6 +110,7 @@ namespace WallpaperManager.ApplicationData
             }
 
             Dictionary<int, double> modifiedRankPercentiles = WallpaperData.GetRankPercentiles(imageType);
+
             return rand.NextInWeightedArray(modifiedRankPercentiles.Keys.ToArray(), modifiedRankPercentiles.Values.ToArray());
         }
 

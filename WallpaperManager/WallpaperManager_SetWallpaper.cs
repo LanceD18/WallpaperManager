@@ -88,9 +88,12 @@ namespace WallpaperManager
         {
             for (int i = 0; i < wallpapers.Length; i++)
             {
-                //? This needs to be above the call to SetWallpaper() otherwise the form will call its load event second & override some settings
-                if (!wallpapers[i].Visible) wallpapers[i].Show(); // this is processed only once after the first wallpaper change
-                wallpapers[i].SetWallpaper(PathData.ActiveWallpapers[i]);
+                wallpapers[i].Invoke((MethodInvoker) delegate
+                {
+                    //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings
+                    if (!wallpapers[i].Visible) wallpapers[i].Show(); // this is processed only once after the first wallpaper change
+                    wallpapers[i].SetWallpaper(PathData.ActiveWallpapers[i]);
+                });
             }
         }
     }
