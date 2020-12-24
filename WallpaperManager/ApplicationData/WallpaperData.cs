@@ -88,6 +88,7 @@ namespace WallpaperManager.ApplicationData
             {
                 Tagging.LinkImageTags(newImageData);
                 FileData.Add(newImageData.Path, newImageData);
+                ImagesOfType[newImageData.imageType].Add(newImageData.Path, newImageData);
                 return newImageData;
             }
             else

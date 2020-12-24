@@ -162,7 +162,8 @@ namespace WallpaperManager.ApplicationData
                     }
                 }
 
-                ImagesOfType[imageType].Add(path, this);
+                //? This has been moved to AddImage() alongside FileData, without doing this you'll end up accidentally adding the same object twice, causing a crash
+                //?ImagesOfType[imageType].Add(path, this);
             }
 
             public void UpdatePath(string newPath)
