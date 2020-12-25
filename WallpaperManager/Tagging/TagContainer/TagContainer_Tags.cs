@@ -65,10 +65,7 @@ namespace WallpaperManager.Tagging
             Button selectedTagButton = sender as Button;
             TagData selectedTag = WallpaperData.TaggingInfo.GetTag(ActiveCategory, TaggingTools.GetButtonTagName(selectedTagButton));
 
-            using (TagEditorForm f = new TagEditorForm(selectedTag, selectedTagButton, this.tagContainerFLP))
-            {
-                f.ShowDialog();
-            }
+            using (TagEditorForm f = new TagEditorForm(selectedTag, selectedTagButton, this.tagContainerFLP)) f.ShowDialog();
             RefreshTagCount();
         }
 
@@ -77,7 +74,7 @@ namespace WallpaperManager.Tagging
             TagData selectedTag = GetSelectedTag(sender as Button);
 
             activeImage.AddTag(selectedTag);
-            (ParentTagTabControl.Parent as Form).Close();
+            //!(ParentTagTabControl.Parent as Form).Close();
         }
 
         private void ButtonTagLinker(object sender, EventArgs e)
@@ -87,7 +84,7 @@ namespace WallpaperManager.Tagging
             activeTag.LinkTag(selectedTag);
             UpdateTagButtonImageCount(selectedTag);
 
-            (ParentTagTabControl.Parent as Form).Close();
+            //!(ParentTagTabControl.Parent as Form).Close();
         }
 
         private TagData GetSelectedTag(Button selectedTagButton)

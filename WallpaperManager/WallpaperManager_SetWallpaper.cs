@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,8 +87,17 @@ namespace WallpaperManager
 
         private void SetWallpaper()
         {
-            for (int i = 0; i < wallpapers.Length; i++)
+            for (int i = 0; i < PathData.ActiveWallpapers.Length; i++)
             {
+                //-----Update Notify Icons-----
+                string wallpaperPath = PathData.ActiveWallpapers[i];
+                string wallpaperName = new FileInfo(wallpaperPath).Name; // pathless string of file name
+
+                wallpaperMenuItems[i].Text = WallpaperData.ContainsImage(wallpaperPath) ? 
+                    i + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName : 
+                    i + 1 + " | [NOT FOUND]" + wallpaperName;
+
+                //-----Update Wallpaper Forms-----
                 wallpapers[i].Invoke((MethodInvoker) delegate
                 {
                     //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings

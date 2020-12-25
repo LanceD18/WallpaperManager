@@ -102,13 +102,12 @@ namespace WallpaperManager.Tagging
         private void LoadPage(int startIndex, LoadDirection loadDirection)
         {
             currentStartIndex = startIndex;
-            if (loadDirection != LoadDirection.None) // No need to clear this if you're just reloading the same the page
-            {
-                tagContainerFLP.SuspendLayout();
-                tagContainerFLP.Flush();
-                tagContainerFLP.ResumeLayout();
-            }
 
+            tagContainerFLP.SuspendLayout();
+            tagContainerFLP.Flush();
+            tagContainerFLP.ResumeLayout();
+
+            //! Cannot use SuspendLayout here as it'll mess up the programming behind the positioning of the buttons
             for (int i = startIndex; i < orderedTags.Count; i++)
             {
                 TagData tag = orderedTags[i];
@@ -362,11 +361,6 @@ namespace WallpaperManager.Tagging
             Page = 1;
             currentStartIndex = 0;
             pageIndexList = new LinkedList<int>();
-
-            // This Flush is needed since LoadDirection.None disables this
-            tagContainerFLP.SuspendLayout();
-            tagContainerFLP.Flush();
-            tagContainerFLP.ResumeLayout();
 
             LoadPage(0, LoadDirection.None);
         }
