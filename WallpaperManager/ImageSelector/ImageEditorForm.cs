@@ -23,6 +23,8 @@ namespace WallpaperManager.ImageSelector
 
         private Button activeButton;
 
+        private TagClickerForm tagClickerForm;
+
         public ImageEditorForm(WallpaperData.ImageData imageData)
         {
             InitializeComponent();
@@ -81,21 +83,20 @@ namespace WallpaperManager.ImageSelector
 
         private void buttonAddTag_Click(object sender, EventArgs e)
         {
-            using (TagClickerForm f = new TagClickerForm(0, TagFormStyle.Adder, activeImage))
+            if (tagClickerForm == null || tagClickerForm.IsDisposed || !tagClickerForm.Visible)
             {
-                f.ShowDialog();
+                tagClickerForm = new TagClickerForm(0, TagFormStyle.Adder, activeImage, tagClickEvent: TagClickerResponse);
+                tagClickerForm.Show();
             }
+            else
+            {
+                tagClickerForm.Focus();
+            }
+        }
 
-            foreach (string category in activeImage.Tags.Keys)
-            {
-                foreach (string tag in activeImage.Tags[category])
-                {
-                    if (!tagNames.Contains(tag))
-                    {
-                        CreateTagButton(category, tag);
-                    }
-                }
-            }
+        private void TagClickerResponse(TagData tag)
+        {
+            if (!tagNames.Contains(tag.Name)) CreateTagButton(tag.ParentCategoryName, tag.Name);
         }
 
         private void CreateTagButton(string category, string tag)

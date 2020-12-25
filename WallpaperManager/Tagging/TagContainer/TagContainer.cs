@@ -67,7 +67,7 @@ namespace WallpaperManager.Tagging
         }
 
         public TagContainer(CategoryData parentCategory, Size size, TagTabControl parentTagTabControl, 
-            TagFormStyle tagFormStyle = TagFormStyle.Editor, WallpaperData.ImageData activeImage = null, TagData activeTag = null)
+            TagFormStyle tagFormStyle = TagFormStyle.Editor, WallpaperData.ImageData activeImage = null, TagData activeTag = null, Action<TagData> tagClickEvent = null)
         {
             InitializeComponent();
 
@@ -78,6 +78,8 @@ namespace WallpaperManager.Tagging
             this.tagFormStyle = tagFormStyle;
             this.activeImage = activeImage;
             this.activeTag = activeTag;
+
+            this.tagClickEvent = tagClickEvent;
 
             // Resize TagContainer
             Size = size;

@@ -14,6 +14,8 @@ namespace WallpaperManager.Tagging
 {
     public partial class TagContainer : UserControl
     {
+        private Action<TagData> tagClickEvent;
+
         private Button CreateTagButton(TagData tag)
         {
             Button tagButton = new Button();
@@ -74,6 +76,8 @@ namespace WallpaperManager.Tagging
             TagData selectedTag = GetSelectedTag(sender as Button);
 
             activeImage.AddTag(selectedTag);
+            tagClickEvent?.Invoke(selectedTag);
+
             //!(ParentTagTabControl.Parent as Form).Close();
         }
 
@@ -84,7 +88,7 @@ namespace WallpaperManager.Tagging
             activeTag.LinkTag(selectedTag);
             UpdateTagButtonImageCount(selectedTag);
 
-            //!(ParentTagTabControl.Parent as Form).Close();
+            (ParentTagTabControl.Parent as Form).Close();
         }
 
         private TagData GetSelectedTag(Button selectedTagButton)

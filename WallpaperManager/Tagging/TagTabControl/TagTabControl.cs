@@ -22,17 +22,14 @@ namespace WallpaperManager.Tagging
 
         private Size initialItemSize;
 
-        public TabControl.TabPageCollection TabPages
-        {
-            get => tabControlImageTagger.TabPages;
-        }
+        public TabControl.TabPageCollection TabPages => tabControlImageTagger.TabPages;
 
-        public TabPage SelectedTab
-        {
-            get => tabControlImageTagger.SelectedTab;
-        }
+        public TabPage SelectedTab => tabControlImageTagger.SelectedTab;
 
-        public TagTabControl(int startingTabIndex, TagFormStyle tagFormStyle = TagFormStyle.Editor, WallpaperData.ImageData activeImage = null, TagData activeTag = null, TagForm parentTagForm = null)
+        private Action<TagData> tagClickEvent;
+
+        public TagTabControl(int startingTabIndex, TagFormStyle tagFormStyle = TagFormStyle.Editor,
+            WallpaperData.ImageData activeImage = null, TagData activeTag = null, TagForm parentTagForm = null, Action<TagData> tagClickEvent = null)
         {
             InitializeComponent();
 
@@ -40,6 +37,7 @@ namespace WallpaperManager.Tagging
             this.activeImage = activeImage;
             this.activeTag = activeTag;
             this.tagFormStyle = tagFormStyle;
+            this.tagClickEvent = tagClickEvent;
 
             this.tabControlImageTagger.MouseDown += tabControlImageTagger_MouseDown;
             this.tabControlImageTagger.MouseUp += tabControlImageTagger_MouseUp;
@@ -85,7 +83,7 @@ namespace WallpaperManager.Tagging
                 {
                     SuspendLayout();
                     Size tagContainerSize = new Size(tabControlImageTagger.Size.Width - 5, tabControlImageTagger.Size.Height - initialItemSize.Height - 10);
-                    TagContainer categoryTagContainer = new TagContainer(category, tagContainerSize, this, tagFormStyle, activeImage, activeTag)
+                    TagContainer categoryTagContainer = new TagContainer(category, tagContainerSize, this, tagFormStyle, activeImage, activeTag, tagClickEvent)
                     {
                         AllowDrop = true,
                         Location = new Point(-2, 0)

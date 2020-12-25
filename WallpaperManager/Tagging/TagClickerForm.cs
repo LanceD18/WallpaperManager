@@ -15,11 +15,11 @@ namespace WallpaperManager.Tagging
     {
         public TagTabControl tagTabControl { get; private set; }
 
-        public TagClickerForm(int startingTabIndex, TagFormStyle tagFormStyle, WallpaperData.ImageData activeImage = null, TagData activeTag = null)
+        public TagClickerForm(int startingTabIndex, TagFormStyle tagFormStyle, WallpaperData.ImageData activeImage = null, TagData activeTag = null, Action<TagData> tagClickEvent = null)
         {
             InitializeComponent();
 
-            tagTabControl = new TagTabControl(startingTabIndex, tagFormStyle, activeImage, activeTag);
+            tagTabControl = new TagTabControl(startingTabIndex, tagFormStyle, activeImage, activeTag, tagClickEvent: tagClickEvent);
 
             //this.Size = tagTabControl.Size;
             Controls.Add(tagTabControl);
