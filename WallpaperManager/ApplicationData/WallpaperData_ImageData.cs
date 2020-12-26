@@ -199,10 +199,6 @@ namespace WallpaperManager.ApplicationData
                         Tags[categoryName].Add(tag.Name);
                         tag.LinkImage(this);
 
-                        Debug.WriteLine("Tag Count: " + Tags[categoryName].Count);
-                        Debug.WriteLine("Category Count: " + Tags.Count);
-
-
                         // Link all parent tags of the current tag
                         foreach (Tuple<string, string> parentTag in tag.ParentTags)
                         {

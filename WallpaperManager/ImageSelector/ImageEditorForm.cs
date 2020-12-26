@@ -96,7 +96,18 @@ namespace WallpaperManager.ImageSelector
 
         private void TagClickerResponse(TagData tag)
         {
-            if (!tagNames.Contains(tag.Name)) CreateTagButton(tag.ParentCategoryName, tag.Name);
+            if (!tagNames.Contains(tag.Name))
+            {
+                CreateTagButton(tag.ParentCategoryName, tag.Name);
+
+                foreach (Tuple<string, string> parentTag in tag.ParentTags)
+                {
+                    if (!tagNames.Contains(tag.Name))
+                    {
+                        CreateTagButton(parentTag.Item1, parentTag.Item2);
+                    }
+                }
+            }
         }
 
         private void CreateTagButton(string category, string tag)

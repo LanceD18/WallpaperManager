@@ -94,7 +94,6 @@ namespace WallpaperManager
         {
             axWindowsMediaPlayer.stretchToFit = true;
             axWindowsMediaPlayer.settings.setMode("loop", true);
-            axWindowsMediaPlayer.settings.autoStart = true;
 
             if (editable) // If editable, allow the volume slider to be saved
             {
@@ -122,6 +121,7 @@ namespace WallpaperManager
             axWindowsMediaPlayer.settings.volume = image.VideoSettings.volume;
             axWindowsMediaPlayer.settings.rate = image.VideoSettings.playbackSpeed;
             axWindowsMediaPlayer.Enabled = true;
+            axWindowsMediaPlayer.settings.autoStart = true;
 
             return axWindowsMediaPlayer;
         }
