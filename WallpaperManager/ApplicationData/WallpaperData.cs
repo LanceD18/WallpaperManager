@@ -48,10 +48,8 @@ namespace WallpaperManager.ApplicationData
         /// <param name="wallpaperManager"></param>
         /// <param name="newRankMax"></param>
         /// <param name="useLastLoadedTheme"></param>
-        public static void Initialize(WallpaperManager wallpaperManager, bool useLastLoadedTheme)
+        public static void Initialize(bool useLastLoadedTheme)
         {
-            WallpaperManagerForm = wallpaperManager;
-
             InitializeImagesOfType();
 
             RankData.OnListAddItem += RankData_OnParentListAddItem;

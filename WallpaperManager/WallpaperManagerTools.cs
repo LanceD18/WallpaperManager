@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using AxWMPLib;
 using LanceTools.FormUtil;
@@ -21,6 +22,8 @@ using MediaToolkit;
 using MediaToolkit.Model;
 using MediaToolkit.Options;
 using WallpaperManager.ApplicationData;
+using WMPLib;
+using _WMPOCXEvents_MouseMoveEventHandler = WMPLib._WMPOCXEvents_MouseMoveEventHandler;
 using Bitmap = System.Drawing.Bitmap;
 
 namespace WallpaperManager
@@ -94,6 +97,37 @@ namespace WallpaperManager
         {
             axWindowsMediaPlayer.stretchToFit = true;
             axWindowsMediaPlayer.settings.setMode("loop", true);
+            axWindowsMediaPlayer.PlayStateChange += (s, e) =>
+            {
+                // ensures that the video auto-starts, some video types fail to do so regularly, such as .webm (They generally take longer to load too)
+                if (axWindowsMediaPlayer.playState == WMPPlayState.wmppsReady) 
+                {
+                    try // this may sometimes cause an error however this doesn't break the program so just ignore it, the video should eventually play
+                    {
+                        Action playInvoker = () => axWindowsMediaPlayer.Ctlcontrols.play();
+
+                        axWindowsMediaPlayer.BeginInvoke(playInvoker);
+                        Debug.WriteLine("Playing: " + axWindowsMediaPlayer.URL);
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.WriteLine(exception);
+                    }
+
+                    /*
+                    if (axWindowsMediaPlayer.Ctlcontrols.currentItem != null)
+                    {
+                        if (axWindowsMediaPlayer.Ctlcontrols.currentPosition > axWindowsMediaPlayer.Ctlcontrols.currentItem.duration - 0.01)
+                        {
+                            axWindowsMediaPlayer.Ctlcontrols.currentPosition = 0;
+                            //MessageBox.Show("uwu");
+                        }
+                    }
+                    */
+                }
+
+                //Debug.WriteLine(axWindowsMediaPlayer.playState.ToString() +'\n' + axWindowsMediaPlayer.URL);
+            };
 
             if (editable) // If editable, allow the volume slider to be saved
             {
@@ -115,6 +149,7 @@ namespace WallpaperManager
 
         public static AxWindowsMediaPlayer UpdateWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, string videoPath)
         {
+
             axWindowsMediaPlayer.URL = videoPath;
 
             WallpaperData.ImageData image = WallpaperData.GetImageData(videoPath);
@@ -122,6 +157,10 @@ namespace WallpaperManager
             axWindowsMediaPlayer.settings.rate = image.VideoSettings.playbackSpeed;
             axWindowsMediaPlayer.Enabled = true;
             axWindowsMediaPlayer.settings.autoStart = true;
+
+            // these two lines force the video to autoplay regardless of its video type, I hope
+            axWindowsMediaPlayer.Ctlcontrols.currentPosition = 0;
+            axWindowsMediaPlayer.Ctlcontrols.play();
 
             return axWindowsMediaPlayer;
         }

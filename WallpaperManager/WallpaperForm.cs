@@ -38,6 +38,8 @@ namespace WallpaperManager
 
         private const int TASKBAR_SIZE = 40;
 
+        private const double FRAME_LENGTH = (double)1 / 60;
+
         // TODO Check why this is claiming that it's functioning on a different thread yet no thread is made when calling this? Finding this out will determine if the Invokes remain
         public WallpaperForm(Screen monitor, IntPtr workerw)
         {
@@ -69,6 +71,34 @@ namespace WallpaperManager
 
                     // Sets bounds of the wallpaper
                     pictureBoxWallpaper.Bounds = pictureBoxBounds;
+
+                    axWindowsMediaPlayerWallpaper.PlayStateChange += (s2, e2) =>
+                    {
+                        if (e2.newState == 8 || e2.newState == 9 || e2.newState == 10)
+                        {
+                            if (e2.newState == 8)
+                            {
+                                //Insert your code here
+                                Debug.WriteLine("State Change");
+                                axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition = 0;
+                            }
+                        }
+                    };
+
+                    /*
+                    WallpaperData.WallpaperManagerForm.AppendTimerVideoLooperEvent_Tick(new Action(() =>
+                    {
+                        if (axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem != null)
+                        {
+                            if (axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition > axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem.duration - (FRAME_LENGTH))
+                            {
+                                Debug.WriteLine("Duration: " + axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem.duration);
+                                axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition = 0;
+                                //MessageBox.Show("OwO");
+                            }
+                        }
+                    }));
+                    */
 
                     axWindowsMediaPlayerWallpaper = WallpaperManagerTools.InitializeWindowsMediaPlayer(axWindowsMediaPlayerWallpaper, false);
                     axWindowsMediaPlayerWallpaper.Bounds = pictureBoxBounds;

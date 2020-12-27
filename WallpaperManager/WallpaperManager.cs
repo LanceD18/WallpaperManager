@@ -57,7 +57,10 @@ namespace WallpaperManager
 
         public WallpaperManager()
         {
+            WallpaperData.WallpaperManagerForm = this; //? this needs to be at the very front for a few other initializers
+
             InitializeComponent();
+            timerVideoLooper.Start();
 
             Application.ApplicationExit += OnApplicationExit;
             this.Load += OnLoad;
@@ -69,7 +72,7 @@ namespace WallpaperManager
             InitializeImageInspector();
 
             PathData.Validate(); // ensures that all needed folders exist
-            WallpaperData.Initialize(this, false); // loads in all necessary data
+            WallpaperData.Initialize(false); // loads in all necessary data
             OptionsData.Initialize();
 
             InitializeWallpapers();
@@ -267,5 +270,7 @@ namespace WallpaperManager
             ClearImageSelector();
             ClearImageFolders();
         }
+
+        public void AppendTimerVideoLooperEvent_Tick(Action action) => timerVideoLooper.Tick += (s, e) => action.Invoke();
     }
 }

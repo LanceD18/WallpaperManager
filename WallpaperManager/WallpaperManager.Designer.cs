@@ -68,6 +68,7 @@
             this.inspector_pictureBoxImage = new System.Windows.Forms.PictureBox();
             this.labelImageSize = new System.Windows.Forms.Label();
             this.timerVisualUpdater = new System.Windows.Forms.Timer(this.components);
+            this.timerVideoLooper = new System.Windows.Forms.Timer(this.components);
             this.panelImageFolders.SuspendLayout();
             this.panelImageSettings.SuspendLayout();
             this.panelImageSelector.SuspendLayout();
@@ -604,6 +605,7 @@
         private System.Windows.Forms.Timer timerVisualUpdater;
         private System.Windows.Forms.Button buttonRankImages;
         private AxWMPLib.AxWindowsMediaPlayer inspector_axWindowsMediaPlayer;
+        private System.Windows.Forms.Timer timerVideoLooper;
     }
 }
 
