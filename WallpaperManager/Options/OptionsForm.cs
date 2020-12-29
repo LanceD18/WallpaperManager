@@ -419,5 +419,10 @@ namespace WallpaperManager.Options
             if (changedImageType != ImageType.Video) ThemeOptions.ExactFrequency[ImageType.Video] = videoChance * adjustedRelativeChanceTotal;
         }
         #endregion
+
+        private void checkBoxMonitorSpecificSettings_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -37,7 +37,6 @@ namespace WallpaperManager
         private int volume = 25;
 
         private const int TASKBAR_SIZE = 40;
-
         private const double FRAME_LENGTH = (double)1 / 60;
 
         // TODO Check why this is claiming that it's functioning on a different thread yet no thread is made when calling this? Finding this out will determine if the Invokes remain
@@ -46,8 +45,8 @@ namespace WallpaperManager
             this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             InitializeComponent();
 
-
             // TODO Use this later for other optional features
+            /*
             axWindowsMediaPlayerWallpaper.PlayStateChange += (ax_s, ax_e) =>
             {
                 if (ax_e.newState == 8) // this state indicates that the media has ended | States: http://msdn.microsoft.com/en-us/library/windows/desktop/dd562460%28v=vs.85%29.aspx
@@ -55,6 +54,7 @@ namespace WallpaperManager
                     //axWindowsMediaPlayerWallpaper.Ctlcontrols.fastReverse();
                 }
             };
+            */
 
             Load += (s, e) =>
             {
@@ -74,27 +74,27 @@ namespace WallpaperManager
 
                     axWindowsMediaPlayerWallpaper.PlayStateChange += (s2, e2) =>
                     {
-                        if (e2.newState == 8 || e2.newState == 9 || e2.newState == 10)
+                        // some file types (.mp4) don't appear to have this issue, so doing this causes them to return to position 0 twice
+                        if (axWindowsMediaPlayerWallpaper.URL.Contains(".webm"))
                         {
-                            if (e2.newState == 8)
+                            if (e2.newState == 8) // MediaEnded state
                             {
-                                //Insert your code here
                                 Debug.WriteLine("State Change");
                                 axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition = 0;
                             }
                         }
                     };
 
-                    /*
+                    /* Alternative Method, can guarantee no black flicker at the cost of losing some frames
+                    // (Note that flicker length is random, the state change method was more consistent than this)
                     WallpaperData.WallpaperManagerForm.AppendTimerVideoLooperEvent_Tick(new Action(() =>
                     {
                         if (axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem != null)
                         {
-                            if (axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition > axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem.duration - (FRAME_LENGTH))
+                            if (axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition > axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem.duration - (FRAME_LENGTH * 3))
                             {
                                 Debug.WriteLine("Duration: " + axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem.duration);
                                 axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition = 0;
-                                //MessageBox.Show("OwO");
                             }
                         }
                     }));

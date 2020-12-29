@@ -59,6 +59,8 @@
             this.labelFrequency = new System.Windows.Forms.Label();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
             this.label4 = new System.Windows.Forms.Label();
+            this.labelMinVideoLoops = new System.Windows.Forms.Label();
+            this.labelMaximumVideoTime = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageThemeOptions.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -217,6 +219,8 @@
             // tabPageThemeOptions
             // 
             this.tabPageThemeOptions.BackColor = System.Drawing.Color.Black;
+            this.tabPageThemeOptions.Controls.Add(this.labelMaximumVideoTime);
+            this.tabPageThemeOptions.Controls.Add(this.labelMinVideoLoops);
             this.tabPageThemeOptions.Controls.Add(this.panel1);
             this.tabPageThemeOptions.Controls.Add(this.buttonInspectRankDistribution);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxWeightedRanks);
@@ -415,6 +419,26 @@
             this.label4.TabIndex = 52;
             this.label4.Text = "(Press Enter to save changes)";
             // 
+            // labelMinVideoLoops
+            // 
+            this.labelMinVideoLoops.AutoSize = true;
+            this.labelMinVideoLoops.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelMinVideoLoops.Location = new System.Drawing.Point(3, 276);
+            this.labelMinVideoLoops.Name = "labelMinVideoLoops";
+            this.labelMinVideoLoops.Size = new System.Drawing.Size(116, 13);
+            this.labelMinVideoLoops.TabIndex = 53;
+            this.labelMinVideoLoops.Text = "Minimum Video Loops: ";
+            // 
+            // labelMaximumVideoTime
+            // 
+            this.labelMaximumVideoTime.AutoSize = true;
+            this.labelMaximumVideoTime.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelMaximumVideoTime.Location = new System.Drawing.Point(3, 297);
+            this.labelMaximumVideoTime.Name = "labelMaximumVideoTime";
+            this.labelMaximumVideoTime.Size = new System.Drawing.Size(113, 13);
+            this.labelMaximumVideoTime.TabIndex = 54;
+            this.labelMaximumVideoTime.Text = "Maximum Video Time: ";
+            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -467,5 +491,7 @@
         private System.Windows.Forms.TextBox textBoxRelativeVideo;
         private System.Windows.Forms.Label labelGIF;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label labelMaximumVideoTime;
+        private System.Windows.Forms.Label labelMinVideoLoops;
     }
 }

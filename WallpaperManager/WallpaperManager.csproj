@@ -86,6 +86,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Code Library\C#\LanceTools\LanceTools\LanceTools\bin\Release\LanceTools.dll</HintPath>
     </Reference>
+    <Reference Include="LanceToolsControlLibrary">
+      <HintPath>..\..\..\..\Code Library\C#\LanceTools\LanceTools\LanceToolsControlLibrary\bin\Release\LanceToolsControlLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="MediaToolkit, Version=1.1.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediaToolkit.1.1.0.1\lib\net40\MediaToolkit.dll</HintPath>
     </Reference>

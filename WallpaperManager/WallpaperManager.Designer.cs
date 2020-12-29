@@ -69,6 +69,7 @@
             this.labelImageSize = new System.Windows.Forms.Label();
             this.timerVisualUpdater = new System.Windows.Forms.Timer(this.components);
             this.timerVideoLooper = new System.Windows.Forms.Timer(this.components);
+            this.labelMonitor = new System.Windows.Forms.Label();
             this.panelImageFolders.SuspendLayout();
             this.panelImageSettings.SuspendLayout();
             this.panelImageSelector.SuspendLayout();
@@ -525,12 +526,24 @@
             this.timerVisualUpdater.Interval = 1000;
             this.timerVisualUpdater.Tick += new System.EventHandler(this.timerVisualUpdater_Tick);
             // 
+            // labelMonitor
+            // 
+            this.labelMonitor.AutoSize = true;
+            this.labelMonitor.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelMonitor.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelMonitor.Location = new System.Drawing.Point(9, 662);
+            this.labelMonitor.Name = "labelMonitor";
+            this.labelMonitor.Size = new System.Drawing.Size(150, 16);
+            this.labelMonitor.TabIndex = 40;
+            this.labelMonitor.Text = "Monitor 1 (2, 3, etc...)";
+            // 
             // WallpaperManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1264, 686);
+            this.Controls.Add(this.labelMonitor);
             this.Controls.Add(this.labelImageSize);
             this.Controls.Add(this.labelWallpaperStyle);
             this.Controls.Add(this.labelTimeLeft);
@@ -606,6 +619,7 @@
         private System.Windows.Forms.Button buttonRankImages;
         private AxWMPLib.AxWindowsMediaPlayer inspector_axWindowsMediaPlayer;
         private System.Windows.Forms.Timer timerVideoLooper;
+        private System.Windows.Forms.Label labelMonitor;
     }
 }
 

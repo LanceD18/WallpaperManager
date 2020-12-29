@@ -95,38 +95,29 @@ namespace WallpaperManager
 
         public static AxWindowsMediaPlayer InitializeWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, bool editable)
         {
+            axWindowsMediaPlayer.Enabled = false;
             axWindowsMediaPlayer.stretchToFit = true;
             axWindowsMediaPlayer.settings.setMode("loop", true);
             axWindowsMediaPlayer.PlayStateChange += (s, e) =>
             {
                 // ensures that the video auto-starts, some video types fail to do so regularly, such as .webm (They generally take longer to load too)
-                if (axWindowsMediaPlayer.playState == WMPPlayState.wmppsReady) 
+                //if (axWindowsMediaPlayer.playState == WMPPlayState.wmppsReady) 
+                if (e.newState == 10) // ready state
                 {
                     try // this may sometimes cause an error however this doesn't break the program so just ignore it, the video should eventually play
                     {
                         Action playInvoker = () => axWindowsMediaPlayer.Ctlcontrols.play();
 
-                        axWindowsMediaPlayer.BeginInvoke(playInvoker);
+                        axWindowsMediaPlayer.BeginInvoke(playInvoker); // ensures that the program waits for the media to load before playing it
                         Debug.WriteLine("Playing: " + axWindowsMediaPlayer.URL);
                     }
                     catch (Exception exception)
                     {
                         Debug.WriteLine(exception);
                     }
-
-                    /*
-                    if (axWindowsMediaPlayer.Ctlcontrols.currentItem != null)
-                    {
-                        if (axWindowsMediaPlayer.Ctlcontrols.currentPosition > axWindowsMediaPlayer.Ctlcontrols.currentItem.duration - 0.01)
-                        {
-                            axWindowsMediaPlayer.Ctlcontrols.currentPosition = 0;
-                            //MessageBox.Show("uwu");
-                        }
-                    }
-                    */
                 }
 
-                //Debug.WriteLine(axWindowsMediaPlayer.playState.ToString() +'\n' + axWindowsMediaPlayer.URL);
+                Debug.WriteLine(axWindowsMediaPlayer.playState.ToString() + '[' + axWindowsMediaPlayer.URL + ']');
             };
 
             if (editable) // If editable, allow the volume slider to be saved

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LanceTools.FormUtil;
+using LanceToolsControlLibrary.FormUtil;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
 using WallpaperManager.Options;
@@ -27,11 +28,11 @@ namespace WallpaperManager
         private Queue<Image> loadedImages = new Queue<Image>();
         private int maxLoadedTabs;
 
-        private FlowLayoutPanel activeTabLayoutPanel;
+        private SmoothScrollFlowLayoutPanel activeTabLayoutPanel;
 
         private void tabLayoutPanel_MouseClick(object sender, EventArgs e)
         {
-            (sender as ScrollLockedFlowLayoutPanel).Focus();
+            (sender as SmoothScrollFlowLayoutPanel).Focus();
         }
 
         private void buttonClearSelection_Click(object sender, EventArgs e)
@@ -165,7 +166,7 @@ namespace WallpaperManager
                 // Add controls to their panels
                 activeTabLayoutPanel?.Dispose();
 
-                ScrollLockedFlowLayoutPanel tabLayoutPanel = new ScrollLockedFlowLayoutPanel();
+                SmoothScrollFlowLayoutPanel tabLayoutPanel = new SmoothScrollFlowLayoutPanel();
                 tabLayoutPanel.Size = new Size(tabControlImagePages.Size.Width - 5, tabControlImagePages.Size.Height - tabControlImagePages.ItemSize.Height - 5);
                 tabLayoutPanel.AutoScroll = true;
                 tabLayoutPanel.HorizontalScroll.Visible = false;
@@ -201,6 +202,8 @@ namespace WallpaperManager
                         }
                     }
                 }
+
+                //?tabLayoutPanel.UpdateScroll(); Used in the FastScrollFlowLayoutPanel version of the tabLayoutPanel, may swap back to this in the future
                 tabLayoutPanel.ResumeLayout();
 
                 tabLayoutPanel.Focus(); // clicking on the Tab Control to change pages loses the focus of the panel

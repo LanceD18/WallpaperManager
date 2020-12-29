@@ -28,17 +28,17 @@ namespace WallpaperManager
 
                 if (File.Exists(value))
                 {
-                    try
+                    Image image = WallpaperManagerTools.GetImageFromFile(value);
+
+                    if (image != null)
                     {
-                        using (Image image = WallpaperManagerTools.GetImageFromFile(value))
-                        {
-                            labelImageSize.Text = image.Width + "x" + image.Height;
-                            labelImageSize.Left = panelImageSelector.Location.X - labelImageSize.Size.Width - 5;
-                        }
+                        labelImageSize.Text = image.Width + "x" + image.Height;
+                        labelImageSize.Left = panelImageSelector.Location.X - labelImageSize.Size.Width - 5;
+                        image.Dispose();
                     }
-                    catch (Exception e)
+                    else
                     {
-                        throw new Exception("Attempted to load an unsupported file type\n" + e.Message);
+                        MessageBox.Show("Attempted to load an unsupported file type");
                     }
                 }
             }
