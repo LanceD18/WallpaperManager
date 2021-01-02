@@ -10,18 +10,19 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Timers;
 using WallpaperManager.ApplicationData;
+using Timer = System.Timers.Timer;
 
 namespace WallpaperManager
 {
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
-        private System.Timers.Timer timer;
+        private Timer timer;
         private Stopwatch timerStopWatch = new Stopwatch();
         private int timerMaxInterval;
 
         private void InitializeTimer()
         {
-            timer = new System.Timers.Timer(1);
+            timer = new Timer(1);
             timer.Elapsed += IntervalElapsed;
         }
 
@@ -32,7 +33,7 @@ namespace WallpaperManager
 
             if (selectedTimer.IndexOfAny("0123456789".ToCharArray()) != -1)
             {
-                intervalNum = int.Parse(selectedTimer.Substring(0, selectedTimer.IndexOf(' ')));
+                intervalNum = Int32.Parse(selectedTimer.Substring(0, selectedTimer.IndexOf(' ')));
                 string intervalType = selectedTimer.Substring(selectedTimer.IndexOf(' ') + 1);
 
                 switch (intervalType)

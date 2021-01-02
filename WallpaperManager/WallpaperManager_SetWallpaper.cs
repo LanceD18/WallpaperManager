@@ -5,19 +5,24 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LanceTools.Mpv;
+using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager
 {
     //? Implementation of wallpaper via placing a borderless form behind the desktop icons
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
         private WallpaperForm[] wallpapers;
 
+
         // Derived from: https://www.codeproject.com/Articles/856020/Draw-Behind-Desktop-Icons-in-Windows-plus
-        private IntPtr GetWorkerW()
+
+        public static IntPtr GetDesktopWorkerW()
         {
             //?-----Fetch the Program window-----
             IntPtr progman = Win32.FindWindow("Progman", null); // progman (not program) allows the form to be represented as a child window of the desktop itself
@@ -55,7 +60,7 @@ namespace WallpaperManager
                 IntPtr p = Win32.FindWindowEx(tophandle,
                     IntPtr.Zero,
                     "SHELLDLL_DefView",
-                    string.Empty);
+                    String.Empty);
 
                 if (p != IntPtr.Zero)
                 {
@@ -63,7 +68,7 @@ namespace WallpaperManager
                     workerw = Win32.FindWindowEx(IntPtr.Zero,
                         tophandle,
                         "WorkerW",
-                        string.Empty);
+                        String.Empty);
                 }
 
                 return true;
@@ -72,10 +77,11 @@ namespace WallpaperManager
             return workerw;
         }
 
+
         //? Note: For this function to work, the form has to be already created. The form.Load event seems to be the right place for it.
         private void InitializeWallpapers()
         {
-            IntPtr workerw = GetWorkerW();
+            IntPtr workerw = GetDesktopWorkerW();
 
             int monitorCount = MonitorData.Screens.Length;
             wallpapers = new WallpaperForm[monitorCount];
@@ -93,18 +99,34 @@ namespace WallpaperManager
                 string wallpaperPath = PathData.ActiveWallpapers[i];
                 string wallpaperName = new FileInfo(wallpaperPath).Name; // pathless string of file name
 
-                wallpaperMenuItems[i].Text = WallpaperData.ContainsImage(wallpaperPath) ? 
-                    i + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName : 
-                    i + 1 + " | [NOT FOUND]" + wallpaperName;
+                wallpaperMenuItems[i].Text = WallpaperData.ContainsImage(wallpaperPath) ?
+                    i + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName :
+                    i + 1 + " | [NOT FOUND]" + wallpaperName; wallpaperMenuItems[i].Text = WallpaperData.ContainsImage(wallpaperPath) ? i + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName : i + 1 + " | [NOT FOUND]" + wallpaperName;
 
+                //? without this, if the inspector wasn't open prior to setting a new wallpaper it would never allow it's MvpPlayer to display
+                // TODO find a permanent solution to this | Using a different player such as VLC did not work
+                WallpaperData.WallpaperManagerForm.FixInspectorPlayer(PathData.ActiveWallpapers[i]);
                 //-----Update Wallpaper Forms-----
-                wallpapers[i].Invoke((MethodInvoker) delegate
-                {
-                    //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings
-                    if (!wallpapers[i].Visible) wallpapers[i].Show(); // this is processed only once after the first wallpaper change
-                    wallpapers[i].SetWallpaper(PathData.ActiveWallpapers[i]);
-                });
+                //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings
+                //! the moment this is shown, any new mpvplayers will stop working, only the ones that were player previously will continue to function
+                if (!wallpapers[i].Visible) wallpapers[i].Show(); // this is processed only once after the first wallpaper change
+                wallpapers[i].SetWallpaper(PathData.ActiveWallpapers[i]);
             }
+        }
+
+        private bool fixAdministered = false;
+        public bool FixInspectorPlayer(string video)
+        {
+            if (!inspector_mpvPlayer.IsPlaying && !fixAdministered)
+            {
+                inspectedImage = video;
+                ActivateImageInspector();
+                DeactivateImageInspector();
+                fixAdministered = true;
+                return true;
+            }
+
+            return false;
         }
     }
 }

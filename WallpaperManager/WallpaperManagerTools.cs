@@ -54,13 +54,19 @@ namespace WallpaperManager
         public static readonly string IMAGE_FILES_FILTER = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.gif, *.mp4, *.webm, *.avi)" +
                                                            " | *.jpg; *.jpeg; *.jpe; *.jfif; *.png; *.gif; *.mp4; *.webm; *.avi";
 
-        public static bool IsSupportedVideoType(string extension) => extension == ".mp4" || extension == ".webm" || extension == ".avi";
+        public static bool IsSupportedVideoType(string filePath) => IsSupportedVideoType(new FileInfo(filePath));
+
+        public static bool IsSupportedVideoType(FileInfo fileInfo)
+        {
+            string extension = fileInfo.Extension;
+            return extension == ".mp4" || extension == ".webm" || extension == ".avi";
+        }
 
         public static Image GetImageFromFile(string filePath)
         {
             try
             {
-                if (!IsSupportedVideoType(new FileInfo(filePath).Extension))
+                if (!IsSupportedVideoType(filePath))
                 {
                     return Image.FromFile(filePath);
                 }
@@ -93,6 +99,7 @@ namespace WallpaperManager
             return bitmap;
         }
 
+        /*x
         public static AxWindowsMediaPlayer InitializeWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, bool editable)
         {
             axWindowsMediaPlayer.Enabled = false;
@@ -140,12 +147,11 @@ namespace WallpaperManager
 
         public static AxWindowsMediaPlayer UpdateWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, string videoPath)
         {
-
             axWindowsMediaPlayer.URL = videoPath;
 
-            WallpaperData.ImageData image = WallpaperData.GetImageData(videoPath);
-            axWindowsMediaPlayer.settings.volume = image.VideoSettings.volume;
-            axWindowsMediaPlayer.settings.rate = image.VideoSettings.playbackSpeed;
+            WallpaperData.VideoSettings VideoSettings = WallpaperData.GetImageData(videoPath).VideoSettings;
+            axWindowsMediaPlayer.settings.volume = VideoSettings.volume;
+            axWindowsMediaPlayer.settings.rate = VideoSettings.playbackSpeed;
             axWindowsMediaPlayer.Enabled = true;
             axWindowsMediaPlayer.settings.autoStart = true;
 
@@ -155,6 +161,7 @@ namespace WallpaperManager
 
             return axWindowsMediaPlayer;
         }
+        */
 
         public static SelectionType ChooseSelectionType()
         {

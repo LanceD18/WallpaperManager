@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager
 {
@@ -16,7 +18,7 @@ namespace WallpaperManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new WallpaperManager());
+            Application.Run(new WallpaperManagerForm());
         }
     }
 }

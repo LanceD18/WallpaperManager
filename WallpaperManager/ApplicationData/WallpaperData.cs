@@ -19,7 +19,7 @@ namespace WallpaperManager.ApplicationData
     // TODO Refactor this file's major components x: | Also attempt to refactor the way ImageData is handled
     public static partial class WallpaperData
     {
-        public static WallpaperManager WallpaperManagerForm;
+        public static WallpaperManagerForm WallpaperManagerForm;
 
         private static Dictionary<string, ImageData> FileData = new Dictionary<string, ImageData>();
 

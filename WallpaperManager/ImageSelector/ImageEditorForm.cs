@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LanceTools.FormUtil;
+using LanceTools.Mpv;
+using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.Tagging;
 
@@ -25,6 +27,8 @@ namespace WallpaperManager.ImageSelector
 
         private TagClickerForm tagClickerForm;
 
+        private MpvPlayer player;
+
         public ImageEditorForm(WallpaperData.ImageData imageData)
         {
             InitializeComponent();
@@ -34,14 +38,19 @@ namespace WallpaperManager.ImageSelector
             if (activeImage.imageType != ImageType.Video)
             {
                 pictureBoxImage.ImageLocation = imageData.Path;
-                pictureBoxImage.Visible = true; axWindowsMediaPlayerImage.Visible = false;
+                pictureBoxImage.Visible = true; mpvDisplay.Visible = false;
             }
             else
             {
-                pictureBoxImage.Visible = false; axWindowsMediaPlayerImage.Visible = true;
+                pictureBoxImage.Visible = false; mpvDisplay.Visible = true;
 
-                axWindowsMediaPlayerImage = WallpaperManagerTools.InitializeWindowsMediaPlayer(axWindowsMediaPlayerImage, true);
-                axWindowsMediaPlayerImage = WallpaperManagerTools.UpdateWindowsMediaPlayer(axWindowsMediaPlayerImage, imageData.Path);
+                player = new MpvPlayer(mpvDisplay.Handle)
+                {
+                    AutoPlay = true,
+                    Loop = true
+                };
+                player.Load(imageData.Path);
+                mpvDisplay.SetPlayer(player);
             }
 
             imageTagsFLP.SuspendLayout();

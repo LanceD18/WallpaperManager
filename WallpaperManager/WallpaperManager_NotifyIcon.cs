@@ -12,7 +12,7 @@ using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager
 {
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
         //? Note that OnResize() is used to open the notifyIcon
 

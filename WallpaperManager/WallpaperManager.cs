@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,14 +16,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LanceTools.FormUtil;
+using LibVLCSharp.Shared;
 using Microsoft.Win32;
+using Mpv.NET.Player;
+using Vlc.DotNet.Forms;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.Options;
 using WallpaperManager.Tagging;
 
 namespace WallpaperManager
 {
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
         // Essentials
         private const int SetDeskWallpaper = 20;
@@ -55,16 +59,18 @@ namespace WallpaperManager
 
         private GlobalHotkey ghShiftAlt;
 
-        public WallpaperManager()
+        public WallpaperManagerForm()
         {
             WallpaperData.WallpaperManagerForm = this; //? this needs to be at the very front for a few other initializers
 
             InitializeComponent();
+
             timerVideoLooper.Start();
 
             Application.ApplicationExit += OnApplicationExit;
             this.Load += OnLoad;
             this.Resize += OnResize;
+            this.Closing += OnClosing;
 
             MonitorData.Initialize();
 
@@ -81,15 +87,32 @@ namespace WallpaperManager
             InitializeNotifyIcon();
         }
 
+        private void OnClosing(object sender, EventArgs e)
+        {
+            inspector_mpvPlayer.Stop(); //? Processing this in OnApplicationExit will cause a crash, not processing it at all will send an error on exit
+        }
+
         private void OnApplicationExit(object sender, EventArgs e)
         {
+            // Upon closing the application you'll revert back to your default, windows wallpapers
+            SystemParametersInfo(SetDeskWallpaper, 0, null, UpdateIniFile | SendWinIniChange);
+
             foreach (WallpaperForm wallpaper in wallpapers)
             {
-                wallpaper.Close();
-                //wallpaper.BackColor = Color.Magenta;
-                //wallpaper.TransparencyKey = Color.Magenta;
-                //wallpaper.SetWallpaper("");
+                if (!wallpaper.InvokeRequired)
+                {
+                    wallpaper.Close();
+                }
+                else
+                {
+                    wallpaper.Invoke((MethodInvoker) delegate { wallpaper.Close(); });
+                }
             }
+
+            // Upon closing the application you'll revert back to your default, windows wallpapers
+            //? Pretty sure you don't need this but I'm posting this here for just in case the invoke fails and the wallpaper continues to draw (This happened twice)
+            // TODO Thoroughly test the use of this copy
+            SystemParametersInfo(SetDeskWallpaper, 0, null, UpdateIniFile | SendWinIniChange);
 
             //? WallpaperData.SaveDefaultData(); | I feel like this is prone to overwrite accidents
 

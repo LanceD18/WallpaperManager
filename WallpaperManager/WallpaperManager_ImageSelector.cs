@@ -9,15 +9,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LanceTools.ControlLibrary;
 using LanceTools.FormUtil;
-using LanceToolsControlLibrary.FormUtil;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
 using WallpaperManager.Options;
 
 namespace WallpaperManager
 {
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
         private string[] selectedImages;
         private int imagesPerPage;

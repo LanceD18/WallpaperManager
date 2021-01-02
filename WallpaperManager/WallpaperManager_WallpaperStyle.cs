@@ -20,7 +20,7 @@ namespace WallpaperManager
         Center
     }
 
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
         private PictureStyle WallpaperStyle;
 

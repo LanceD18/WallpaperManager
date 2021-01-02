@@ -10,7 +10,7 @@ using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager
 {
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
         private void buttonLoadTheme_Click(object sender, EventArgs e)
         {

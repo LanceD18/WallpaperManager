@@ -154,7 +154,7 @@ namespace WallpaperManager.ApplicationData
             {
                 if (imageType == ImageType.None)
                 {
-                    if (!WallpaperManagerTools.IsSupportedVideoType(file.Extension))
+                    if (!WallpaperManagerTools.IsSupportedVideoType(file))
                     {
                         if (file.Extension != ".gif")
                         {

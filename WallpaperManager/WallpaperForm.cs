@@ -10,12 +10,16 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 using Emgu.CV;
+using LanceTools.Mpv;
 using MediaToolkit;
 using MediaToolkit.Model;
+using Mpv.NET.API;
+using Mpv.NET.Player;
 using Newtonsoft.Json.Bson;
 using WallpaperManager.ApplicationData;
 using WMPLib;
@@ -25,13 +29,6 @@ namespace WallpaperManager
 {
     public partial class WallpaperForm : Form
     {
-        private const int SetDeskWallpaper = 20;
-        private const int UpdateIniFile = 0x01;
-        private const int SendWinIniChange = 0x02;
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
-
         private Rectangle pictureBoxBounds;
 
         private int volume = 25;
@@ -39,26 +36,18 @@ namespace WallpaperManager
         private const int TASKBAR_SIZE = 40;
         private const double FRAME_LENGTH = (double)1 / 60;
 
+        public MpvPlayer player;
+        private string playerVideoPath;
+
         // TODO Check why this is claiming that it's functioning on a different thread yet no thread is made when calling this? Finding this out will determine if the Invokes remain
         public WallpaperForm(Screen monitor, IntPtr workerw)
         {
             this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             InitializeComponent();
 
-            // TODO Use this later for other optional features
-            /*
-            axWindowsMediaPlayerWallpaper.PlayStateChange += (ax_s, ax_e) =>
-            {
-                if (ax_e.newState == 8) // this state indicates that the media has ended | States: http://msdn.microsoft.com/en-us/library/windows/desktop/dd562460%28v=vs.85%29.aspx
-                {
-                    //axWindowsMediaPlayerWallpaper.Ctlcontrols.fastReverse();
-                }
-            };
-            */
-
             Load += (s, e) =>
             {
-                this.Invoke((MethodInvoker) delegate
+                this.Invoke((MethodInvoker)delegate
                 {
                     BackColor = Color.Black;
 
@@ -71,38 +60,15 @@ namespace WallpaperManager
 
                     // Sets bounds of the wallpaper
                     pictureBoxWallpaper.Bounds = pictureBoxBounds;
+                    panelWallpaper.Bounds = pictureBoxBounds;
 
-                    axWindowsMediaPlayerWallpaper.PlayStateChange += (s2, e2) =>
+                    // Initializes player
+                    player = new MpvPlayer(panelWallpaper.Handle) // handle tells the player to draw itself onto the panelWallpaper
                     {
-                        // some file types (.mp4) don't appear to have this issue, so doing this causes them to return to position 0 twice
-                        if (axWindowsMediaPlayerWallpaper.URL.Contains(".webm"))
-                        {
-                            if (e2.newState == 8) // MediaEnded state
-                            {
-                                Debug.WriteLine("State Change");
-                                axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition = 0;
-                            }
-                        }
+                        AutoPlay = true,
+                        Loop = true
                     };
-
-                    /* Alternative Method, can guarantee no black flicker at the cost of losing some frames
-                    // (Note that flicker length is random, the state change method was more consistent than this)
-                    WallpaperData.WallpaperManagerForm.AppendTimerVideoLooperEvent_Tick(new Action(() =>
-                    {
-                        if (axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem != null)
-                        {
-                            if (axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition > axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem.duration - (FRAME_LENGTH * 3))
-                            {
-                                Debug.WriteLine("Duration: " + axWindowsMediaPlayerWallpaper.Ctlcontrols.currentItem.duration);
-                                axWindowsMediaPlayerWallpaper.Ctlcontrols.currentPosition = 0;
-                            }
-                        }
-                    }));
-                    */
-
-                    axWindowsMediaPlayerWallpaper = WallpaperManagerTools.InitializeWindowsMediaPlayer(axWindowsMediaPlayerWallpaper, false);
-                    axWindowsMediaPlayerWallpaper.Bounds = pictureBoxBounds;
-                    axWindowsMediaPlayerWallpaper.Ctlenabled = false;
+                    player.API.RequestLogMessages(MpvLogLevel.Warning);
 
                     ResetWallpaperStyle();
 
@@ -113,13 +79,17 @@ namespace WallpaperManager
                 });
             };
 
-            Closing += (s, e) =>
+            Closing += async (s, e) =>
             {
                 Controls.Remove(pictureBoxWallpaper);
-                Controls.Remove(axWindowsMediaPlayerWallpaper);
 
-                // Upon closing the application you'll revert back to your default, windows wallpapers
-                SystemParametersInfo(SetDeskWallpaper, 0, null, UpdateIniFile | SendWinIniChange);
+                player.Stop();
+                /*! //the below caused an assertion failed error
+                await Task.Delay(1000);
+                player.Dispose();
+                */
+
+                Controls.Remove(panelWallpaper);
             };
         }
 
@@ -141,38 +111,46 @@ namespace WallpaperManager
             //! not changing a monitor's wallpaper would probably be better than this
             //!if (imageLocation == null) return; //? Under certain conditions a wallpaper won't be selected, this prevents the program from crashing over this
 
-            this.Invoke((MethodInvoker) delegate
+            if (!IsHandleCreated) return;
+
+            if (InvokeRequired)
             {
-                if (!WallpaperManagerTools.IsSupportedVideoType(new FileInfo(imageLocation).Extension))
+                this.Invoke((MethodInvoker)delegate { SetWallpaperProcess(); });
+            }
+            else
+            {
+                SetWallpaperProcess();
+            }
+
+            void SetWallpaperProcess()
+            {
+                if (!WallpaperManagerTools.IsSupportedVideoType(imageLocation))
                 {
-                    //?pictureBoxWallpaper.Invoke((MethodInvoker) delegate
-                    //?{
-                        pictureBoxWallpaper.ImageLocation = imageLocation;
-                        pictureBoxWallpaper.Visible = true;
-                    //?});
+                    player.Stop();
+                    panelWallpaper.Visible = false;
+                    panelWallpaper.Enabled = false;
 
-                    //?axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker) delegate
-                    //?{
-                        axWindowsMediaPlayerWallpaper.Visible = axWindowsMediaPlayerWallpaper.Enabled = false;
-                        axWindowsMediaPlayerWallpaper.settings.volume = 0; // the audio still plays even after disabling everything, and no, the mute method didn't work
-                    //?});
-
+                    pictureBoxWallpaper.ImageLocation = imageLocation;
+                    pictureBoxWallpaper.Enabled = true;
+                    pictureBoxWallpaper.Visible = true;
                 }
                 else
                 {
-                    //?pictureBoxWallpaper.Invoke((MethodInvoker) delegate
-                    //?{
-                        pictureBoxWallpaper.Visible = false;
-                    //?});
+                    pictureBoxWallpaper.Visible = false;
+                    pictureBoxWallpaper.Enabled = false;
 
-                    //?axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker) delegate
-                    //?{
-                        axWindowsMediaPlayerWallpaper.Visible = true;
-                        axWindowsMediaPlayerWallpaper = WallpaperManagerTools.UpdateWindowsMediaPlayer(axWindowsMediaPlayerWallpaper, imageLocation);
+                    panelWallpaper.Enabled = true;
+                    panelWallpaper.Visible = true;
+                    player.Reload(imageLocation);
 
-                    //?});
+                    Debug.WriteLine(imageLocation);
+                    WallpaperData.VideoSettings VideoSettings = WallpaperData.GetImageData(imageLocation).VideoSettings;
+                    player.Volume = VideoSettings.volume;
+                    //?player.Speed = VideoSettings.playbackSpeed;
+
+                    playerVideoPath = imageLocation;
                 }
-            });
+            }
 
             ResetWallpaperStyle(); // this needs to be readjusted with each image
         }
@@ -184,12 +162,26 @@ namespace WallpaperManager
 
         public void SetWallpaperStyle(PictureStyle wallpaperStyle)
         {
+            if (!IsHandleCreated) return;
+
             Debug.WriteLine("Setting Style");
-            pictureBoxWallpaper.Invoke((MethodInvoker) delegate
+            if (InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate { SetWallpaperStyleProcess(); });
+            }
+            else
+            {
+                SetWallpaperStyleProcess();
+            }
+
+            void SetWallpaperStyleProcess()
             {
                 if (pictureBoxWallpaper.Visible)
                 {
+                    if (pictureBoxWallpaper.ImageLocation == null) return;
+
                     pictureBoxWallpaper.SuspendLayout();
+                    pictureBoxWallpaper.Bounds = pictureBoxBounds; // it's generally a good idea to reset this to prevent unwanted changes from previous states
                     switch (wallpaperStyle)
                     {
                         case PictureStyle.Fill:
@@ -204,54 +196,50 @@ namespace WallpaperManager
                             break;
 
                         case PictureStyle.Stretch:
-                            pictureBoxWallpaper.Bounds = pictureBoxBounds;
                             pictureBoxWallpaper.SizeMode = PictureBoxSizeMode.StretchImage;
                             break;
 
                         case PictureStyle.Zoom:
-                            pictureBoxWallpaper.Bounds = new Rectangle(pictureBoxBounds.X, pictureBoxBounds.Y, pictureBoxBounds.Width, pictureBoxBounds.Height - TASKBAR_SIZE);
+                            pictureBoxWallpaper.Height -= TASKBAR_SIZE;
                             pictureBoxWallpaper.SizeMode = PictureBoxSizeMode.Zoom;
                             break;
                     }
 
                     pictureBoxWallpaper.ResumeLayout();
                 }
-            });
 
-            axWindowsMediaPlayerWallpaper.Invoke((MethodInvoker) delegate
-            {
-                if (axWindowsMediaPlayerWallpaper.Visible)
+                if (panelWallpaper.Visible)
                 {
-                    axWindowsMediaPlayerWallpaper.SuspendLayout();
-                    VideoCapture video = new VideoCapture(axWindowsMediaPlayerWallpaper.URL);
-
-                    Mat m = new Mat();
-                    video.Read(m);
-                    //video.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosAviRatio, 0);
-
-                    switch (wallpaperStyle)
+                    panelWallpaper.SuspendLayout();
+                    using (VideoCapture video = new VideoCapture(playerVideoPath))
                     {
-                        case PictureStyle.Fill:
-                            int heightDiff = GetFillHeightDiff(video.Width, video.Height);
-                            axWindowsMediaPlayerWallpaper.Width = Width; // scales the image to its width
-                            axWindowsMediaPlayerWallpaper.Height = Height + heightDiff; // any additional height will be pushed offscreen
-                            axWindowsMediaPlayerWallpaper.Top = -heightDiff / 2; // centers the height pushed offscreen
-                            axWindowsMediaPlayerWallpaper.Refresh();
-                            break;
+                        using (Mat m = new Mat()) video.Read(m);
+                        //video.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosAviRatio, 0);
 
-                        case PictureStyle.Stretch:
-                            axWindowsMediaPlayerWallpaper.Bounds = pictureBoxBounds;
-                            break;
+                        switch (wallpaperStyle)
+                        {
+                            case PictureStyle.Fill:
+                                panelWallpaper.Bounds = pictureBoxBounds;
+                                int heightDiff = GetFillHeightDiff(video.Width, video.Height);
+                                panelWallpaper.Width = Width; // scales the image to its width
+                                panelWallpaper.Height = Height + heightDiff; // any additional height will be pushed offscreen
+                                panelWallpaper.Top = -heightDiff / 2; // centers the height pushed offscreen
+                                break;
 
-                        case PictureStyle.Zoom:
-                            axWindowsMediaPlayerWallpaper.Bounds = GetZoomBounds(video.Width, video.Height);
-                            break;
+                            case PictureStyle.Stretch:
+                                panelWallpaper.Bounds = pictureBoxBounds;
+                                break;
+
+                            case PictureStyle.Zoom:
+                                panelWallpaper.Bounds = GetZoomBounds(video.Width, video.Height);
+                                break;
+                        }
+
+                        panelWallpaper.ResumeLayout();
                     }
 
-                    axWindowsMediaPlayerWallpaper.ResumeLayout();
-
                 }
-            });
+            }
         }
 
         private int GetFillHeightDiff(int imageWidth, int imageHeight)

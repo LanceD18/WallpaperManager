@@ -13,7 +13,7 @@ using WallpaperManager.Tagging;
 
 namespace WallpaperManager
 {
-    public partial class WallpaperManager : Form
+    public partial class WallpaperManagerForm : Form
     {
         private void buttonSelect_Click(object sender, EventArgs e)
         {
@@ -141,7 +141,7 @@ namespace WallpaperManager
                 int newRank;
                 try
                 {
-                    newRank = int.Parse(Interaction.InputBox("Enter a new rank for all selected images: ", "Select a new rank"));
+                    newRank = Int32.Parse(Interaction.InputBox("Enter a new rank for all selected images: ", "Select a new rank"));
                 }
                 catch // no response
                 {

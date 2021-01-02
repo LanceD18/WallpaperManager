@@ -28,53 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WallpaperForm));
             this.pictureBoxWallpaper = new System.Windows.Forms.PictureBox();
-            this.axWindowsMediaPlayerWallpaper = new AxWMPLib.AxWindowsMediaPlayer();
-            this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
+            this.panelWallpaper = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWallpaper)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayerWallpaper)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBoxWallpaper
             // 
-            this.pictureBoxWallpaper.Location = new System.Drawing.Point(117, 94);
+            this.pictureBoxWallpaper.Location = new System.Drawing.Point(124, 71);
             this.pictureBoxWallpaper.Name = "pictureBoxWallpaper";
             this.pictureBoxWallpaper.Size = new System.Drawing.Size(169, 140);
-            this.pictureBoxWallpaper.TabIndex = 0;
+            this.pictureBoxWallpaper.TabIndex = 1;
             this.pictureBoxWallpaper.TabStop = false;
             // 
-            // axWindowsMediaPlayerWallpaper
+            // panelWallpaper
             // 
-            this.axWindowsMediaPlayerWallpaper.Enabled = true;
-            this.axWindowsMediaPlayerWallpaper.Location = new System.Drawing.Point(415, 228);
-            this.axWindowsMediaPlayerWallpaper.Name = "axWindowsMediaPlayerWallpaper";
-            this.axWindowsMediaPlayerWallpaper.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayerWallpaper.OcxState")));
-            this.axWindowsMediaPlayerWallpaper.Size = new System.Drawing.Size(343, 210);
-            this.axWindowsMediaPlayerWallpaper.TabIndex = 1;
-            // 
-            // printPreviewDialog1
-            // 
-            this.printPreviewDialog1.AutoScrollMargin = new System.Drawing.Size(0, 0);
-            this.printPreviewDialog1.AutoScrollMinSize = new System.Drawing.Size(0, 0);
-            this.printPreviewDialog1.ClientSize = new System.Drawing.Size(400, 300);
-            this.printPreviewDialog1.Enabled = true;
-            this.printPreviewDialog1.Icon = ((System.Drawing.Icon)(resources.GetObject("printPreviewDialog1.Icon")));
-            this.printPreviewDialog1.Name = "printPreviewDialog1";
-            this.printPreviewDialog1.Visible = false;
+            this.panelWallpaper.Location = new System.Drawing.Point(465, 245);
+            this.panelWallpaper.Name = "panelWallpaper";
+            this.panelWallpaper.Size = new System.Drawing.Size(200, 100);
+            this.panelWallpaper.TabIndex = 2;
             // 
             // WallpaperForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.axWindowsMediaPlayerWallpaper);
+            this.Controls.Add(this.panelWallpaper);
             this.Controls.Add(this.pictureBoxWallpaper);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "WallpaperForm";
             this.Text = "WallpaperForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWallpaper)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayerWallpaper)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -82,7 +66,6 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBoxWallpaper;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayerWallpaper;
-        private System.Windows.Forms.PrintPreviewDialog printPreviewDialog1;
+        private System.Windows.Forms.Panel panelWallpaper;
     }
 }
