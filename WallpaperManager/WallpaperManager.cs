@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AudioSwitcher.AudioApi.CoreAudio;
 using LanceTools.FormUtil;
 using LibVLCSharp.Shared;
 using Microsoft.Win32;
@@ -23,6 +24,7 @@ using Vlc.DotNet.Forms;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.Options;
 using WallpaperManager.Tagging;
+using WallpaperManager.Wallpaper;
 
 namespace WallpaperManager
 {
@@ -64,8 +66,6 @@ namespace WallpaperManager
             WallpaperData.WallpaperManagerForm = this; //? this needs to be at the very front for a few other initializers
 
             InitializeComponent();
-
-            timerVideoLooper.Start();
 
             Application.ApplicationExit += OnApplicationExit;
             this.Load += OnLoad;
@@ -294,6 +294,6 @@ namespace WallpaperManager
             ClearImageFolders();
         }
 
-        public void AppendTimerVideoLooperEvent_Tick(Action action) => timerVideoLooper.Tick += (s, e) => action.Invoke();
+        public WallpaperForm[] GetWallpapers() => wallpapers;
     }
 }

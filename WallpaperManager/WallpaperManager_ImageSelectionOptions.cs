@@ -53,11 +53,11 @@ namespace WallpaperManager
                 switch (WallpaperManagerTools.ChooseSelectionType())
                 {
                     case SelectionType.Active:
-                        if (inspectedImage != "")
+                        if (InspectedImage != "")
                         {
-                            if (WallpaperData.ContainsImage(inspectedImage))
+                            if (WallpaperData.ContainsImage(InspectedImage))
                             {
-                                PathData.RenameImage(WallpaperData.GetImageData(inspectedImage));
+                                PathData.RenameImage(WallpaperData.GetImageData(InspectedImage));
                             }
                             else
                             {

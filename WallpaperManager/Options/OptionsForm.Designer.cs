@@ -44,7 +44,10 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageThemeOptions = new System.Windows.Forms.TabPage();
+            this.labelMaximumVideoTime = new System.Windows.Forms.Label();
+            this.labelMinVideoLoops = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
             this.textBoxExactVideo = new System.Windows.Forms.TextBox();
             this.textBoxExactGIF = new System.Windows.Forms.TextBox();
             this.textBoxExactStatic = new System.Windows.Forms.TextBox();
@@ -58,9 +61,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.labelFrequency = new System.Windows.Forms.Label();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
-            this.label4 = new System.Windows.Forms.Label();
-            this.labelMinVideoLoops = new System.Windows.Forms.Label();
-            this.labelMaximumVideoTime = new System.Windows.Forms.Label();
+            this.checkBoxAudioPlaying = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.checkBoxApplicationMaximized = new System.Windows.Forms.CheckBox();
+            this.checkBoxApplicationFocused = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPageThemeOptions.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -219,6 +223,10 @@
             // tabPageThemeOptions
             // 
             this.tabPageThemeOptions.BackColor = System.Drawing.Color.Black;
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxApplicationFocused);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxApplicationMaximized);
+            this.tabPageThemeOptions.Controls.Add(this.label5);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxAudioPlaying);
             this.tabPageThemeOptions.Controls.Add(this.labelMaximumVideoTime);
             this.tabPageThemeOptions.Controls.Add(this.labelMinVideoLoops);
             this.tabPageThemeOptions.Controls.Add(this.panel1);
@@ -234,6 +242,26 @@
             this.tabPageThemeOptions.Size = new System.Drawing.Size(477, 423);
             this.tabPageThemeOptions.TabIndex = 0;
             this.tabPageThemeOptions.Text = "Theme Options";
+            // 
+            // labelMaximumVideoTime
+            // 
+            this.labelMaximumVideoTime.AutoSize = true;
+            this.labelMaximumVideoTime.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelMaximumVideoTime.Location = new System.Drawing.Point(3, 258);
+            this.labelMaximumVideoTime.Name = "labelMaximumVideoTime";
+            this.labelMaximumVideoTime.Size = new System.Drawing.Size(113, 13);
+            this.labelMaximumVideoTime.TabIndex = 54;
+            this.labelMaximumVideoTime.Text = "Maximum Video Time: ";
+            // 
+            // labelMinVideoLoops
+            // 
+            this.labelMinVideoLoops.AutoSize = true;
+            this.labelMinVideoLoops.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelMinVideoLoops.Location = new System.Drawing.Point(3, 237);
+            this.labelMinVideoLoops.Name = "labelMinVideoLoops";
+            this.labelMinVideoLoops.Size = new System.Drawing.Size(116, 13);
+            this.labelMinVideoLoops.TabIndex = 53;
+            this.labelMinVideoLoops.Text = "Minimum Video Loops: ";
             // 
             // panel1
             // 
@@ -256,6 +284,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(269, 126);
             this.panel1.TabIndex = 51;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label4.Location = new System.Drawing.Point(3, 10);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(129, 12);
+            this.label4.TabIndex = 52;
+            this.label4.Text = "(Press Enter to save changes)";
             // 
             // textBoxExactVideo
             // 
@@ -408,36 +447,49 @@
             this.tabPageGlobalOptions.TabIndex = 1;
             this.tabPageGlobalOptions.Text = "Global Options";
             // 
-            // label4
+            // checkBoxAudioPlaying
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label4.Location = new System.Drawing.Point(3, 10);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(129, 12);
-            this.label4.TabIndex = 52;
-            this.label4.Text = "(Press Enter to save changes)";
+            this.checkBoxAudioPlaying.AutoSize = true;
+            this.checkBoxAudioPlaying.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxAudioPlaying.Location = new System.Drawing.Point(287, 114);
+            this.checkBoxAudioPlaying.Name = "checkBoxAudioPlaying";
+            this.checkBoxAudioPlaying.Size = new System.Drawing.Size(144, 17);
+            this.checkBoxAudioPlaying.TabIndex = 55;
+            this.checkBoxAudioPlaying.Text = "External Audio is Playting";
+            this.checkBoxAudioPlaying.UseVisualStyleBackColor = true;
             // 
-            // labelMinVideoLoops
+            // label5
             // 
-            this.labelMinVideoLoops.AutoSize = true;
-            this.labelMinVideoLoops.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelMinVideoLoops.Location = new System.Drawing.Point(3, 276);
-            this.labelMinVideoLoops.Name = "labelMinVideoLoops";
-            this.labelMinVideoLoops.Size = new System.Drawing.Size(116, 13);
-            this.labelMinVideoLoops.TabIndex = 53;
-            this.labelMinVideoLoops.Text = "Minimum Video Loops: ";
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.label5.Location = new System.Drawing.Point(284, 98);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(87, 13);
+            this.label5.TabIndex = 56;
+            this.label5.Text = "Mute Audio If:";
             // 
-            // labelMaximumVideoTime
+            // checkBoxApplicationMaximized
             // 
-            this.labelMaximumVideoTime.AutoSize = true;
-            this.labelMaximumVideoTime.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelMaximumVideoTime.Location = new System.Drawing.Point(3, 297);
-            this.labelMaximumVideoTime.Name = "labelMaximumVideoTime";
-            this.labelMaximumVideoTime.Size = new System.Drawing.Size(113, 13);
-            this.labelMaximumVideoTime.TabIndex = 54;
-            this.labelMaximumVideoTime.Text = "Maximum Video Time: ";
+            this.checkBoxApplicationMaximized.AutoSize = true;
+            this.checkBoxApplicationMaximized.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxApplicationMaximized.Location = new System.Drawing.Point(287, 134);
+            this.checkBoxApplicationMaximized.Name = "checkBoxApplicationMaximized";
+            this.checkBoxApplicationMaximized.Size = new System.Drawing.Size(181, 17);
+            this.checkBoxApplicationMaximized.TabIndex = 57;
+            this.checkBoxApplicationMaximized.Text = "External Application is Maximized";
+            this.checkBoxApplicationMaximized.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxApplicationFocused
+            // 
+            this.checkBoxApplicationFocused.AutoSize = true;
+            this.checkBoxApplicationFocused.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxApplicationFocused.Location = new System.Drawing.Point(287, 154);
+            this.checkBoxApplicationFocused.Name = "checkBoxApplicationFocused";
+            this.checkBoxApplicationFocused.Size = new System.Drawing.Size(173, 17);
+            this.checkBoxApplicationFocused.TabIndex = 58;
+            this.checkBoxApplicationFocused.Text = "External Application is Focused";
+            this.checkBoxApplicationFocused.UseVisualStyleBackColor = true;
             // 
             // OptionsForm
             // 
@@ -493,5 +545,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label labelMaximumVideoTime;
         private System.Windows.Forms.Label labelMinVideoLoops;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox checkBoxAudioPlaying;
+        private System.Windows.Forms.CheckBox checkBoxApplicationMaximized;
+        private System.Windows.Forms.CheckBox checkBoxApplicationFocused;
     }
 }

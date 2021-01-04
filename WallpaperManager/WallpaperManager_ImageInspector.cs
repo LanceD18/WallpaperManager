@@ -18,19 +18,19 @@ using Mpv.NET.Player;
 using Vlc.DotNet.Forms;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
-using WallpaperManager.ControlLibrary;
+using WallpaperManager.Controls;
 
 namespace WallpaperManager
 {
     public partial class WallpaperManagerForm : Form
     {
-        private string InspectedImage;
-        private string inspectedImage
+        private string _inspectedImage;
+        public string InspectedImage
         {
-            get => InspectedImage;
-            set
+            get => _inspectedImage;
+            private set
             {
-                InspectedImage = value; 
+                _inspectedImage = value; 
                 labelSelectedImage.Text = value;
 
                 if (File.Exists(value))
@@ -54,6 +54,8 @@ namespace WallpaperManager
         private MpvPlayer inspector_mpvPlayer; //? Initialized in OnLoad
         //?private VlcControl inspector_VlcControl;
 
+        public bool IsViewingInspector;
+
         private void InitializeImageInspector()
         {
             // Init Inspector Panel
@@ -65,8 +67,7 @@ namespace WallpaperManager
                 AutoPlay = true,
                 Loop = true
             };
-
-            inspector_mpvPlayer.API.RequestLogMessages(MpvLogLevel.Warning);
+            inspector_mpvVideoBar.LinkPlayer(inspector_mpvPlayer, MpvBarUpdater);
 
             /*!
             // VLC Control
@@ -90,12 +91,12 @@ namespace WallpaperManager
             {
                 try
                 {
-                    WallpaperData.GetImageData(inspectedImage).Rank = Int32.Parse(inspector_textBoxRankEditor.Text);
-                    inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(inspectedImage).ToString();
+                    WallpaperData.GetImageData(InspectedImage).Rank = Int32.Parse(inspector_textBoxRankEditor.Text);
+                    inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString();
                 }
                 catch
                 {
-                    inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(inspectedImage).ToString();
+                    inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString();
                 }
             };
 
@@ -105,39 +106,39 @@ namespace WallpaperManager
                 {
                     try
                     {
-                        WallpaperData.GetImageData(inspectedImage).Rank = Int32.Parse(inspector_textBoxRankEditor.Text);
-                        inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(inspectedImage).ToString();
+                        WallpaperData.GetImageData(InspectedImage).Rank = Int32.Parse(inspector_textBoxRankEditor.Text);
+                        inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString();
                     }
                     catch
                     {
-                        inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(inspectedImage).ToString();
+                        inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString();
                     }
 
                     i.SuppressKeyPress = true; // prevents windows 'ding' sound
                 }
             };
 
-            inspector_buttonMinus.Click += (o, i) => { WallpaperData.GetImageData(inspectedImage).Rank--; inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(inspectedImage).ToString(); };
-            inspector_buttonPlus.Click += (o, i) => { WallpaperData.GetImageData(inspectedImage).Rank++; inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(inspectedImage).ToString(); };
+            inspector_buttonMinus.Click += (o, i) => { WallpaperData.GetImageData(InspectedImage).Rank--; inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString(); };
+            inspector_buttonPlus.Click += (o, i) => { WallpaperData.GetImageData(InspectedImage).Rank++; inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString(); };
 
             inspector_buttonLeft.Click += (o, i) =>
             {
-                int leftIndex = selectedImages.IndexOf(inspectedImage) - 1;
+                int leftIndex = selectedImages.IndexOf(InspectedImage) - 1;
 
                 if (leftIndex >= 0)
                 {
-                    inspectedImage = selectedImages[leftIndex];
+                    InspectedImage = selectedImages[leftIndex];
                     ActivateImageInspector(); // more like updating image inspector
                 }
             };
 
             inspector_buttonRight.Click += (o, i) =>
             {
-                int rightIndex = selectedImages.IndexOf(inspectedImage) + 1;
+                int rightIndex = selectedImages.IndexOf(InspectedImage) + 1;
 
                 if (rightIndex < selectedImages.Length)
                 {
-                    inspectedImage = selectedImages[rightIndex];
+                    InspectedImage = selectedImages[rightIndex];
                     ActivateImageInspector(); // more like updating image inspector
                 }
             };
@@ -150,7 +151,7 @@ namespace WallpaperManager
             {
                 if (!panelImageInspector.Visible)
                 {
-                    if (selectedImages.Contains(inspectedImage))
+                    if (selectedImages.Contains(InspectedImage))
                     {
                         ActivateImageInspector();
                     }
@@ -169,17 +170,19 @@ namespace WallpaperManager
         // also used for updating the image inspector
         private void ActivateImageInspector()
         {
+            IsViewingInspector = true;
+
             panelImageInspector.SuspendLayout();
             buttonInspectImage.Text = "Close Inspector";
 
-            if (!WallpaperData.GetAllImagesOfType(ImageType.Video).Contains(inspectedImage)) // display image
+            if (!WallpaperData.GetAllImagesOfType(ImageType.Video).Contains(InspectedImage)) // display image
             {
                 inspector_panelVideo.Visible = false;
                 inspector_panelVideo.Enabled = false;
 
                 inspector_pictureBoxImage.Enabled = true;
                 inspector_pictureBoxImage.Visible = true;
-                inspector_pictureBoxImage.ImageLocation = inspectedImage;
+                inspector_pictureBoxImage.ImageLocation = InspectedImage;
             }
             else // display video
             {
@@ -189,15 +192,14 @@ namespace WallpaperManager
                 inspector_panelVideo.Enabled = true;
                 inspector_panelVideo.Visible = true;
 
-                inspector_mpvPlayer.Reload(inspectedImage);
-                inspector_mpvPlayer.Resume();
+                inspector_mpvPlayer.Reload(InspectedImage);
+                WallpaperData.VideoSettings VideoSettings = WallpaperData.GetImageData(InspectedImage).VideoSettings;
+                inspector_mpvPlayer.Volume = VideoSettings.Volume;
+                inspector_mpvPlayer.Speed = VideoSettings.PlaybackSpeed;
+                fixAdministered = true; //? if the inspector displays first the fix will no longer be needed
 
-                /*
-                foreach (WallpaperForm wallpaper in wallpapers)
-                {
-                    wallpaper.player.Resume();
-                }
-                */
+                inspector_mpvVideoBar.UpdatePlayerVolume(); //! This must be done after inspector_mpvPlayer settings are set otherwise the bar won't update properly
+
                 /*!
                 inspector_VlcControl.Audio.Volume = WallpaperData.GetImageData(inspectedImage).VideoSettings.volume;
                 string[] mediaOptions = new[] { "input-repeat=65535" }; // 65535 is the max https://wiki.videolan.org/VLC_command-line_help/
@@ -206,7 +208,7 @@ namespace WallpaperManager
                 */
             }
 
-            inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(inspectedImage).Rank.ToString();
+            inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(InspectedImage).Rank.ToString();
 
             panelImageInspector.ResumeLayout();
             panelImageInspector.Visible = true;
@@ -214,6 +216,9 @@ namespace WallpaperManager
 
         private void DeactivateImageInspector()
         {
+            IsViewingInspector = false;
+
+            panelImageInspector.SuspendLayout();
             inspector_mpvPlayer.Stop();
             //!inspector_VlcControl.Stop();
             inspector_panelVideo.Enabled = false;
@@ -222,7 +227,23 @@ namespace WallpaperManager
 
             buttonInspectImage.Text = "Inspect Image";
             panelImageInspector.Visible = false;
+            panelImageInspector.ResumeLayout();
             UpdateImageRanks();
+        }
+
+        private void MpvBarUpdater()
+        {
+            WallpaperData.GetImageData(InspectedImage).VideoSettings = new WallpaperData.VideoSettings(
+                inspector_mpvVideoBar.GetVolume(),
+                inspector_mpvVideoBar.GetSpeed());
+
+            for (var i = 0; i < PathData.ActiveWallpapers.Length; i++)
+            {
+                if (PathData.ActiveWallpapers[i] == InspectedImage) // this wallpaper is currently active, change its volume
+                {
+                    wallpapers[i].SetVolume(inspector_mpvVideoBar.GetVolume());
+                }
+            }
         }
     }
 }

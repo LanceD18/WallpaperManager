@@ -89,18 +89,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MpvDisplay.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MpvDisplay.Designer.cs">
-      <DependentUpon>MpvDisplay.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MpvVideoBar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MpvVideoBar.Designer.cs">
-      <DependentUpon>MpvVideoBar.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
@@ -112,14 +100,6 @@
       <Name>mpv-1.dll</Name>
       <HintPath>..\..\..\..\..\Program Libraries\mpv\Libraries\x32\mpv-dev-i686-20201220-git-dde0189\mpv-1.dll</HintPath>
     </NativeReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MpvDisplay.resx">
-      <DependentUpon>MpvDisplay.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MpvVideoBar.resx">
-      <DependentUpon>MpvVideoBar.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

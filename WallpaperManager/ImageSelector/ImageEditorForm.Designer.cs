@@ -33,7 +33,7 @@
             this.buttonAddTag = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.labelEnabled = new System.Windows.Forms.Label();
-            this.mpvDisplay = new WallpaperManager.ControlLibrary.MpvDisplay();
+            this.panelVideo = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -86,12 +86,12 @@
             this.labelEnabled.TabIndex = 4;
             this.labelEnabled.Text = "Enabled";
             // 
-            // mpvDisplay
+            // panelVideo
             // 
-            this.mpvDisplay.Location = new System.Drawing.Point(300, 0);
-            this.mpvDisplay.Name = "mpvDisplay";
-            this.mpvDisplay.Size = new System.Drawing.Size(383, 462);
-            this.mpvDisplay.TabIndex = 5;
+            this.panelVideo.Location = new System.Drawing.Point(300, 0);
+            this.panelVideo.Name = "panelVideo";
+            this.panelVideo.Size = new System.Drawing.Size(383, 462);
+            this.panelVideo.TabIndex = 5;
             // 
             // ImageEditorForm
             // 
@@ -99,7 +99,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(684, 461);
-            this.Controls.Add(this.mpvDisplay);
+            this.Controls.Add(this.panelVideo);
             this.Controls.Add(this.labelEnabled);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.buttonAddTag);
@@ -120,6 +120,6 @@
         private System.Windows.Forms.Button buttonAddTag;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelEnabled;
-        private ControlLibrary.MpvDisplay mpvDisplay;
+        private System.Windows.Forms.Panel panelVideo;
     }
 }

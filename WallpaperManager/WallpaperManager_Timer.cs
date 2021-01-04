@@ -9,8 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Timers;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 using WallpaperManager.ApplicationData;
 using Timer = System.Timers.Timer;
+using AudioSwitcher.AudioApi.CoreAudio;
+using AudioSwitcher.AudioApi;
+using AudioSwitcher.AudioApi.Sandbox;
+using AudioSwitcher.AudioApi.Session;
+using SharpDX.DXGI;
+using System.Runtime.InteropServices;
 
 namespace WallpaperManager
 {
@@ -129,5 +136,7 @@ namespace WallpaperManager
                 timerStopWatch.Restart();
             }
         }
+
+        private void timerAudioChecker_Tick(object sender, EventArgs e) => Task.Run(() => AudioManager.CheckForMuteConditions());
     }
 }

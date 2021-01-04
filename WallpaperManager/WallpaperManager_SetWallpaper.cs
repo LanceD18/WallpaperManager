@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using LanceTools.Mpv;
 using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
+using WallpaperManager.Wallpaper;
 
 namespace WallpaperManager
 {
@@ -119,7 +120,7 @@ namespace WallpaperManager
         {
             if (!inspector_mpvPlayer.IsPlaying && !fixAdministered)
             {
-                inspectedImage = video;
+                InspectedImage = video;
                 ActivateImageInspector();
                 DeactivateImageInspector();
                 fixAdministered = true;

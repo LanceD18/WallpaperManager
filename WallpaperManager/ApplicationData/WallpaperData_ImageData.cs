@@ -36,13 +36,13 @@ namespace WallpaperManager.ApplicationData
 
         public struct VideoSettings
         {
-            public int volume;
-            public double playbackSpeed;
+            public int Volume;
+            public double PlaybackSpeed;
 
-            public VideoSettings(int volume, double playbackSpeed)
+            public VideoSettings(int Volume, double PlaybackSpeed)
             {
-                this.volume = volume;
-                this.playbackSpeed = playbackSpeed;
+                this.Volume = Volume;
+                this.PlaybackSpeed = PlaybackSpeed;
             }
         }
 
@@ -129,7 +129,7 @@ namespace WallpaperManager.ApplicationData
 
             [DataMember(Name = "Image Type")] public ImageType imageType;
 
-            [DataMember(Name = "Video Settings")] public VideoSettings VideoSettings = new VideoSettings(50, 1); // only applicable to images with the corresponding image type
+            [DataMember(Name = "Video Settings")] public VideoSettings VideoSettings = new VideoSettings(100, 1); // only applicable to images with the corresponding image type
 
             public ImageData(string path, int rank, bool active, Dictionary<string, HashSet<string>> tags = null, HashSet<Tuple<string, string>> tagNamingExceptions = null)
             {

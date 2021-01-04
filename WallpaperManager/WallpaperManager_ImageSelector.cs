@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LanceTools.ControlLibrary;
 using LanceTools.FormUtil;
+using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
 using WallpaperManager.Options;
@@ -30,6 +31,9 @@ namespace WallpaperManager
 
         private SmoothScrollFlowLayoutPanel activeTabLayoutPanel;
 
+        private static Panel imageEditorVideoPanel;
+        private static MpvPlayer imageEditorVideoPlayer;
+
         private void tabLayoutPanel_MouseClick(object sender, EventArgs e)
         {
             (sender as SmoothScrollFlowLayoutPanel).Focus();
@@ -44,7 +48,7 @@ namespace WallpaperManager
         {
             panelImageSelector.Visible = false;
 
-            inspectedImage = "";
+            InspectedImage = "";
             selectedImages = null;
             DeactivateImageInspector();
 
@@ -99,7 +103,7 @@ namespace WallpaperManager
                 return;
             }
 
-            inspectedImage = "";
+            InspectedImage = "";
             DeactivateImageInspector();
             labelSelectedImage.Text = "Select an image for more info";
             tabControlImagePages.SuspendLayout();
@@ -220,7 +224,7 @@ namespace WallpaperManager
 
         public void UpdateSelectedImage(WallpaperData.ImageData imageData)
         {
-            labelSelectedImage.Text = inspectedImage = imageData.Path;
+            labelSelectedImage.Text = InspectedImage = imageData.Path;
         }
 
         private void ClearLoadedImages()
@@ -286,7 +290,7 @@ namespace WallpaperManager
 
         public string GetActiveImage()
         {
-            return inspectedImage ?? "";
+            return InspectedImage ?? "";
         }
 
         public string[] GetSelectedImages()

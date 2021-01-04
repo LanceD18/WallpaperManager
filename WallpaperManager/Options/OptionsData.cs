@@ -7,6 +7,22 @@ using System.Windows.Forms;
 
 namespace WallpaperManager.Options
 {
+    public struct ThemeOptions
+    {
+        // General Settings
+        public bool LargerImagesOnLargerMonitors;
+        public bool HigherRankedImagesOnLargerMonitors;
+        public bool EnableDetectionOfInactiveImages;
+        public bool WeightedRanks;
+
+        // Video Settings
+        public bool MuteIfAudioPlaying;
+        public bool MuteIfApplicationMaximized;
+        public bool MuteIfApplicationFocused;
+        public Dictionary<ImageType, double> RelativeFrequency;
+        public Dictionary<ImageType, double> ExactFrequency;
+    }
+
     public static class OptionsData
     {
         // Theme Options
@@ -57,16 +73,5 @@ namespace WallpaperManager.Options
         }
 
         public static double GetExactFrequency(ImageType imageType) => ThemeOptions.ExactFrequency[imageType];
-    }
-
-    public struct ThemeOptions
-    {
-        public bool LargerImagesOnLargerMonitors;
-        public bool HigherRankedImagesOnLargerMonitors;
-        public bool EnableDetectionOfInactiveImages;
-        public bool WeightedRanks;
-
-        public Dictionary<ImageType, double> RelativeFrequency;
-        public Dictionary<ImageType, double> ExactFrequency;
     }
 }

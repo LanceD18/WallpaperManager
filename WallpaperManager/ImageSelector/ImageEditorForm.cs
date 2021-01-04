@@ -27,8 +27,6 @@ namespace WallpaperManager.ImageSelector
 
         private TagClickerForm tagClickerForm;
 
-        private MpvPlayer player;
-
         public ImageEditorForm(WallpaperData.ImageData imageData)
         {
             InitializeComponent();
@@ -38,19 +36,11 @@ namespace WallpaperManager.ImageSelector
             if (activeImage.imageType != ImageType.Video)
             {
                 pictureBoxImage.ImageLocation = imageData.Path;
-                pictureBoxImage.Visible = true; mpvDisplay.Visible = false;
+                pictureBoxImage.Visible = true; panelVideo.Visible = false;
             }
             else
             {
-                pictureBoxImage.Visible = false; mpvDisplay.Visible = true;
-
-                player = new MpvPlayer(mpvDisplay.Handle)
-                {
-                    AutoPlay = true,
-                    Loop = true
-                };
-                player.Load(imageData.Path);
-                mpvDisplay.SetPlayer(player);
+                pictureBoxImage.Visible = false; panelVideo.Visible = true;
             }
 
             imageTagsFLP.SuspendLayout();
