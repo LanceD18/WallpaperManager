@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AxWMPLib;
 using LanceTools;
 using LanceTools.FormUtil;
 using Mpv.NET.Player;
@@ -16,10 +17,11 @@ namespace WallpaperManager.Controls
 {
     public partial class MpvVideoBar : UserControl
     {
-        private MpvPlayer player;
+        private MpvPlayer mpvPlayer;
         private Action updater;
 
-        private const int RIGHT_EDGE_MARGIN = 5;
+        private const int MARGIN = 5;
+        private const int DEFAULT_TRACKBARPOSITION_WIDTH = 250;
 
         private bool playing = true;
         private bool dragging;
@@ -35,7 +37,7 @@ namespace WallpaperManager.Controls
             trackBarPosition.MouseDown += (s, e) =>
             {
                 dragging = true;
-                player.Pause();
+                mpvPlayer.Pause();
 
                 trackBarPosition.SetValueToMousePosition(e);
             };
@@ -48,7 +50,7 @@ namespace WallpaperManager.Controls
             trackBarPosition.MouseUp += (s, e) =>
             {
                 dragging = false;
-                player.Resume();
+                mpvPlayer.Resume();
 
                 //double dblValue = (Convert.ToDouble(e.X) / Convert.ToDouble(trackBarPosition.Width)) * (trackBarPosition.Maximum - trackBarPosition.Minimum);
                 //trackBarPosition.Value = Convert.ToInt32(dblValue);
@@ -57,48 +59,51 @@ namespace WallpaperManager.Controls
 
         public void LinkPlayer(MpvPlayer player, Action updater)
         {
-            this.player = player;
+            this.mpvPlayer = player;
             this.updater = updater;
-            //?timerVideo.Start(); //? placing this in the constructor will cause timerVideo to activate on design time, causing a crash
+            //?timerVideo.Start(); //? placing this in the constructor will cause timerVideo to activate on design time, causing a crash | Auto-enabled by control now, oops
         }
 
         // only the volume is updated here because the video won't update fast enough for the duration to be ready, it'll have to get included elsewhere
         public void UpdatePlayerVolume()
         {
-            trackBarVolume.Value = player.Volume;
+            trackBarVolume.Value = mpvPlayer.Volume;
             labelVolumeValue.Text = trackBarVolume.Value.ToString();
         }
 
-        public int GetVolume() => player.Volume;
+        public int GetVolume() => mpvPlayer.Volume;
 
-        public double GetSpeed() => player.Speed;
+        public double GetSpeed() => mpvPlayer.Speed;
 
         private void OnResize(object sender, EventArgs e)
         {
             int rescaledTrackBarHeight = (int)(Height * 0.85f);
             int newTrackBarY = (Height - rescaledTrackBarHeight) / 2;
 
+            // Volume Track Bar
+            trackBarVolume.Height = rescaledTrackBarHeight;
+            //trackBarVolume.Width = Width - trackBarVolume.Location.X - RIGHT_EDGE_MARGIN;
+            trackBarVolume.Location = new Point(Width - trackBarVolume.Width - MARGIN, newTrackBarY);
+
+            // Volume Labels
+            int volumeHeightDiff = labelVolumeValue.Location.Y - labelVolume.Location.Y; // used to recalculate the value height later
+            labelVolume.Location = new Point(trackBarVolume.Location.X - labelVolume.Width - MARGIN, newTrackBarY);
+            labelVolumeValue.Location = new Point(trackBarVolume.Location.X - labelVolumeValue.Width - MARGIN, newTrackBarY + volumeHeightDiff);
+
             // Position Track Bar & Play Pause Button
             int pausePlayHeightDiff = buttonPlayPause.Location.Y - trackBarPosition.Location.Y;
             trackBarPosition.Height = rescaledTrackBarHeight;
             trackBarPosition.Location = new Point(trackBarPosition.Location.X, newTrackBarY);
+
+            trackBarPosition.Width = Math.Min(DEFAULT_TRACKBARPOSITION_WIDTH, labelVolume.Location.X - trackBarPosition.Location.X - MARGIN);
+
             buttonPlayPause.Location = new Point(buttonPlayPause.Location.X, newTrackBarY + pausePlayHeightDiff);
-
-            // Volume Track Bar
-            trackBarVolume.Height = rescaledTrackBarHeight;
-            trackBarVolume.Width = Width - trackBarVolume.Location.X - RIGHT_EDGE_MARGIN;
-            trackBarVolume.Location = new Point(trackBarVolume.Location.X, newTrackBarY);
-
-            // Volume Labels
-            int volumeHeightDiff = labelVolumeValue.Location.Y - labelVolume.Location.Y; // used to recalculate the value height later
-            labelVolume.Location = new Point(labelVolume.Location.X, newTrackBarY);
-            labelVolumeValue.Location = new Point(labelVolumeValue.Location.X, newTrackBarY + volumeHeightDiff);
         }
 
         private void trackBarVolume_Scroll(object sender, EventArgs e)
         {
             labelVolumeValue.Text = trackBarVolume.Value.ToString();
-            player.Volume = trackBarVolume.Value;
+            mpvPlayer.Volume = trackBarVolume.Value;
 
             updater?.Invoke();
         }
@@ -114,11 +119,11 @@ namespace WallpaperManager.Controls
             trackBarPosition.BeginInvoke((MethodInvoker) delegate
             {
                 trackBarPosition.SuspendLayout();
-                if (trackBarPosition.Maximum != (int) player.Duration.Ticks && player.Duration.Ticks != 0) // no need to recalculate everything if the calculation is already done
+                if (trackBarPosition.Maximum != (int) mpvPlayer.Duration.Ticks && mpvPlayer.Duration.Ticks != 0) // no need to recalculate everything if the calculation is already done
                 {
                     //! managing this section improperly can cause the program to freeze for an extended period of time
-                    trackBarPosition.TickFrequency = Math.Max(1, (int) player.Duration.Ticks); //? reducing this dramatically improves tick creation time
-                    trackBarPosition.Maximum = (int) player.Duration.Ticks; //! this is incredibly resource intensive with low tick frequencies
+                    trackBarPosition.TickFrequency = Math.Max(1, (int) mpvPlayer.Duration.Ticks); //? reducing this dramatically improves tick creation time
+                    trackBarPosition.Maximum = (int) mpvPlayer.Duration.Ticks; //! this is incredibly resource intensive with low tick frequencies
                 }
 
                 if (!dragging)
@@ -126,23 +131,23 @@ namespace WallpaperManager.Controls
                     if (playing && pausedByDrag)
                     {
                         pausedByDrag = false;
-                        player.Resume();
+                        mpvPlayer.Resume();
                     }
 
-                    trackBarPosition.Value = (int) player.Position.Ticks;
+                    trackBarPosition.Value = (int) mpvPlayer.Position.Ticks;
                 }
                 else
                 {
                     if (!pausedByDrag)
                     {
                         pausedByDrag = true;
-                        player.Pause();
+                        mpvPlayer.Pause();
                     }
 
                     int positionValue = trackBarPosition.Value;
                     if (lastDraggedValue != positionValue) // no need to update this when it's already there
                     {
-                        Task.Run(() => player.Position = new TimeSpan(positionValue)); //! this is incredibly resource intensive, ensure that this is not called often
+                        Task.Run(() => mpvPlayer.Position = new TimeSpan(positionValue)); //! this is incredibly resource intensive, ensure that this is not called often
                         lastDraggedValue = trackBarPosition.Value;
                     }
                 }
@@ -155,8 +160,8 @@ namespace WallpaperManager.Controls
             playing = !playing;
             buttonPlayPause.Text = playing ? "| |" : ">";
 
-            if (playing) player.Resume();
-            if (!playing) player.Pause();
+            if (playing) mpvPlayer.Resume();
+            if (!playing) mpvPlayer.Pause();
         }
     }
 }

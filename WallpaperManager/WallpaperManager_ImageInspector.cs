@@ -198,7 +198,7 @@ namespace WallpaperManager
                 inspector_mpvPlayer.Speed = VideoSettings.PlaybackSpeed;
                 fixAdministered = true; //? if the inspector displays first the fix will no longer be needed
 
-                inspector_mpvVideoBar.UpdatePlayerVolume(); //! This must be done after inspector_mpvPlayer settings are set otherwise the bar won't update properly
+                inspector_mpvVideoBar.UpdatePlayerVolume(); //! This must be done after inspector_mpvPlayer settings are set otherwise the bar won't update properly to the new video
 
                 /*!
                 inspector_VlcControl.Audio.Volume = WallpaperData.GetImageData(inspectedImage).VideoSettings.volume;

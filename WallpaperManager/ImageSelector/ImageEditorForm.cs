@@ -36,11 +36,16 @@ namespace WallpaperManager.ImageSelector
             if (activeImage.imageType != ImageType.Video)
             {
                 pictureBoxImage.ImageLocation = imageData.Path;
-                pictureBoxImage.Visible = true; panelVideo.Visible = false;
+                pictureBoxImage.Visible = true; axWindowsMediaPlayer.Visible = false;
             }
             else
             {
-                pictureBoxImage.Visible = false; panelVideo.Visible = true;
+                pictureBoxImage.Visible = false; axWindowsMediaPlayer.Visible = true;
+                axWindowsMediaPlayer.settings.autoStart = true;
+                axWindowsMediaPlayer.settings.setMode("loop", true);
+                axWindowsMediaPlayer.URL = imageData.Path;
+                axWindowsMediaPlayer.settings.volume = imageData.VideoSettings.Volume;
+                axWindowsMediaPlayer.settings.rate = imageData.VideoSettings.PlaybackSpeed;
             }
 
             imageTagsFLP.SuspendLayout();

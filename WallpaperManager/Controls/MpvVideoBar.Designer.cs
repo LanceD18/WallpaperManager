@@ -54,7 +54,7 @@
             // 
             this.trackBarPosition.Location = new System.Drawing.Point(44, 13);
             this.trackBarPosition.Name = "trackBarPosition";
-            this.trackBarPosition.Size = new System.Drawing.Size(243, 45);
+            this.trackBarPosition.Size = new System.Drawing.Size(250, 45);
             this.trackBarPosition.TabIndex = 1;
             this.trackBarPosition.Scroll += new System.EventHandler(this.trackBarPosition_Scroll);
             // 
