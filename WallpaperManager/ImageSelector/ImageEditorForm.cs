@@ -106,7 +106,7 @@ namespace WallpaperManager.ImageSelector
 
                 foreach (Tuple<string, string> parentTag in tag.ParentTags)
                 {
-                    if (!tagNames.Contains(tag.Name))
+                    if (!tagNames.Contains(parentTag.Item2)) // item 2 is the tag name
                     {
                         CreateTagButton(parentTag.Item1, parentTag.Item2);
                     }
@@ -134,6 +134,7 @@ namespace WallpaperManager.ImageSelector
 
             tagButtons[category].Add(new Tuple<string, Button>(tag, tagButton));
             tagNames.Add(tag);
+            imageTagsFLP.PerformLayout();
         }
 
         public void TagButton_OpenOptionsDialog(object sender, EventArgs e)
@@ -172,6 +173,7 @@ namespace WallpaperManager.ImageSelector
                     if (activeButton == tagTuple.Item2)
                     {
                         tag = WallpaperData.TaggingInfo.GetTag(category, tagTuple.Item1);
+                        break;
                     }
                 }
             }
@@ -188,17 +190,10 @@ namespace WallpaperManager.ImageSelector
                 activeImage.RemoveTag(tag);
 
                 // remove tagbutton
-                foreach (Control control in imageTagsFLP.Controls)
-                {
-                    string controlTagName = TaggingTools.GetButtonTagName(control as Button);
-                    if (controlTagName == tag.Name)
-                    {
-                        Tuple<string, Button> tagTuple = new Tuple<string, Button>(tag.Name, control as Button);
-                        tagButtons[tag.ParentCategoryName].Remove(tagTuple);
-                        tagNames.Remove(tag.Name);
-                        imageTagsFLP.Controls.Remove(control);
-                    }
-                }
+                tagNames.Remove(tag.Name);
+                tagButtons[tag.ParentCategoryName].Remove(new Tuple<string, Button>(tag.Name, activeButton));
+                imageTagsFLP.Controls.RemoveAt(imageTagsFLP.Controls.IndexOf(activeButton));
+                activeButton.Dispose();
             }
             else
             {
