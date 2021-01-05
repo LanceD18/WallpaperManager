@@ -24,6 +24,8 @@ namespace WallpaperManager.Options
             InitializeComponent();
             this.FormClosed += SaveOptionsData;
 
+            toolTipEnableDetectionOfInactiveImages.SetToolTip(checkBoxEnableDetectionOfInactiveImages, "Allows inactive images to be detected by the image selector");
+
             ThemeOptions = OptionsData.ThemeOptions;
 
             SuspendLayout();
@@ -33,8 +35,8 @@ namespace WallpaperManager.Options
             InitializeFrequencyEvents();
 
             //-----Theme Settings-----
-            checkBoxLargerImagesOnLargerMonitors.Checked = ThemeOptions.LargerImagesOnLargerMonitors;
-            checkBoxHigherRankedImagesOnLargerMonitors.Checked = ThemeOptions.HigherRankedImagesOnLargerMonitors;
+            checkBoxLargerImagesOnLargerDisplays.Checked = ThemeOptions.LargerImagesOnLargerDisplays;
+            checkBoxHigherRankedImagesOnLargerDisplays.Checked = ThemeOptions.HigherRankedImagesOnLargerDisplays;
             checkBoxEnableDetectionOfInactiveImages.Checked = ThemeOptions.EnableDetectionOfInactiveImages;
             checkBoxWeightedRanks.Checked = ThemeOptions.WeightedRanks;
 
@@ -62,8 +64,8 @@ namespace WallpaperManager.Options
         private void SaveOptionsData(object sender, FormClosedEventArgs e)
         {
             //-----Theme Settings-----
-            ThemeOptions.LargerImagesOnLargerMonitors = checkBoxLargerImagesOnLargerMonitors.Checked;
-            ThemeOptions.HigherRankedImagesOnLargerMonitors = checkBoxHigherRankedImagesOnLargerMonitors.Checked;
+            ThemeOptions.LargerImagesOnLargerDisplays = checkBoxLargerImagesOnLargerDisplays.Checked;
+            ThemeOptions.HigherRankedImagesOnLargerDisplays = checkBoxHigherRankedImagesOnLargerDisplays.Checked;
             ThemeOptions.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
 
             bool updateRankPercentiles = ThemeOptions.WeightedRanks != checkBoxWeightedRanks.Checked;

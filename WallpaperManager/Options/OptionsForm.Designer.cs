@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.checkBoxLargerImagesOnLargerMonitors = new System.Windows.Forms.CheckBox();
-            this.checkBoxHigherRankedImagesOnLargerMonitors = new System.Windows.Forms.CheckBox();
+            this.checkBoxLargerImagesOnLargerDisplays = new System.Windows.Forms.CheckBox();
+            this.checkBoxHigherRankedImagesOnLargerDisplays = new System.Windows.Forms.CheckBox();
             this.checkBoxEnableDetectionOfInactiveImages = new System.Windows.Forms.CheckBox();
             this.buttonInspectRankDistribution = new System.Windows.Forms.Button();
             this.buttonModifyMaxRank = new System.Windows.Forms.Button();
@@ -41,9 +41,13 @@
             this.checkBoxEnableGlobalHotkey = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBoxWeightedRanks = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageThemeOptions = new System.Windows.Forms.TabPage();
+            this.buttonsync = new System.Windows.Forms.Button();
+            this.checkBoxApplicationFocused = new System.Windows.Forms.CheckBox();
+            this.checkBoxApplicationMaximized = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.checkBoxAudioPlaying = new System.Windows.Forms.CheckBox();
             this.labelMaximumVideoTime = new System.Windows.Forms.Label();
             this.labelMinVideoLoops = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -61,39 +65,38 @@
             this.label2 = new System.Windows.Forms.Label();
             this.labelFrequency = new System.Windows.Forms.Label();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
-            this.checkBoxAudioPlaying = new System.Windows.Forms.CheckBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.checkBoxApplicationMaximized = new System.Windows.Forms.CheckBox();
-            this.checkBoxApplicationFocused = new System.Windows.Forms.CheckBox();
+            this.toolTipEnableDetectionOfInactiveImages = new System.Windows.Forms.ToolTip(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPageThemeOptions.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabPageGlobalOptions.SuspendLayout();
             this.SuspendLayout();
             // 
-            // checkBoxLargerImagesOnLargerMonitors
+            // checkBoxLargerImagesOnLargerDisplays
             // 
-            this.checkBoxLargerImagesOnLargerMonitors.AutoSize = true;
-            this.checkBoxLargerImagesOnLargerMonitors.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBoxLargerImagesOnLargerMonitors.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxLargerImagesOnLargerMonitors.Location = new System.Drawing.Point(6, 6);
-            this.checkBoxLargerImagesOnLargerMonitors.Name = "checkBoxLargerImagesOnLargerMonitors";
-            this.checkBoxLargerImagesOnLargerMonitors.Size = new System.Drawing.Size(184, 17);
-            this.checkBoxLargerImagesOnLargerMonitors.TabIndex = 36;
-            this.checkBoxLargerImagesOnLargerMonitors.Text = "Larger Images on Larger Monitors";
-            this.checkBoxLargerImagesOnLargerMonitors.UseVisualStyleBackColor = true;
+            this.checkBoxLargerImagesOnLargerDisplays.AutoSize = true;
+            this.checkBoxLargerImagesOnLargerDisplays.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBoxLargerImagesOnLargerDisplays.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.checkBoxLargerImagesOnLargerDisplays.Location = new System.Drawing.Point(6, 6);
+            this.checkBoxLargerImagesOnLargerDisplays.Name = "checkBoxLargerImagesOnLargerDisplays";
+            this.checkBoxLargerImagesOnLargerDisplays.Size = new System.Drawing.Size(183, 17);
+            this.checkBoxLargerImagesOnLargerDisplays.TabIndex = 36;
+            this.checkBoxLargerImagesOnLargerDisplays.Text = "Larger Images on Larger Displays";
+            this.checkBoxLargerImagesOnLargerDisplays.UseVisualStyleBackColor = true;
             // 
-            // checkBoxHigherRankedImagesOnLargerMonitors
+            // checkBoxHigherRankedImagesOnLargerDisplays
             // 
-            this.checkBoxHigherRankedImagesOnLargerMonitors.AutoSize = true;
-            this.checkBoxHigherRankedImagesOnLargerMonitors.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBoxHigherRankedImagesOnLargerMonitors.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxHigherRankedImagesOnLargerMonitors.Location = new System.Drawing.Point(6, 29);
-            this.checkBoxHigherRankedImagesOnLargerMonitors.Name = "checkBoxHigherRankedImagesOnLargerMonitors";
-            this.checkBoxHigherRankedImagesOnLargerMonitors.Size = new System.Drawing.Size(226, 17);
-            this.checkBoxHigherRankedImagesOnLargerMonitors.TabIndex = 37;
-            this.checkBoxHigherRankedImagesOnLargerMonitors.Text = "Higher Ranked Images on Larger Monitors";
-            this.checkBoxHigherRankedImagesOnLargerMonitors.UseVisualStyleBackColor = true;
+            this.checkBoxHigherRankedImagesOnLargerDisplays.AutoSize = true;
+            this.checkBoxHigherRankedImagesOnLargerDisplays.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBoxHigherRankedImagesOnLargerDisplays.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.checkBoxHigherRankedImagesOnLargerDisplays.Location = new System.Drawing.Point(6, 29);
+            this.checkBoxHigherRankedImagesOnLargerDisplays.Name = "checkBoxHigherRankedImagesOnLargerDisplays";
+            this.checkBoxHigherRankedImagesOnLargerDisplays.Size = new System.Drawing.Size(225, 17);
+            this.checkBoxHigherRankedImagesOnLargerDisplays.TabIndex = 37;
+            this.checkBoxHigherRankedImagesOnLargerDisplays.Text = "Higher Ranked Images on Larger Displays";
+            this.checkBoxHigherRankedImagesOnLargerDisplays.UseVisualStyleBackColor = true;
             // 
             // checkBoxEnableDetectionOfInactiveImages
             // 
@@ -223,6 +226,9 @@
             // tabPageThemeOptions
             // 
             this.tabPageThemeOptions.BackColor = System.Drawing.Color.Black;
+            this.tabPageThemeOptions.Controls.Add(this.textBox2);
+            this.tabPageThemeOptions.Controls.Add(this.textBox1);
+            this.tabPageThemeOptions.Controls.Add(this.buttonsync);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxApplicationFocused);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxApplicationMaximized);
             this.tabPageThemeOptions.Controls.Add(this.label5);
@@ -233,8 +239,8 @@
             this.tabPageThemeOptions.Controls.Add(this.buttonInspectRankDistribution);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxWeightedRanks);
             this.tabPageThemeOptions.Controls.Add(this.buttonModifyMaxRank);
-            this.tabPageThemeOptions.Controls.Add(this.checkBoxHigherRankedImagesOnLargerMonitors);
-            this.tabPageThemeOptions.Controls.Add(this.checkBoxLargerImagesOnLargerMonitors);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxHigherRankedImagesOnLargerDisplays);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxLargerImagesOnLargerDisplays);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxEnableDetectionOfInactiveImages);
             this.tabPageThemeOptions.Location = new System.Drawing.Point(4, 22);
             this.tabPageThemeOptions.Name = "tabPageThemeOptions";
@@ -243,11 +249,64 @@
             this.tabPageThemeOptions.TabIndex = 0;
             this.tabPageThemeOptions.Text = "Theme Options";
             // 
+            // buttonsync
+            // 
+            this.buttonsync.Location = new System.Drawing.Point(284, 201);
+            this.buttonsync.Name = "buttonsync";
+            this.buttonsync.Size = new System.Drawing.Size(123, 23);
+            this.buttonsync.TabIndex = 59;
+            this.buttonsync.Text = "Sync Display Settings";
+            this.buttonsync.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxApplicationFocused
+            // 
+            this.checkBoxApplicationFocused.AutoSize = true;
+            this.checkBoxApplicationFocused.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxApplicationFocused.Location = new System.Drawing.Point(287, 154);
+            this.checkBoxApplicationFocused.Name = "checkBoxApplicationFocused";
+            this.checkBoxApplicationFocused.Size = new System.Drawing.Size(173, 17);
+            this.checkBoxApplicationFocused.TabIndex = 58;
+            this.checkBoxApplicationFocused.Text = "External Application is Focused";
+            this.checkBoxApplicationFocused.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxApplicationMaximized
+            // 
+            this.checkBoxApplicationMaximized.AutoSize = true;
+            this.checkBoxApplicationMaximized.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxApplicationMaximized.Location = new System.Drawing.Point(287, 134);
+            this.checkBoxApplicationMaximized.Name = "checkBoxApplicationMaximized";
+            this.checkBoxApplicationMaximized.Size = new System.Drawing.Size(181, 17);
+            this.checkBoxApplicationMaximized.TabIndex = 57;
+            this.checkBoxApplicationMaximized.Text = "External Application is Maximized";
+            this.checkBoxApplicationMaximized.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.label5.Location = new System.Drawing.Point(284, 98);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(87, 13);
+            this.label5.TabIndex = 56;
+            this.label5.Text = "Mute Audio If:";
+            // 
+            // checkBoxAudioPlaying
+            // 
+            this.checkBoxAudioPlaying.AutoSize = true;
+            this.checkBoxAudioPlaying.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxAudioPlaying.Location = new System.Drawing.Point(287, 114);
+            this.checkBoxAudioPlaying.Name = "checkBoxAudioPlaying";
+            this.checkBoxAudioPlaying.Size = new System.Drawing.Size(144, 17);
+            this.checkBoxAudioPlaying.TabIndex = 55;
+            this.checkBoxAudioPlaying.Text = "External Audio is Playting";
+            this.checkBoxAudioPlaying.UseVisualStyleBackColor = true;
+            // 
             // labelMaximumVideoTime
             // 
             this.labelMaximumVideoTime.AutoSize = true;
             this.labelMaximumVideoTime.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelMaximumVideoTime.Location = new System.Drawing.Point(3, 258);
+            this.labelMaximumVideoTime.Location = new System.Drawing.Point(3, 266);
             this.labelMaximumVideoTime.Name = "labelMaximumVideoTime";
             this.labelMaximumVideoTime.Size = new System.Drawing.Size(113, 13);
             this.labelMaximumVideoTime.TabIndex = 54;
@@ -447,49 +506,29 @@
             this.tabPageGlobalOptions.TabIndex = 1;
             this.tabPageGlobalOptions.Text = "Global Options";
             // 
-            // checkBoxAudioPlaying
+            // textBox1
             // 
-            this.checkBoxAudioPlaying.AutoSize = true;
-            this.checkBoxAudioPlaying.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.checkBoxAudioPlaying.Location = new System.Drawing.Point(287, 114);
-            this.checkBoxAudioPlaying.Name = "checkBoxAudioPlaying";
-            this.checkBoxAudioPlaying.Size = new System.Drawing.Size(144, 17);
-            this.checkBoxAudioPlaying.TabIndex = 55;
-            this.checkBoxAudioPlaying.Text = "External Audio is Playting";
-            this.checkBoxAudioPlaying.UseVisualStyleBackColor = true;
+            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox1.ForeColor = System.Drawing.SystemColors.Window;
+            this.textBox1.Location = new System.Drawing.Point(125, 235);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(45, 20);
+            this.textBox1.TabIndex = 60;
+            this.textBox1.Text = "0";
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label5
+            // textBox2
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.label5.Location = new System.Drawing.Point(284, 98);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(87, 13);
-            this.label5.TabIndex = 56;
-            this.label5.Text = "Mute Audio If:";
-            // 
-            // checkBoxApplicationMaximized
-            // 
-            this.checkBoxApplicationMaximized.AutoSize = true;
-            this.checkBoxApplicationMaximized.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.checkBoxApplicationMaximized.Location = new System.Drawing.Point(287, 134);
-            this.checkBoxApplicationMaximized.Name = "checkBoxApplicationMaximized";
-            this.checkBoxApplicationMaximized.Size = new System.Drawing.Size(181, 17);
-            this.checkBoxApplicationMaximized.TabIndex = 57;
-            this.checkBoxApplicationMaximized.Text = "External Application is Maximized";
-            this.checkBoxApplicationMaximized.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxApplicationFocused
-            // 
-            this.checkBoxApplicationFocused.AutoSize = true;
-            this.checkBoxApplicationFocused.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.checkBoxApplicationFocused.Location = new System.Drawing.Point(287, 154);
-            this.checkBoxApplicationFocused.Name = "checkBoxApplicationFocused";
-            this.checkBoxApplicationFocused.Size = new System.Drawing.Size(173, 17);
-            this.checkBoxApplicationFocused.TabIndex = 58;
-            this.checkBoxApplicationFocused.Text = "External Application is Focused";
-            this.checkBoxApplicationFocused.UseVisualStyleBackColor = true;
+            this.textBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBox2.ForeColor = System.Drawing.SystemColors.Window;
+            this.textBox2.Location = new System.Drawing.Point(125, 264);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(45, 20);
+            this.textBox2.TabIndex = 61;
+            this.textBox2.Text = "0";
+            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // OptionsForm
             // 
@@ -513,8 +552,8 @@
 
         #endregion
 
-        private System.Windows.Forms.CheckBox checkBoxLargerImagesOnLargerMonitors;
-        private System.Windows.Forms.CheckBox checkBoxHigherRankedImagesOnLargerMonitors;
+        private System.Windows.Forms.CheckBox checkBoxLargerImagesOnLargerDisplays;
+        private System.Windows.Forms.CheckBox checkBoxHigherRankedImagesOnLargerDisplays;
         private System.Windows.Forms.CheckBox checkBoxEnableDetectionOfInactiveImages;
         private System.Windows.Forms.Button buttonInspectRankDistribution;
         private System.Windows.Forms.Button buttonModifyMaxRank;
@@ -525,7 +564,6 @@
         private System.Windows.Forms.CheckBox checkBoxEnableGlobalHotkey;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBoxWeightedRanks;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageThemeOptions;
         private System.Windows.Forms.TabPage tabPageGlobalOptions;
@@ -549,5 +587,9 @@
         private System.Windows.Forms.CheckBox checkBoxAudioPlaying;
         private System.Windows.Forms.CheckBox checkBoxApplicationMaximized;
         private System.Windows.Forms.CheckBox checkBoxApplicationFocused;
+        private System.Windows.Forms.ToolTip toolTipEnableDetectionOfInactiveImages;
+        private System.Windows.Forms.Button buttonsync;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

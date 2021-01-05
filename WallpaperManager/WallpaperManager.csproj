@@ -215,7 +215,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationData\MonitorData.cs" />
+    <Compile Include="ApplicationData\DisplayData.cs" />
     <Compile Include="ApplicationData\PathData.cs" />
     <Compile Include="ApplicationData\PathData_Naming.cs" />
     <Compile Include="ApplicationData\WallpaperData.cs" />
@@ -223,11 +223,18 @@
     <Compile Include="ApplicationData\WallpaperData_JSON.cs" />
     <Compile Include="ApplicationData\WallpaperData_Tagging.cs" />
     <Compile Include="AudioManager.cs" />
+    <Compile Include="Controls\DisplaySettings.cs" />
     <Compile Include="Controls\MpvVideoBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\MpvVideoBar.Designer.cs">
       <DependentUpon>MpvVideoBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\WallpaperManagerDisplaySettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\WallpaperManagerDisplaySettings.Designer.cs">
+      <DependentUpon>WallpaperManagerDisplaySettings.cs</DependentUpon>
     </Compile>
     <Compile Include="ImageSelector\ImageEditorControl.cs">
       <SubType>UserControl</SubType>
@@ -323,6 +330,9 @@
     <Compile Include="Tagging\TagTabControl\TagTabControl.Designer.cs">
       <DependentUpon>TagTabControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="WallpaperManager_Display.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Wallpaper\WallpaperForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -368,6 +378,9 @@
     <Compile Include="Win32.cs" />
     <EmbeddedResource Include="Controls\MpvVideoBar.resx">
       <DependentUpon>MpvVideoBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WallpaperManagerDisplaySettings.resx">
+      <DependentUpon>WallpaperManagerDisplaySettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageSelector\ImageEditorControl.resx">
       <DependentUpon>ImageEditorControl.cs</DependentUpon>

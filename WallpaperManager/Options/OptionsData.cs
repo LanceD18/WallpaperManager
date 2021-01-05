@@ -7,11 +7,12 @@ using System.Windows.Forms;
 
 namespace WallpaperManager.Options
 {
+    // Theme-Wide Settings
     public struct ThemeOptions
     {
         // General Settings
-        public bool LargerImagesOnLargerMonitors;
-        public bool HigherRankedImagesOnLargerMonitors;
+        public bool LargerImagesOnLargerDisplays;
+        public bool HigherRankedImagesOnLargerDisplays;
         public bool EnableDetectionOfInactiveImages;
         public bool WeightedRanks;
 
@@ -23,10 +24,25 @@ namespace WallpaperManager.Options
         public Dictionary<ImageType, double> ExactFrequency;
     }
 
+    // TODO Set me up later
+    // Display-Bound Settings
+    public struct DisplayOptions
+    {
+        // General Settings
+        public bool WeightedRanks;
+
+        // Video Settings
+        public Dictionary<ImageType, double> RelativeFrequency;
+        public Dictionary<ImageType, double> ExactFrequency;
+    }
+
     public static class OptionsData
     {
         // Theme Options
         public static ThemeOptions ThemeOptions;
+
+        // Monitor Options
+        public static DisplayOptions[] MonitorOptions;
 
         // Global Options
         public static string DefaultTheme;

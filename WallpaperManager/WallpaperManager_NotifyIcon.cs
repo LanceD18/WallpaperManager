@@ -25,7 +25,7 @@ namespace WallpaperManager
             ContextMenu cm = new ContextMenu();
             cm.MenuItems.Add("Open", notifyIcon1_Open);
 
-            for (int i = 0; i < MonitorData.Screens.Length; i++)
+            for (int i = 0; i < DisplayData.Displays.Length; i++)
             {
                 wallpaperMenuItems[i] = cm.MenuItems.Add(i + 1 + " | Awaiting Wallpaper");
             }

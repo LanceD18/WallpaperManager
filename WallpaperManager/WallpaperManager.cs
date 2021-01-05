@@ -22,6 +22,7 @@ using Microsoft.Win32;
 using Mpv.NET.Player;
 using Vlc.DotNet.Forms;
 using WallpaperManager.ApplicationData;
+using WallpaperManager.Controls;
 using WallpaperManager.Options;
 using WallpaperManager.Tagging;
 using WallpaperManager.Wallpaper;
@@ -72,7 +73,8 @@ namespace WallpaperManager
             this.Resize += OnResize;
             this.Closing += OnClosing;
 
-            MonitorData.Initialize();
+            DisplayData.Initialize();
+            InitializeDisplayTabControl();
 
             InitializeImageSelector();
             InitializeImageInspector();
@@ -234,58 +236,11 @@ namespace WallpaperManager
                 activeTagForm.Show();
             }
         }
+        #endregion
 
         private void WallpaperManager_Click(object sender, EventArgs e)
         {
-            labelTimeLeft.Focus(); // you can't focus onto the form but this acts like what you'd want
-        }
-        #endregion
-
-        public void NextWallpaper()
-        {
-            NextWallpaper(false);
-        }
-
-        public void NextWallpaper(bool ignoreErrorMessages)
-        {
-            if (!WallpaperData.IsLoadingData) // Rank Percentiles won't be properly set-up until after a theme is loaded, which can cause a crash is NextWallpaper is called
-            {
-                if (!WallpaperData.FileDataIsEmpty())
-                {
-                    if (!WallpaperData.NoImagesActive() && WallpaperData.GetAllRankedImages().Length != 0)
-                    {
-                        //TODO Prevent the first previous wallpaper from being filled with empty strings
-                        ResetTimer();
-                        string[] previousWallpapers = new string[PathData.ActiveWallpapers.Length];
-                        PathData.ActiveWallpapers.CopyTo(previousWallpapers, 0);
-                        PathData.PreviousWallpapers.Push(previousWallpapers);
-
-                        if (PathData.RandomizeWallpapers()) SetWallpaper(); // randomize wallpaper will check if it even can randomize the wallpapers first
-                    }
-                    else
-                    {
-                        if (!ignoreErrorMessages) MessageBox.Show("No active wallpapers were found");
-                    }
-                }
-                else
-                {
-                    if (!ignoreErrorMessages) MessageBox.Show("Add some wallpapers first! Use the Add Folder button to add a collection of images that'll be used as potential wallpapers");
-                }
-            }
-        }
-
-        public void PreviousWallpaper()
-        {
-            if (PathData.PreviousWallpapers.Count > 1) // the first wallpaper will be filled with empty strings
-            {
-                ResetTimer();
-                PathData.PreviousWallpapers.Pop().CopyTo(PathData.ActiveWallpapers, 0);
-                SetWallpaper();
-            }
-            else
-            {
-                MessageBox.Show("There are no more previous wallpapers");
-            }
+            labelImageSize.Focus(); // you can't focus onto the form but this acts like what you'd want
         }
 
         public void ResetWallpaperManager()

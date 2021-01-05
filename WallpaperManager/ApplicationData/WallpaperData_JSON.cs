@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Newtonsoft.Json;
+using WallpaperManager.Controls;
 using WallpaperManager.Options;
 using WallpaperManager.Tagging;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -48,19 +49,28 @@ namespace WallpaperManager.ApplicationData
 
         public class MiscData
         {
-            public PictureStyle wallpaperStyle;
-            public int timerIndex;
+            // Display Settings
+            public DisplaySettings displaySettings;
+
+            // Options
             public bool randomizeSelection;
             public int maxRank;
 
+            // Tagging Settings
             public string tagSortOption;
 
             public MiscData()
             {
-                wallpaperStyle = WallpaperManagerForm.GetWallpaperStyle();
-                timerIndex = WallpaperManagerForm.GetTimerIndex();
+                // Display Settings
+                displaySettings.WallpaperStyles = WallpaperManagerForm.GetWallpaperStyles();
+                displaySettings.WallpaperIntervals = WallpaperManagerForm.GetTimerIndexes();
+                displaySettings.Synced = WallpaperManagerForm.DisplaySettingsSynced;
+
+                // Options
                 randomizeSelection = RandomizeSelection;
                 maxRank = GetMaxRank();
+
+                // Tagging Settings
                 tagSortOption = TagSortOption;
             }
         }
@@ -200,8 +210,8 @@ namespace WallpaperManager.ApplicationData
 
         private static void LoadMiscData(JsonWallpaperData jsonWallpaperData)
         {
-            WallpaperManagerForm.UpdateWallpaperStyle(jsonWallpaperData.miscData.wallpaperStyle);
-            WallpaperManagerForm.SetTimerIndex(jsonWallpaperData.miscData.timerIndex);
+            WallpaperManagerForm.UpdateWallpaperStyle(jsonWallpaperData.miscData.displaySettings.WallpaperStyles);
+            WallpaperManagerForm.SetTimerIndex(jsonWallpaperData.miscData.displaySettings.WallpaperIntervals, true);
             RandomizeSelection = jsonWallpaperData.miscData.randomizeSelection;
             TagSortOption = jsonWallpaperData.miscData.tagSortOption;
         }

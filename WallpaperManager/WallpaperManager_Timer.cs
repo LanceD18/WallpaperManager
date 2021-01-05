@@ -18,25 +18,37 @@ using AudioSwitcher.AudioApi.Sandbox;
 using AudioSwitcher.AudioApi.Session;
 using SharpDX.DXGI;
 using System.Runtime.InteropServices;
+using LanceTools;
+using WallpaperManager.Controls;
 
 namespace WallpaperManager
 {
     public partial class WallpaperManagerForm : Form
     {
-        private Timer timer;
-        private Stopwatch timerStopWatch = new Stopwatch();
-        private int timerMaxInterval;
+        private Timer[] timers;
+        private Stopwatch[] timerStopWatches;
+        private int[] timerMaxIntervals;
 
         private void InitializeTimer()
         {
-            timer = new Timer(1);
-            timer.Elapsed += IntervalElapsed;
+            int displayCount = DisplayData.Displays.Length;
+            timers = new Timer[displayCount];
+            timerStopWatches = new Stopwatch[DisplayData.Displays.Length];
+            timerMaxIntervals = new int[displayCount];
+
+            for (var i = 0; i < displayCount; i++)
+            {
+                timers[i] = new Timer(1);
+                timers[i].Elapsed += IntervalElapsed;
+
+                timerStopWatches[i] = new Stopwatch();
+            }
         }
 
-        private int GetTimerInterval()
+        private int GetTimerInterval(int index)
         {
             int intervalNum = 1;
-            string selectedTimer = comboBoxWallpaperInterval.SelectedItem.ToString();
+            string selectedTimer = displaySettingForms[index].GetSelectedWallpaperInterval();
 
             if (selectedTimer.IndexOfAny("0123456789".ToCharArray()) != -1)
             {
@@ -75,65 +87,116 @@ namespace WallpaperManager
 
         private void IntervalElapsed(object sender, ElapsedEventArgs e)
         {
-            timerStopWatch.Restart();
-            NextWallpaper(true);
-        }
+            //? Without the BeginInvoke similar timers will be gauranteed to de-sync due to latency
+            int index = timers.IndexOf(sender as Timer);
 
-        // when the user change's their preferred timer
-        private void comboBoxWallpaperInterval_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (timer != null)
+            if (!DisplaySettingsSynced)
             {
-                timerStopWatch.Restart();
-                timer.Interval = timerMaxInterval = GetTimerInterval();
+                timerStopWatches[index].Restart();
+                this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(true, index); });
+            }
+            else if (index == 0)
+            {
+                for (int i = 0; i < DisplayData.Displays.Length; i++)
+                {
+                    timerStopWatches[i].Restart();
 
-                if (timer.Interval <= 1)
-                {
-                    labelTimeLeft.Text = "Awaiting Timer";
-                    timer.Stop();
-                }
-                else
-                {
-                    timer.Start();
-                    timerStopWatch.Start();
+                    // Restart timer
+                    timers[i].Stop();
+                    timers[i].Start();
+
+                    int indexForInvoke = i; // without doing this, i may change within the outside of the invoke, causing errors
+                    this.BeginInvoke((MethodInvoker)delegate { NextWallpaper(true, indexForInvoke); });
                 }
             }
         }
 
+        // this is just a visual, no need to worry about updating all controls
         private void timerVisualUpdater_Tick(object sender, EventArgs e)
         {
-            if (timer != null && timer.Interval > 1)
+            for (var i = 0; i < timers.Length; i++)
             {
-                labelTimeLeft.Text = (((int)(timer.Interval - timerStopWatch.ElapsedMilliseconds) / 1000) + 1).ToString();
+                int timerIndex = DisplaySettingsSynced ? 0 : i; // if synced just use the 0 index
+                Timer timer = timers[timerIndex];
+                if (timer != null && timer.Interval > 1)
+                {
+                    displaySettingForms[i].SetTimeLeft((((int)(timer.Interval - timerStopWatches[timerIndex].ElapsedMilliseconds) / 1000) + 1));
+                }
             }
         }
 
-        public int GetTimerIndex()
+        public int GetTimerIndex(int index) => displaySettingForms[index].GetSelectedWallpaperIntervalIndex();
+
+        public int[] GetTimerIndexes()
         {
-            return comboBoxWallpaperInterval.SelectedIndex;
+            int[] indexes = new int[displaySettingForms.Length];
+
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                indexes[i] = GetTimerIndex(i);
+            }
+
+            return indexes;
         }
 
-        public void SetTimerIndex(int newIndex)
+        // directly sets the timer index via code
+        public void SetTimerIndex(int callingTimerIndex, int newIntervalIndex)
         {
-            if (newIndex < comboBoxWallpaperInterval.Items.Count)
+            // TODO test the usefulness of this if statement again, confirm the index value of both the first and last spots
+            if (newIntervalIndex < displaySettingForms[callingTimerIndex].GetIntervalCount())
             {
-                comboBoxWallpaperInterval.SelectedIndex = newIndex;
+                displaySettingForms[callingTimerIndex].SetWallpaperIntervalIndex(newIntervalIndex);
             }
             else
             {
-                comboBoxWallpaperInterval.SelectedIndex = comboBoxWallpaperInterval.Items.Count - 1;
+                displaySettingForms[callingTimerIndex].SetWallpaperIntervalIndex(displaySettingForms[callingTimerIndex].GetIntervalCount() - 1);
             }
             //? this will carry over to the SelectedIndexChanged event and change the timer itself
-
-            ResetTimer(); // even if the same index is given the timer should reset back to the default value for this index
         }
 
-        public void ResetTimer()
+        public void SetTimerIndex(int[] newIntervalIndexes, bool maintainSync)
         {
-            if (timerMaxInterval != 0) // if this equals 0 then there is no timer
+            for (int i = 0; i < newIntervalIndexes.Length; i++)
             {
-                timer.Interval = timerMaxInterval;
-                timerStopWatch.Restart();
+                SetTimerIndex(i, newIntervalIndexes[i]);
+            }
+
+            if (maintainSync) { DisplaySettingsSynced = true; }
+        }
+
+        // updates timer index based on the combo box state
+        public void UpdateTimerIndex(int index)
+        {
+            DisplaySettingsSynced = false;
+
+            if (timers[index] != null)
+            {
+                timerStopWatches[index].Restart();
+                timers[index].Interval = timerMaxIntervals[index] = GetTimerInterval(index);
+
+                if (timers[index].Interval <= 1)
+                {
+                    displaySettingForms[index].SetTimeLeft("Awaiting Timer");
+                    timers[index].Stop();
+                }
+                else
+                {
+                    timers[index].Start();
+                    timerStopWatches[index].Start();
+                }
+            }
+
+            ResetTimer(index);
+        }
+
+        public void ResetTimer(int index)
+        {
+            Debug.WriteLine("Resetting timer");
+            if (timerMaxIntervals[index] != 0) // if this equals 0 then there is no timer
+            {
+                Debug.WriteLine("Timer Set");
+                timers[index].Interval = timerMaxIntervals[index];
+                timerStopWatches[index].Restart();
             }
         }
 

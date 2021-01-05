@@ -58,16 +58,11 @@ namespace WallpaperManager
             this.buttonInspectImage = new System.Windows.Forms.Button();
             this.buttonMoveImage = new System.Windows.Forms.Button();
             this.buttonDeleteImage = new System.Windows.Forms.Button();
-            this.comboBoxSelectStyle = new System.Windows.Forms.ComboBox();
-            this.labelTimeLeft = new System.Windows.Forms.Label();
-            this.comboBoxWallpaperInterval = new System.Windows.Forms.ComboBox();
-            this.labelWallpaperStyle = new System.Windows.Forms.Label();
             this.panelImageSelector = new System.Windows.Forms.Panel();
             this.tabControlImagePages = new System.Windows.Forms.TabControl();
             this.labelSelectedImage = new System.Windows.Forms.Label();
             this.panelImageInspector = new System.Windows.Forms.Panel();
             this.inspector_panelVideoAndBar = new System.Windows.Forms.Panel();
-            this.inspector_mpvVideoBar = new WallpaperManager.Controls.MpvVideoBar();
             this.inspector_panelVideo = new System.Windows.Forms.Panel();
             this.inspector_buttonRight = new System.Windows.Forms.Button();
             this.inspector_buttonLeft = new System.Windows.Forms.Button();
@@ -77,14 +72,18 @@ namespace WallpaperManager
             this.inspector_pictureBoxImage = new System.Windows.Forms.PictureBox();
             this.labelImageSize = new System.Windows.Forms.Label();
             this.timerVisualUpdater = new System.Windows.Forms.Timer(this.components);
-            this.labelMonitor = new System.Windows.Forms.Label();
             this.timerAudioChecker = new System.Windows.Forms.Timer(this.components);
+            this.buttonSyncDisplaySettings = new System.Windows.Forms.Button();
+            this.tabControlDisplaySettings = new System.Windows.Forms.TabControl();
+            this.tabPageDisplay1 = new System.Windows.Forms.TabPage();
+            this.inspector_mpvVideoBar = new WallpaperManager.Controls.MpvVideoBar();
             this.panelImageFolders.SuspendLayout();
             this.panelImageSettings.SuspendLayout();
             this.panelImageSelector.SuspendLayout();
             this.panelImageInspector.SuspendLayout();
             this.inspector_panelVideoAndBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.inspector_pictureBoxImage)).BeginInit();
+            this.tabControlDisplaySettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIconWallpaperManager
@@ -330,82 +329,6 @@ namespace WallpaperManager
             this.buttonDeleteImage.UseVisualStyleBackColor = true;
             this.buttonDeleteImage.Click += new System.EventHandler(this.buttonDeleteImage_Click);
             // 
-            // comboBoxSelectStyle
-            // 
-            this.comboBoxSelectStyle.DisplayMember = "Sel";
-            this.comboBoxSelectStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxSelectStyle.FormattingEnabled = true;
-            this.comboBoxSelectStyle.Items.AddRange(new object[] {
-            "Fill",
-            "Stretch",
-            "Zoom"});
-            this.comboBoxSelectStyle.Location = new System.Drawing.Point(12, 492);
-            this.comboBoxSelectStyle.Name = "comboBoxSelectStyle";
-            this.comboBoxSelectStyle.Size = new System.Drawing.Size(80, 21);
-            this.comboBoxSelectStyle.TabIndex = 34;
-            this.comboBoxSelectStyle.Tag = "";
-            this.comboBoxSelectStyle.SelectedIndexChanged += new System.EventHandler(this.comboBoxSelectStyle_SelectedIndexChanged);
-            // 
-            // labelTimeLeft
-            // 
-            this.labelTimeLeft.AutoSize = true;
-            this.labelTimeLeft.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.labelTimeLeft.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelTimeLeft.Location = new System.Drawing.Point(9, 525);
-            this.labelTimeLeft.Name = "labelTimeLeft";
-            this.labelTimeLeft.Size = new System.Drawing.Size(76, 13);
-            this.labelTimeLeft.TabIndex = 36;
-            this.labelTimeLeft.Text = "Awaiting Timer";
-            // 
-            // comboBoxWallpaperInterval
-            // 
-            this.comboBoxWallpaperInterval.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxWallpaperInterval.FormattingEnabled = true;
-            this.comboBoxWallpaperInterval.Items.AddRange(new object[] {
-            "None",
-            "5 sec",
-            "10 sec",
-            "15 sec",
-            "30 sec",
-            "45 sec",
-            "1 min",
-            "2 min",
-            "3 min",
-            "5 min",
-            "10 min",
-            "15 min",
-            "30 min",
-            "45 min",
-            "1 hour",
-            "2 hours",
-            "3 hours",
-            "5 hours",
-            "6 hours",
-            "8 hours",
-            "10 hours",
-            "12 hours",
-            "16 hours",
-            "20 hours",
-            "1 day",
-            "3 days",
-            "1 week"});
-            this.comboBoxWallpaperInterval.Location = new System.Drawing.Point(12, 541);
-            this.comboBoxWallpaperInterval.Name = "comboBoxWallpaperInterval";
-            this.comboBoxWallpaperInterval.Size = new System.Drawing.Size(80, 21);
-            this.comboBoxWallpaperInterval.TabIndex = 35;
-            this.comboBoxWallpaperInterval.SelectedIndexChanged += new System.EventHandler(this.comboBoxWallpaperInterval_SelectedIndexChanged);
-            // 
-            // labelWallpaperStyle
-            // 
-            this.labelWallpaperStyle.AutoSize = true;
-            this.labelWallpaperStyle.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.labelWallpaperStyle.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelWallpaperStyle.Location = new System.Drawing.Point(9, 475);
-            this.labelWallpaperStyle.Name = "labelWallpaperStyle";
-            this.labelWallpaperStyle.Size = new System.Drawing.Size(81, 13);
-            this.labelWallpaperStyle.TabIndex = 37;
-            this.labelWallpaperStyle.Text = "Wallpaper Style";
-            // 
             // panelImageSelector
             // 
             this.panelImageSelector.Controls.Add(this.tabControlImagePages);
@@ -458,15 +381,6 @@ namespace WallpaperManager
             this.inspector_panelVideoAndBar.Name = "inspector_panelVideoAndBar";
             this.inspector_panelVideoAndBar.Size = new System.Drawing.Size(645, 576);
             this.inspector_panelVideoAndBar.TabIndex = 42;
-            // 
-            // inspector_mpvVideoBar
-            // 
-            this.inspector_mpvVideoBar.BackColor = System.Drawing.SystemColors.ControlText;
-            this.inspector_mpvVideoBar.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.inspector_mpvVideoBar.Location = new System.Drawing.Point(0, 523);
-            this.inspector_mpvVideoBar.Name = "inspector_mpvVideoBar";
-            this.inspector_mpvVideoBar.Size = new System.Drawing.Size(645, 50);
-            this.inspector_mpvVideoBar.TabIndex = 41;
             // 
             // inspector_panelVideo
             // 
@@ -551,22 +465,50 @@ namespace WallpaperManager
             this.timerVisualUpdater.Interval = 1000;
             this.timerVisualUpdater.Tick += new System.EventHandler(this.timerVisualUpdater_Tick);
             // 
-            // labelMonitor
-            // 
-            this.labelMonitor.AutoSize = true;
-            this.labelMonitor.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMonitor.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelMonitor.Location = new System.Drawing.Point(396, 16);
-            this.labelMonitor.Name = "labelMonitor";
-            this.labelMonitor.Size = new System.Drawing.Size(71, 16);
-            this.labelMonitor.TabIndex = 40;
-            this.labelMonitor.Text = "Monitor 1";
-            // 
             // timerAudioChecker
             // 
             this.timerAudioChecker.Enabled = true;
             this.timerAudioChecker.Interval = 1000;
             this.timerAudioChecker.Tick += new System.EventHandler(this.timerAudioChecker_Tick);
+            // 
+            // buttonSyncDisplaySettings
+            // 
+            this.buttonSyncDisplaySettings.Location = new System.Drawing.Point(12, 551);
+            this.buttonSyncDisplaySettings.Name = "buttonSyncDisplaySettings";
+            this.buttonSyncDisplaySettings.Size = new System.Drawing.Size(122, 23);
+            this.buttonSyncDisplaySettings.TabIndex = 41;
+            this.buttonSyncDisplaySettings.Text = "Sync Display Settings";
+            this.buttonSyncDisplaySettings.UseVisualStyleBackColor = true;
+            this.buttonSyncDisplaySettings.Click += new System.EventHandler(this.buttonSyncDisplaySettings_Click);
+            // 
+            // tabControlDisplaySettings
+            // 
+            this.tabControlDisplaySettings.Controls.Add(this.tabPageDisplay1);
+            this.tabControlDisplaySettings.Location = new System.Drawing.Point(12, 465);
+            this.tabControlDisplaySettings.Name = "tabControlDisplaySettings";
+            this.tabControlDisplaySettings.SelectedIndex = 0;
+            this.tabControlDisplaySettings.Size = new System.Drawing.Size(195, 80);
+            this.tabControlDisplaySettings.TabIndex = 42;
+            // 
+            // tabPageDisplay1
+            // 
+            this.tabPageDisplay1.BackColor = System.Drawing.Color.Black;
+            this.tabPageDisplay1.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.tabPageDisplay1.Location = new System.Drawing.Point(4, 22);
+            this.tabPageDisplay1.Name = "tabPageDisplay1";
+            this.tabPageDisplay1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageDisplay1.Size = new System.Drawing.Size(187, 54);
+            this.tabPageDisplay1.TabIndex = 0;
+            this.tabPageDisplay1.Text = "Display 1";
+            // 
+            // inspector_mpvVideoBar
+            // 
+            this.inspector_mpvVideoBar.BackColor = System.Drawing.SystemColors.ControlText;
+            this.inspector_mpvVideoBar.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.inspector_mpvVideoBar.Location = new System.Drawing.Point(0, 523);
+            this.inspector_mpvVideoBar.Name = "inspector_mpvVideoBar";
+            this.inspector_mpvVideoBar.Size = new System.Drawing.Size(645, 50);
+            this.inspector_mpvVideoBar.TabIndex = 41;
             // 
             // WallpaperManagerForm
             // 
@@ -574,12 +516,9 @@ namespace WallpaperManager
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1264, 686);
-            this.Controls.Add(this.labelMonitor);
+            this.Controls.Add(this.tabControlDisplaySettings);
+            this.Controls.Add(this.buttonSyncDisplaySettings);
             this.Controls.Add(this.labelImageSize);
-            this.Controls.Add(this.labelWallpaperStyle);
-            this.Controls.Add(this.labelTimeLeft);
-            this.Controls.Add(this.comboBoxWallpaperInterval);
-            this.Controls.Add(this.comboBoxSelectStyle);
             this.Controls.Add(this.panelImageSettings);
             this.Controls.Add(this.buttonOptions);
             this.Controls.Add(this.buttonTagSettings);
@@ -604,6 +543,7 @@ namespace WallpaperManager
             this.panelImageInspector.PerformLayout();
             this.inspector_panelVideoAndBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.inspector_pictureBoxImage)).EndInit();
+            this.tabControlDisplaySettings.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -626,12 +566,8 @@ namespace WallpaperManager
         private Button buttonTagSettings;
         private Button buttonOptions;
         private Panel panelImageSettings;
-        private ComboBox comboBoxSelectStyle;
         private Button buttonDeleteImage;
         private Button buttonMoveImage;
-        private Label labelTimeLeft;
-        private ComboBox comboBoxWallpaperInterval;
-        private Label labelWallpaperStyle;
         private Panel panelImageSelector;
         private Label labelSelectedImage;
         private TabControl tabControlImagePages;
@@ -648,11 +584,13 @@ namespace WallpaperManager
         private Label labelImageSize;
         private Timer timerVisualUpdater;
         private Button buttonRankImages;
-        private Label labelMonitor;
         private Panel inspector_panelVideo;
         private Panel inspector_panelVideoAndBar;
         private Controls.MpvVideoBar inspector_mpvVideoBar;
         private Timer timerAudioChecker;
+        private Button buttonSyncDisplaySettings;
+        private TabControl tabControlDisplaySettings;
+        private TabPage tabPageDisplay1;
     }
 }
 

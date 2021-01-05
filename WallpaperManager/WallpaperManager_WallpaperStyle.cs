@@ -11,7 +11,7 @@ using WallpaperManager.Wallpaper;
 
 namespace WallpaperManager
 {
-    public enum PictureStyle
+    public enum WallpaperStyle
     {
         Fill,
         Fit,
@@ -23,40 +23,43 @@ namespace WallpaperManager
 
     public partial class WallpaperManagerForm : Form
     {
-        private PictureStyle WallpaperStyle;
-
-        private void comboBoxSelectStyle_SelectedIndexChanged(object sender, EventArgs e) => UpdateWallpaperStyle();
-
-        private void UpdateWallpaperStyle()
+        public void UpdateWallpaperStyle(int index)
         {
-            switch (comboBoxSelectStyle.SelectedItem)
+            switch (displaySettingForms[index].GetWallpaperStyle())
             {
                 case "Fill":
-                    WallpaperStyle = PictureStyle.Fill;
+                    wallpaperStyles[index] = WallpaperStyle.Fill;
                     break;
 
                 case "Stretch":
-                    WallpaperStyle = PictureStyle.Stretch;
+                    wallpaperStyles[index] = WallpaperStyle.Stretch;
                     break;
 
                 case "Zoom":
-                    WallpaperStyle = PictureStyle.Zoom;
+                    wallpaperStyles[index] = WallpaperStyle.Zoom;
                     break;
             }
 
-            foreach (WallpaperForm wallpaper in wallpapers)
+            wallpapers[index].SetWallpaperStyle(wallpaperStyles[index]);
+        }
+
+        public void UpdateWallpaperStyle(WallpaperStyle newWallpaperStyle, int index)
+        {
+            wallpaperStyles[index] = newWallpaperStyle;
+            displaySettingForms[index].SetWallpaperStyle(newWallpaperStyle.ToString());
+            UpdateWallpaperStyle(index);
+        }
+
+        public void UpdateWallpaperStyle(WallpaperStyle[] newWallpaperStyles)
+        {
+            for (int i = 0; i < newWallpaperStyles.Length; i++)
             {
-                wallpaper.SetWallpaperStyle(WallpaperStyle);
+                UpdateWallpaperStyle(newWallpaperStyles[i], i);
             }
         }
 
-        public void UpdateWallpaperStyle(PictureStyle newWallpaperStyle)
-        {
-            WallpaperStyle = newWallpaperStyle;
-            comboBoxSelectStyle.Text = newWallpaperStyle.ToString();
-            UpdateWallpaperStyle();
-        }
+        public WallpaperStyle GetWallpaperStyle(int index) => wallpaperStyles[index];
 
-        public PictureStyle GetWallpaperStyle() => WallpaperStyle;
+        public WallpaperStyle[] GetWallpaperStyles() => wallpaperStyles;
     }
 }

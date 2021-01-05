@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using Emgu.CV;
+using LanceTools;
 using LanceTools.Mpv;
 using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
@@ -35,8 +36,8 @@ namespace WallpaperManager.Wallpaper
                     // Sets bounds of the form
                     Width = monitor.Bounds.Width;
                     Height = monitor.Bounds.Height;
-                    Left = monitor.Bounds.X + MonitorData.MonitorXAdjustment;
-                    Top = monitor.Bounds.Y + MonitorData.MinMonitorY;
+                    Left = monitor.Bounds.X + DisplayData.DisplayXAdjustment;
+                    Top = monitor.Bounds.Y + DisplayData.MinDisplayY;
                     pictureBoxBounds = new Rectangle(0, 0, Width, Height);
 
                     // Sets bounds of the wallpaper
@@ -137,10 +138,10 @@ namespace WallpaperManager.Wallpaper
 
         public void ResetWallpaperStyle()
         {
-            SetWallpaperStyle(WallpaperData.WallpaperManagerForm.GetWallpaperStyle());
+            SetWallpaperStyle(WallpaperData.WallpaperManagerForm.GetWallpaperStyle(WallpaperData.WallpaperManagerForm.GetWallpapers().IndexOf(this)));
         }
 
-        public void SetWallpaperStyle(PictureStyle wallpaperStyle)
+        public void SetWallpaperStyle(WallpaperStyle wallpaperStyle)
         {
             if (!IsHandleCreated) return;
 
@@ -164,7 +165,7 @@ namespace WallpaperManager.Wallpaper
                     pictureBoxWallpaper.Bounds = pictureBoxBounds; // it's generally a good idea to reset this to prevent unwanted changes from previous states
                     switch (wallpaperStyle)
                     {
-                        case PictureStyle.Fill:
+                        case WallpaperStyle.Fill:
                             using (Image image = Image.FromFile(pictureBoxWallpaper.ImageLocation))
                             {
                                 int heightDiff = GetFillHeightDiff(image.Width, image.Height);
@@ -175,11 +176,11 @@ namespace WallpaperManager.Wallpaper
                             }
                             break;
 
-                        case PictureStyle.Stretch:
+                        case WallpaperStyle.Stretch:
                             pictureBoxWallpaper.SizeMode = PictureBoxSizeMode.StretchImage;
                             break;
 
-                        case PictureStyle.Zoom:
+                        case WallpaperStyle.Zoom:
                             pictureBoxWallpaper.Height -= TASKBAR_SIZE;
                             pictureBoxWallpaper.SizeMode = PictureBoxSizeMode.Zoom;
                             break;
@@ -198,7 +199,7 @@ namespace WallpaperManager.Wallpaper
 
                         switch (wallpaperStyle)
                         {
-                            case PictureStyle.Fill:
+                            case WallpaperStyle.Fill:
                                 panelWallpaper.Bounds = pictureBoxBounds;
                                 int heightDiff = GetFillHeightDiff(video.Width, video.Height);
                                 panelWallpaper.Width = Width; // scales the image to its width
@@ -206,11 +207,11 @@ namespace WallpaperManager.Wallpaper
                                 panelWallpaper.Top = -heightDiff / 2; // centers the height pushed offscreen
                                 break;
 
-                            case PictureStyle.Stretch:
+                            case WallpaperStyle.Stretch:
                                 panelWallpaper.Bounds = pictureBoxBounds;
                                 break;
 
-                            case PictureStyle.Zoom:
+                            case WallpaperStyle.Zoom:
                                 panelWallpaper.Bounds = GetZoomBounds(video.Width, video.Height);
                                 break;
                         }
