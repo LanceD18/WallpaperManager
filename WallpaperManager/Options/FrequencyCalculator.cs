@@ -46,9 +46,9 @@ namespace WallpaperManager.Options
                 if (input == 0)
                 {
                     int zeroCount = 0;
-                    if (ThemeOptions.RelativeFrequency[ImageType.Static] == 0) zeroCount++;
-                    if (ThemeOptions.RelativeFrequency[ImageType.GIF] == 0) zeroCount++;
-                    if (ThemeOptions.RelativeFrequency[ImageType.Video] == 0) zeroCount++;
+                    if (ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] == 0) zeroCount++;
+                    if (ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] == 0) zeroCount++;
+                    if (ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] == 0) zeroCount++;
 
                     if (zeroCount >= 2) // attempted to make all frequencies 0%, cancel this change
                     {
@@ -57,14 +57,14 @@ namespace WallpaperManager.Options
                     }
                 }
 
-                ThemeOptions.RelativeFrequency[imageType] = input / 100; // the actual value is a percentage
+                ThemeOptions.VideoOptions.RelativeFrequency[imageType] = input / 100; // the actual value is a percentage
 
                 RecalculateExactFrequency(ref ThemeOptions);
             }
             else if (frequencyType == FrequencyType.Exact) // set a new exact chance, recalculating the remaining exact chances & also the relative chances to represent this change
             {
                 Debug.WriteLine("Exact");
-                ThemeOptions.ExactFrequency[imageType] = input / 100; // the actual value is a percentage
+                ThemeOptions.VideoOptions.ExactFrequency[imageType] = input / 100; // the actual value is a percentage
 
                 if (input < 100 && input > 0)
                 {
@@ -73,16 +73,16 @@ namespace WallpaperManager.Options
                 }
                 else if (input >= 100) // exact chance of 1, set everything else to 0
                 {
-                    if (imageType != ImageType.Static) ThemeOptions.ExactFrequency[ImageType.Static] = 0;
-                    if (imageType != ImageType.GIF) ThemeOptions.ExactFrequency[ImageType.GIF] = 0;
-                    if (imageType != ImageType.Video) ThemeOptions.ExactFrequency[ImageType.Video] = 0;
+                    if (imageType != ImageType.Static) ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] = 0;
+                    if (imageType != ImageType.GIF) ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] = 0;
+                    if (imageType != ImageType.Video) ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] = 0;
                     RecalculateRelativeFrequency(imageType, true, ref ThemeOptions);
                 }
                 else if (input <= 0) // exact chance of 0, set everything else to 0.5
                 {
-                    if (imageType != ImageType.Static) ThemeOptions.ExactFrequency[ImageType.Static] = 0.5;
-                    if (imageType != ImageType.GIF) ThemeOptions.ExactFrequency[ImageType.GIF] = 0.5;
-                    if (imageType != ImageType.Video) ThemeOptions.ExactFrequency[ImageType.Video] = 0.5;
+                    if (imageType != ImageType.Static) ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] = 0.5;
+                    if (imageType != ImageType.GIF) ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] = 0.5;
+                    if (imageType != ImageType.Video) ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] = 0.5;
                     RecalculateRelativeFrequency(imageType, true, ref ThemeOptions);
                 }
 
@@ -94,22 +94,27 @@ namespace WallpaperManager.Options
         // displays as 100% while the remaining values will display how likely they are to appear relative to that 100% value)
         private static void RecalculateRelativeFrequency(ImageType changedImageType, bool absolutePercentage, ref ThemeOptions ThemeOptions)
         {
-            ThemeOptions.RelativeFrequency[changedImageType] = 1;
+            ThemeOptions.VideoOptions.RelativeFrequency[changedImageType] = 1;
 
             if (!absolutePercentage) // exact values have chances anywhere between 0 & 100 exclusive
             {
                 if (changedImageType != ImageType.Static)
-                    ThemeOptions.RelativeFrequency[ImageType.Static] = ThemeOptions.ExactFrequency[ImageType.Static] / ThemeOptions.ExactFrequency[changedImageType];
+                    ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] = 
+                        ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] / ThemeOptions.VideoOptions.ExactFrequency[changedImageType];
+
                 if (changedImageType != ImageType.GIF)
-                    ThemeOptions.RelativeFrequency[ImageType.GIF] = ThemeOptions.ExactFrequency[ImageType.GIF] / ThemeOptions.ExactFrequency[changedImageType];
+                    ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] = 
+                        ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] / ThemeOptions.VideoOptions.ExactFrequency[changedImageType];
+
                 if (changedImageType != ImageType.Video)
-                    ThemeOptions.RelativeFrequency[ImageType.Video] = ThemeOptions.ExactFrequency[ImageType.Video] / ThemeOptions.ExactFrequency[changedImageType];
+                    ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] = 
+                        ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] / ThemeOptions.VideoOptions.ExactFrequency[changedImageType];
             }
             else // some exact value has a chance of 0 or 100, this needs its own separate calculation
             {
-                ThemeOptions.RelativeFrequency[ImageType.Static] = 1 * ThemeOptions.ExactFrequency[ImageType.Static];
-                ThemeOptions.RelativeFrequency[ImageType.GIF] = 1 * ThemeOptions.ExactFrequency[ImageType.GIF];
-                ThemeOptions.RelativeFrequency[ImageType.Video] = 1 * ThemeOptions.ExactFrequency[ImageType.Video];
+                ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] = 1 * ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static];
+                ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] = 1 * ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF];
+                ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] = 1 * ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video];
             }
         }
 
@@ -117,23 +122,27 @@ namespace WallpaperManager.Options
         // (This also displays to the user what the exact chance even is)
         private static void RecalculateExactFrequency(ref ThemeOptions ThemeOptions)
         {
-            double chanceTotal = ThemeOptions.RelativeFrequency[ImageType.Static] + ThemeOptions.RelativeFrequency[ImageType.GIF] + ThemeOptions.RelativeFrequency[ImageType.Video];
+            double chanceTotal = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] + 
+                                 ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] + 
+                                 ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video];
 
             Debug.WriteLine("chanceTotal: " + chanceTotal);
 
-            Debug.WriteLine(ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal);
-            Debug.WriteLine(ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal);
-            Debug.WriteLine(ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal);
+            Debug.WriteLine(ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] / chanceTotal);
+            Debug.WriteLine(ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] / chanceTotal);
+            Debug.WriteLine(ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] / chanceTotal);
 
-            ThemeOptions.ExactFrequency[ImageType.Static] = ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal;
-            ThemeOptions.ExactFrequency[ImageType.GIF] = ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal;
-            ThemeOptions.ExactFrequency[ImageType.Video] = ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal;
+            ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] / chanceTotal;
+            ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] / chanceTotal;
+            ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] / chanceTotal;
         }
 
         private static void CalculateExactFrequency(ImageType changedImageType, ref ThemeOptions ThemeOptions)
         {
             // Readjust Exact Frequency to account for the new changes
-            double chanceTotal = ThemeOptions.ExactFrequency[ImageType.Static] + ThemeOptions.ExactFrequency[ImageType.GIF] + ThemeOptions.ExactFrequency[ImageType.Video];
+            double chanceTotal = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] + 
+                                 ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] + 
+                                 ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video];
             Debug.WriteLine("chanceTotal: " + chanceTotal);
 
             // Leave the changed frequency and readjust the remaining two according to the value difference and their own relative values
@@ -142,9 +151,9 @@ namespace WallpaperManager.Options
 
             double relativeChanceTotal = 0;
 
-            if (changedImageType != ImageType.Static) relativeChanceTotal += ThemeOptions.ExactFrequency[ImageType.Static];
-            if (changedImageType != ImageType.GIF) relativeChanceTotal += ThemeOptions.ExactFrequency[ImageType.GIF];
-            if (changedImageType != ImageType.Video) relativeChanceTotal += ThemeOptions.ExactFrequency[ImageType.Video];
+            if (changedImageType != ImageType.Static) relativeChanceTotal += ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static];
+            if (changedImageType != ImageType.GIF) relativeChanceTotal += ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF];
+            if (changedImageType != ImageType.Video) relativeChanceTotal += ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video];
             Debug.WriteLine("relativeChanceTotal: " + relativeChanceTotal);
 
             double adjustedRelativeChanceTotal = relativeChanceTotal - valueDiff;
@@ -158,25 +167,25 @@ namespace WallpaperManager.Options
             switch (changedImageType)
             {
                 case ImageType.Static:
-                    gifChance = ThemeOptions.ExactFrequency[ImageType.GIF] / relativeChanceTotal;
-                    videoChance = ThemeOptions.ExactFrequency[ImageType.Video] / relativeChanceTotal;
+                    gifChance = ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] / relativeChanceTotal;
+                    videoChance = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] / relativeChanceTotal;
                     break;
 
                 case ImageType.GIF:
-                    staticChance = ThemeOptions.ExactFrequency[ImageType.Static] / relativeChanceTotal;
-                    videoChance = ThemeOptions.ExactFrequency[ImageType.Video] / relativeChanceTotal;
+                    staticChance = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] / relativeChanceTotal;
+                    videoChance = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] / relativeChanceTotal;
                     break;
 
                 case ImageType.Video:
-                    staticChance = ThemeOptions.ExactFrequency[ImageType.Static] / relativeChanceTotal;
-                    gifChance = ThemeOptions.ExactFrequency[ImageType.GIF] / relativeChanceTotal;
+                    staticChance = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] / relativeChanceTotal;
+                    gifChance = ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] / relativeChanceTotal;
                     break;
             }
 
             // readjust percentages
-            if (changedImageType != ImageType.Static) ThemeOptions.ExactFrequency[ImageType.Static] = staticChance * adjustedRelativeChanceTotal;
-            if (changedImageType != ImageType.GIF) ThemeOptions.ExactFrequency[ImageType.GIF] = gifChance * adjustedRelativeChanceTotal;
-            if (changedImageType != ImageType.Video) ThemeOptions.ExactFrequency[ImageType.Video] = videoChance * adjustedRelativeChanceTotal;
+            if (changedImageType != ImageType.Static) ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] = staticChance * adjustedRelativeChanceTotal;
+            if (changedImageType != ImageType.GIF) ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] = gifChance * adjustedRelativeChanceTotal;
+            if (changedImageType != ImageType.Video) ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] = videoChance * adjustedRelativeChanceTotal;
         }
 
     }

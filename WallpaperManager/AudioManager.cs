@@ -30,7 +30,7 @@ namespace WallpaperManager
                     muted = true;
                 }
 
-                if (OptionsData.ThemeOptions.MuteIfApplicationFocused && !muted)
+                if (OptionsData.ThemeOptions.VideoOptions.MuteIfApplicationFocused && !muted)
                 {
                     Process activeWindow = WindowTools.GetActiveWindowProcess();
                     if (activeWindow.ProcessName != Process.GetCurrentProcess().ProcessName)
@@ -43,7 +43,7 @@ namespace WallpaperManager
                     }
                 }
 
-                if (OptionsData.ThemeOptions.MuteIfApplicationMaximized && !muted) // every window needs to be checked for maximization
+                if (OptionsData.ThemeOptions.VideoOptions.MuteIfApplicationMaximized && !muted) // every window needs to be checked for maximization
                 {
                     //xStopwatch test = new Stopwatch();
                     //xtest.Start();
@@ -61,7 +61,7 @@ namespace WallpaperManager
                     //xDebug.WriteLine("Ms taken to check for maximized app: " + test.ElapsedMilliseconds);
                 }
 
-                if (OptionsData.ThemeOptions.MuteIfAudioPlaying && !muted) muted = CheckForExternalAudio();  //? CheckForExternalAudio cannot be done on the UI thread | async doesn't fix this
+                if (OptionsData.ThemeOptions.VideoOptions.MuteIfAudioPlaying && !muted) muted = CheckForExternalAudio();  //? CheckForExternalAudio cannot be done on the UI thread | async doesn't fix this
 
                 if (IsWallpapersMuted && !muted) UnmuteWallpapers();
             });

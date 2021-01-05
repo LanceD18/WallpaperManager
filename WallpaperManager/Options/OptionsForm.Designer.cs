@@ -39,19 +39,21 @@
             this.buttonSetDefaultTheme = new System.Windows.Forms.Button();
             this.buttonLoadDefaultTheme = new System.Windows.Forms.Button();
             this.checkBoxEnableGlobalHotkey = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelDefaultThemeAutoSaveTip = new System.Windows.Forms.Label();
             this.checkBoxWeightedRanks = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageThemeOptions = new System.Windows.Forms.TabPage();
+            this.textBoxMaximumVideoTime = new System.Windows.Forms.TextBox();
+            this.textBoxMinimumVideoLoops = new System.Windows.Forms.TextBox();
             this.buttonsync = new System.Windows.Forms.Button();
             this.checkBoxApplicationFocused = new System.Windows.Forms.CheckBox();
             this.checkBoxApplicationMaximized = new System.Windows.Forms.CheckBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.labelMuteAudioIf = new System.Windows.Forms.Label();
             this.checkBoxAudioPlaying = new System.Windows.Forms.CheckBox();
-            this.labelMaximumVideoTime = new System.Windows.Forms.Label();
+            this.labelMaxVideoTime = new System.Windows.Forms.Label();
             this.labelMinVideoLoops = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
+            this.panelFrequency = new System.Windows.Forms.Panel();
+            this.labelFrequencySaveTip = new System.Windows.Forms.Label();
             this.textBoxExactVideo = new System.Windows.Forms.TextBox();
             this.textBoxExactGIF = new System.Windows.Forms.TextBox();
             this.textBoxExactStatic = new System.Windows.Forms.TextBox();
@@ -61,16 +63,14 @@
             this.textBoxRelativeGIF = new System.Windows.Forms.TextBox();
             this.textBoxRelativeStatic = new System.Windows.Forms.TextBox();
             this.labelStatic = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.labelExact = new System.Windows.Forms.Label();
+            this.labelRelative = new System.Windows.Forms.Label();
             this.labelFrequency = new System.Windows.Forms.Label();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
             this.toolTipEnableDetectionOfInactiveImages = new System.Windows.Forms.ToolTip(this.components);
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPageThemeOptions.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.panelFrequency.SuspendLayout();
             this.tabPageGlobalOptions.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -190,15 +190,15 @@
             this.checkBoxEnableGlobalHotkey.Text = "Enable Default Theme Global Hotkey (Alt+Shift)";
             this.checkBoxEnableGlobalHotkey.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // labelDefaultThemeAutoSaveTip
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(3, 65);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(410, 13);
-            this.label1.TabIndex = 49;
-            this.label1.Text = "(Your Active Theme will be automatically saved upon swapping to the Default Theme" +
+            this.labelDefaultThemeAutoSaveTip.AutoSize = true;
+            this.labelDefaultThemeAutoSaveTip.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.labelDefaultThemeAutoSaveTip.Location = new System.Drawing.Point(3, 65);
+            this.labelDefaultThemeAutoSaveTip.Name = "labelDefaultThemeAutoSaveTip";
+            this.labelDefaultThemeAutoSaveTip.Size = new System.Drawing.Size(410, 13);
+            this.labelDefaultThemeAutoSaveTip.TabIndex = 49;
+            this.labelDefaultThemeAutoSaveTip.Text = "(Your Active Theme will be automatically saved upon swapping to the Default Theme" +
     ")";
             // 
             // checkBoxWeightedRanks
@@ -226,16 +226,16 @@
             // tabPageThemeOptions
             // 
             this.tabPageThemeOptions.BackColor = System.Drawing.Color.Black;
-            this.tabPageThemeOptions.Controls.Add(this.textBox2);
-            this.tabPageThemeOptions.Controls.Add(this.textBox1);
+            this.tabPageThemeOptions.Controls.Add(this.textBoxMaximumVideoTime);
+            this.tabPageThemeOptions.Controls.Add(this.textBoxMinimumVideoLoops);
             this.tabPageThemeOptions.Controls.Add(this.buttonsync);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxApplicationFocused);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxApplicationMaximized);
-            this.tabPageThemeOptions.Controls.Add(this.label5);
+            this.tabPageThemeOptions.Controls.Add(this.labelMuteAudioIf);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxAudioPlaying);
-            this.tabPageThemeOptions.Controls.Add(this.labelMaximumVideoTime);
+            this.tabPageThemeOptions.Controls.Add(this.labelMaxVideoTime);
             this.tabPageThemeOptions.Controls.Add(this.labelMinVideoLoops);
-            this.tabPageThemeOptions.Controls.Add(this.panel1);
+            this.tabPageThemeOptions.Controls.Add(this.panelFrequency);
             this.tabPageThemeOptions.Controls.Add(this.buttonInspectRankDistribution);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxWeightedRanks);
             this.tabPageThemeOptions.Controls.Add(this.buttonModifyMaxRank);
@@ -248,6 +248,36 @@
             this.tabPageThemeOptions.Size = new System.Drawing.Size(477, 423);
             this.tabPageThemeOptions.TabIndex = 0;
             this.tabPageThemeOptions.Text = "Theme Options";
+            // 
+            // textBoxMaximumVideoTime
+            // 
+            this.textBoxMaximumVideoTime.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.textBoxMaximumVideoTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxMaximumVideoTime.ForeColor = System.Drawing.SystemColors.Window;
+            this.textBoxMaximumVideoTime.Location = new System.Drawing.Point(125, 264);
+            this.textBoxMaximumVideoTime.Name = "textBoxMaximumVideoTime";
+            this.textBoxMaximumVideoTime.Size = new System.Drawing.Size(45, 20);
+            this.textBoxMaximumVideoTime.TabIndex = 61;
+            this.textBoxMaximumVideoTime.Text = "0";
+            this.textBoxMaximumVideoTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBoxMaximumVideoTime.Click += new System.EventHandler(this.textBoxMaximumVideoTime_Click);
+            this.textBoxMaximumVideoTime.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxMaximumVideoTime_KeyDown);
+            this.textBoxMaximumVideoTime.Leave += new System.EventHandler(this.textBoxMaximumVideoTime_LostFocus);
+            // 
+            // textBoxMinimumVideoLoops
+            // 
+            this.textBoxMinimumVideoLoops.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.textBoxMinimumVideoLoops.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxMinimumVideoLoops.ForeColor = System.Drawing.SystemColors.Window;
+            this.textBoxMinimumVideoLoops.Location = new System.Drawing.Point(125, 235);
+            this.textBoxMinimumVideoLoops.Name = "textBoxMinimumVideoLoops";
+            this.textBoxMinimumVideoLoops.Size = new System.Drawing.Size(45, 20);
+            this.textBoxMinimumVideoLoops.TabIndex = 60;
+            this.textBoxMinimumVideoLoops.Text = "0";
+            this.textBoxMinimumVideoLoops.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBoxMinimumVideoLoops.Click += new System.EventHandler(this.textBoxMinimumVideoLoops_Click);
+            this.textBoxMinimumVideoLoops.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxMinimumVideoLoops_KeyDown);
+            this.textBoxMinimumVideoLoops.Leave += new System.EventHandler(this.textBoxMinimumVideoLoops_LostFocus);
             // 
             // buttonsync
             // 
@@ -280,16 +310,16 @@
             this.checkBoxApplicationMaximized.Text = "External Application is Maximized";
             this.checkBoxApplicationMaximized.UseVisualStyleBackColor = true;
             // 
-            // label5
+            // labelMuteAudioIf
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.label5.Location = new System.Drawing.Point(284, 98);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(87, 13);
-            this.label5.TabIndex = 56;
-            this.label5.Text = "Mute Audio If:";
+            this.labelMuteAudioIf.AutoSize = true;
+            this.labelMuteAudioIf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelMuteAudioIf.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.labelMuteAudioIf.Location = new System.Drawing.Point(284, 98);
+            this.labelMuteAudioIf.Name = "labelMuteAudioIf";
+            this.labelMuteAudioIf.Size = new System.Drawing.Size(87, 13);
+            this.labelMuteAudioIf.TabIndex = 56;
+            this.labelMuteAudioIf.Text = "Mute Audio If:";
             // 
             // checkBoxAudioPlaying
             // 
@@ -302,15 +332,15 @@
             this.checkBoxAudioPlaying.Text = "External Audio is Playting";
             this.checkBoxAudioPlaying.UseVisualStyleBackColor = true;
             // 
-            // labelMaximumVideoTime
+            // labelMaxVideoTime
             // 
-            this.labelMaximumVideoTime.AutoSize = true;
-            this.labelMaximumVideoTime.ForeColor = System.Drawing.SystemColors.Control;
-            this.labelMaximumVideoTime.Location = new System.Drawing.Point(3, 266);
-            this.labelMaximumVideoTime.Name = "labelMaximumVideoTime";
-            this.labelMaximumVideoTime.Size = new System.Drawing.Size(113, 13);
-            this.labelMaximumVideoTime.TabIndex = 54;
-            this.labelMaximumVideoTime.Text = "Maximum Video Time: ";
+            this.labelMaxVideoTime.AutoSize = true;
+            this.labelMaxVideoTime.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelMaxVideoTime.Location = new System.Drawing.Point(3, 266);
+            this.labelMaxVideoTime.Name = "labelMaxVideoTime";
+            this.labelMaxVideoTime.Size = new System.Drawing.Size(113, 13);
+            this.labelMaxVideoTime.TabIndex = 54;
+            this.labelMaxVideoTime.Text = "Maximum Video Time: ";
             // 
             // labelMinVideoLoops
             // 
@@ -322,38 +352,38 @@
             this.labelMinVideoLoops.TabIndex = 53;
             this.labelMinVideoLoops.Text = "Minimum Video Loops: ";
             // 
-            // panel1
+            // panelFrequency
             // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.textBoxExactVideo);
-            this.panel1.Controls.Add(this.textBoxExactGIF);
-            this.panel1.Controls.Add(this.textBoxExactStatic);
-            this.panel1.Controls.Add(this.labelVideo);
-            this.panel1.Controls.Add(this.textBoxRelativeVideo);
-            this.panel1.Controls.Add(this.labelGIF);
-            this.panel1.Controls.Add(this.textBoxRelativeGIF);
-            this.panel1.Controls.Add(this.textBoxRelativeStatic);
-            this.panel1.Controls.Add(this.labelStatic);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.labelFrequency);
-            this.panel1.Location = new System.Drawing.Point(9, 98);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(269, 126);
-            this.panel1.TabIndex = 51;
+            this.panelFrequency.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
+            this.panelFrequency.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelFrequency.Controls.Add(this.labelFrequencySaveTip);
+            this.panelFrequency.Controls.Add(this.textBoxExactVideo);
+            this.panelFrequency.Controls.Add(this.textBoxExactGIF);
+            this.panelFrequency.Controls.Add(this.textBoxExactStatic);
+            this.panelFrequency.Controls.Add(this.labelVideo);
+            this.panelFrequency.Controls.Add(this.textBoxRelativeVideo);
+            this.panelFrequency.Controls.Add(this.labelGIF);
+            this.panelFrequency.Controls.Add(this.textBoxRelativeGIF);
+            this.panelFrequency.Controls.Add(this.textBoxRelativeStatic);
+            this.panelFrequency.Controls.Add(this.labelStatic);
+            this.panelFrequency.Controls.Add(this.labelExact);
+            this.panelFrequency.Controls.Add(this.labelRelative);
+            this.panelFrequency.Controls.Add(this.labelFrequency);
+            this.panelFrequency.Location = new System.Drawing.Point(9, 98);
+            this.panelFrequency.Name = "panelFrequency";
+            this.panelFrequency.Size = new System.Drawing.Size(269, 126);
+            this.panelFrequency.TabIndex = 51;
             // 
-            // label4
+            // labelFrequencySaveTip
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label4.Location = new System.Drawing.Point(3, 10);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(129, 12);
-            this.label4.TabIndex = 52;
-            this.label4.Text = "(Press Enter to save changes)";
+            this.labelFrequencySaveTip.AutoSize = true;
+            this.labelFrequencySaveTip.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFrequencySaveTip.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.labelFrequencySaveTip.Location = new System.Drawing.Point(3, 10);
+            this.labelFrequencySaveTip.Name = "labelFrequencySaveTip";
+            this.labelFrequencySaveTip.Size = new System.Drawing.Size(129, 12);
+            this.labelFrequencySaveTip.TabIndex = 52;
+            this.labelFrequencySaveTip.Text = "(Press Enter to save changes)";
             // 
             // textBoxExactVideo
             // 
@@ -457,27 +487,27 @@
             this.labelStatic.Text = "Static";
             this.labelStatic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label3
+            // labelExact
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label3.Location = new System.Drawing.Point(3, 94);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(39, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Exact";
+            this.labelExact.AutoSize = true;
+            this.labelExact.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelExact.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.labelExact.Location = new System.Drawing.Point(3, 94);
+            this.labelExact.Name = "labelExact";
+            this.labelExact.Size = new System.Drawing.Size(39, 13);
+            this.labelExact.TabIndex = 2;
+            this.labelExact.Text = "Exact";
             // 
-            // label2
+            // labelRelative
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label2.Location = new System.Drawing.Point(3, 59);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(54, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Relative";
+            this.labelRelative.AutoSize = true;
+            this.labelRelative.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelRelative.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.labelRelative.Location = new System.Drawing.Point(3, 59);
+            this.labelRelative.Name = "labelRelative";
+            this.labelRelative.Size = new System.Drawing.Size(54, 13);
+            this.labelRelative.TabIndex = 1;
+            this.labelRelative.Text = "Relative";
             // 
             // labelFrequency
             // 
@@ -494,7 +524,7 @@
             // 
             this.tabPageGlobalOptions.BackColor = System.Drawing.Color.Black;
             this.tabPageGlobalOptions.Controls.Add(this.labelDefaultTheme);
-            this.tabPageGlobalOptions.Controls.Add(this.label1);
+            this.tabPageGlobalOptions.Controls.Add(this.labelDefaultThemeAutoSaveTip);
             this.tabPageGlobalOptions.Controls.Add(this.labelDefaultThemePath);
             this.tabPageGlobalOptions.Controls.Add(this.checkBoxEnableGlobalHotkey);
             this.tabPageGlobalOptions.Controls.Add(this.buttonSetDefaultTheme);
@@ -505,30 +535,6 @@
             this.tabPageGlobalOptions.Size = new System.Drawing.Size(477, 423);
             this.tabPageGlobalOptions.TabIndex = 1;
             this.tabPageGlobalOptions.Text = "Global Options";
-            // 
-            // textBox1
-            // 
-            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.ForeColor = System.Drawing.SystemColors.Window;
-            this.textBox1.Location = new System.Drawing.Point(125, 235);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(45, 20);
-            this.textBox1.TabIndex = 60;
-            this.textBox1.Text = "0";
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // textBox2
-            // 
-            this.textBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox2.ForeColor = System.Drawing.SystemColors.Window;
-            this.textBox2.Location = new System.Drawing.Point(125, 264);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(45, 20);
-            this.textBox2.TabIndex = 61;
-            this.textBox2.Text = "0";
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // OptionsForm
             // 
@@ -542,8 +548,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPageThemeOptions.ResumeLayout(false);
             this.tabPageThemeOptions.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.panelFrequency.ResumeLayout(false);
+            this.panelFrequency.PerformLayout();
             this.tabPageGlobalOptions.ResumeLayout(false);
             this.tabPageGlobalOptions.PerformLayout();
             this.ResumeLayout(false);
@@ -562,16 +568,16 @@
         private System.Windows.Forms.Button buttonSetDefaultTheme;
         private System.Windows.Forms.Button buttonLoadDefaultTheme;
         private System.Windows.Forms.CheckBox checkBoxEnableGlobalHotkey;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelDefaultThemeAutoSaveTip;
         private System.Windows.Forms.CheckBox checkBoxWeightedRanks;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageThemeOptions;
         private System.Windows.Forms.TabPage tabPageGlobalOptions;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelFrequency;
         private System.Windows.Forms.Label labelFrequency;
         private System.Windows.Forms.Label labelStatic;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelExact;
+        private System.Windows.Forms.Label labelRelative;
         private System.Windows.Forms.TextBox textBoxRelativeGIF;
         private System.Windows.Forms.TextBox textBoxRelativeStatic;
         private System.Windows.Forms.TextBox textBoxExactVideo;
@@ -580,16 +586,16 @@
         private System.Windows.Forms.Label labelVideo;
         private System.Windows.Forms.TextBox textBoxRelativeVideo;
         private System.Windows.Forms.Label labelGIF;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label labelMaximumVideoTime;
+        private System.Windows.Forms.Label labelFrequencySaveTip;
+        private System.Windows.Forms.Label labelMaxVideoTime;
         private System.Windows.Forms.Label labelMinVideoLoops;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label labelMuteAudioIf;
         private System.Windows.Forms.CheckBox checkBoxAudioPlaying;
         private System.Windows.Forms.CheckBox checkBoxApplicationMaximized;
         private System.Windows.Forms.CheckBox checkBoxApplicationFocused;
         private System.Windows.Forms.ToolTip toolTipEnableDetectionOfInactiveImages;
         private System.Windows.Forms.Button buttonsync;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxMaximumVideoTime;
+        private System.Windows.Forms.TextBox textBoxMinimumVideoLoops;
     }
 }

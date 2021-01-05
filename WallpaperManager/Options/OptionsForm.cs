@@ -25,6 +25,11 @@ namespace WallpaperManager.Options
             this.FormClosed += SaveOptionsData;
 
             toolTipEnableDetectionOfInactiveImages.SetToolTip(checkBoxEnableDetectionOfInactiveImages, "Allows inactive images to be detected by the image selector");
+            new ToolTip(this.components).SetToolTip(labelMinVideoLoops, "Sets the minimum number of times a video will loop before changing wallpapers." +
+                                                                        "\nSet to 0 to disable");
+            new ToolTip(this.components).SetToolTip(labelMaxVideoTime, "Sets the maximum amount of time before a video awaiting a loop (Set by Minimum Video Loops) will be forced to change" +
+                                                                       "\nSet to 0 to disable" +
+                                                                       "\nMeasured in minutes");
 
             ThemeOptions = OptionsData.ThemeOptions;
 
@@ -40,9 +45,12 @@ namespace WallpaperManager.Options
             checkBoxEnableDetectionOfInactiveImages.Checked = ThemeOptions.EnableDetectionOfInactiveImages;
             checkBoxWeightedRanks.Checked = ThemeOptions.WeightedRanks;
 
-            checkBoxAudioPlaying.Checked = ThemeOptions.MuteIfAudioPlaying;
-            checkBoxApplicationMaximized.Checked = ThemeOptions.MuteIfApplicationMaximized;
-            checkBoxApplicationFocused.Checked = ThemeOptions.MuteIfApplicationFocused;
+            //--Video Options--
+            checkBoxAudioPlaying.Checked = ThemeOptions.VideoOptions.MuteIfAudioPlaying;
+            checkBoxApplicationMaximized.Checked = ThemeOptions.VideoOptions.MuteIfApplicationMaximized;
+            checkBoxApplicationFocused.Checked = ThemeOptions.VideoOptions.MuteIfApplicationFocused;
+            textBoxMinimumVideoLoops.Text = ThemeOptions.VideoOptions.MinimumVideoLoops.ToString();
+            textBoxMaximumVideoTime.Text = ThemeOptions.VideoOptions.MaximumVideoTime.ToString();
 
             //-----Global Settings-----
             if (File.Exists(OptionsData.DefaultTheme))
@@ -71,9 +79,12 @@ namespace WallpaperManager.Options
             bool updateRankPercentiles = ThemeOptions.WeightedRanks != checkBoxWeightedRanks.Checked;
             ThemeOptions.WeightedRanks = checkBoxWeightedRanks.Checked;
 
-            ThemeOptions.MuteIfAudioPlaying = checkBoxAudioPlaying.Checked;
-            ThemeOptions.MuteIfApplicationMaximized = checkBoxApplicationMaximized.Checked;
-            ThemeOptions.MuteIfApplicationFocused = checkBoxApplicationFocused.Checked;
+            //--Video Options--
+            ThemeOptions.VideoOptions.MuteIfAudioPlaying = checkBoxAudioPlaying.Checked;
+            ThemeOptions.VideoOptions.MuteIfApplicationMaximized = checkBoxApplicationMaximized.Checked;
+            ThemeOptions.VideoOptions.MuteIfApplicationFocused = checkBoxApplicationFocused.Checked;
+            SetMinimumVideoLoops(); // lost focus won't trigger on closing the window
+            SetMaximumVideoTime(); // lost focus won't trigger on closing the window
 
             // note that frequency settings had their opportunity to be changed throughout the form's lifespan
 
@@ -153,6 +164,72 @@ namespace WallpaperManager.Options
         private void buttonLoadDefaultTheme_Click(object sender, EventArgs e)
         {
             WallpaperData.LoadDefaultTheme();
+        }
+
+        private void textBoxMinimumVideoLoops_LostFocus(object sender, EventArgs e) => SetMinimumVideoLoops();
+
+        private void textBoxMinimumVideoLoops_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SetMinimumVideoLoops();
+                e.SuppressKeyPress = true; // prevents ding sound
+            }
+        }
+
+        private void textBoxMinimumVideoLoops_Click(object sender, EventArgs e) => textBoxMinimumVideoLoops.SelectAll();
+
+        private void SetMinimumVideoLoops()
+        {
+            try
+            {
+                ApplyMinimumVideoLoops((int)float.Parse(textBoxMinimumVideoLoops.Text)); // the parse & cast allows decimal to be valid but they'll still be adjusted
+            }
+            catch
+            {
+                // invalid parameter entered, reset text
+                ApplyMinimumVideoLoops(ThemeOptions.VideoOptions.MinimumVideoLoops);
+            }
+
+            void ApplyMinimumVideoLoops(int value)
+            {
+                if (value < 0) value = 0;
+                textBoxMinimumVideoLoops.Text = value.ToString();
+                ThemeOptions.VideoOptions.MinimumVideoLoops = value;
+            }
+        }
+
+        private void textBoxMaximumVideoTime_LostFocus(object sender, EventArgs e) => SetMaximumVideoTime();
+
+        private void textBoxMaximumVideoTime_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SetMaximumVideoTime();
+                e.SuppressKeyPress = true; // prevents ding sound
+            }
+        }
+
+        private void textBoxMaximumVideoTime_Click(object sender, EventArgs e) => textBoxMaximumVideoTime.SelectAll();
+
+        private void SetMaximumVideoTime()
+        {
+            try
+            {
+                ApplyMaximumVideoTime(float.Parse(textBoxMaximumVideoTime.Text));
+            }
+            catch
+            {
+                // invalid parameter entered, reset text
+                ApplyMaximumVideoTime(ThemeOptions.VideoOptions.MaximumVideoTime);
+            }
+
+            void ApplyMaximumVideoTime(float value)
+            {
+                if (value < 0) value = 0;
+                textBoxMaximumVideoTime.Text = value.ToString();
+                ThemeOptions.VideoOptions.MaximumVideoTime = value;
+            }
         }
 
         #region Frequency
@@ -241,18 +318,18 @@ namespace WallpaperManager.Options
             switch (imageType)
             {
                 case ImageType.Static:
-                    textBoxRelativeStatic.Text = ThemeOptions.RelativeFrequency[ImageType.Static] * 100 + "%";
-                    textBoxExactStatic.Text = ThemeOptions.ExactFrequency[ImageType.Static] * 100 + "%";
+                    textBoxRelativeStatic.Text = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] * 100 + "%";
+                    textBoxExactStatic.Text = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] * 100 + "%";
                     break;
 
                 case ImageType.GIF:
-                    textBoxRelativeGIF.Text = ThemeOptions.RelativeFrequency[ImageType.GIF] * 100 + "%";
-                    textBoxExactGIF.Text = ThemeOptions.ExactFrequency[ImageType.GIF] * 100 + "%";
+                    textBoxRelativeGIF.Text = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] * 100 + "%";
+                    textBoxExactGIF.Text = ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] * 100 + "%";
                     break;
 
                 case ImageType.Video:
-                    textBoxRelativeVideo.Text = ThemeOptions.RelativeFrequency[ImageType.Video] * 100 + "%";
-                    textBoxExactVideo.Text = ThemeOptions.ExactFrequency[ImageType.Video] * 100 + "%";
+                    textBoxRelativeVideo.Text = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] * 100 + "%";
+                    textBoxExactVideo.Text = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] * 100 + "%";
                     break;
             }
         }

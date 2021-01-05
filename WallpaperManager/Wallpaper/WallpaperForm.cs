@@ -21,6 +21,10 @@ namespace WallpaperManager.Wallpaper
         private MpvPlayer player;
         private string activeImagePath;
 
+        public int Loops { get; private set; }
+        public Stopwatch WallpaperUptime { get; private set; } = new Stopwatch();
+        public bool IsPlayingVideo { get; private set; }
+
         // TODO Check why this is claiming that it's functioning on a different thread yet no thread is made when calling this? Finding this out will determine if the Invokes remain
         public WallpaperForm(Screen monitor, IntPtr workerw)
         {
@@ -50,6 +54,7 @@ namespace WallpaperManager.Wallpaper
                         AutoPlay = true,
                         Loop = true
                     };
+                    player.MediaEndedSeeking += (sender, args) => Loops++;
 
                     ResetWallpaperStyle();
 
@@ -88,6 +93,9 @@ namespace WallpaperManager.Wallpaper
         // TODO style readjustment when changing wallpapers by *locking* the previous wallpaper in place
         public void SetWallpaper(string imageLocation)
         {
+            Loops = 0;
+            WallpaperUptime.Stop();
+
             //! The below conditions were removed but I may consider re-adding this in the future when monitor-specific settings are added, although other methods of handling
             //! not changing a monitor's wallpaper would probably be better than this
             //!if (imageLocation == null) return; //? Under certain conditions a wallpaper won't be selected, this prevents the program from crashing over this
@@ -107,6 +115,8 @@ namespace WallpaperManager.Wallpaper
             {
                 if (!WallpaperManagerTools.IsSupportedVideoType(imageLocation))
                 {
+                    IsPlayingVideo = false;
+
                     player.Stop();
                     panelWallpaper.Visible = false;
                     panelWallpaper.Enabled = false;
@@ -117,17 +127,20 @@ namespace WallpaperManager.Wallpaper
                 }
                 else
                 {
+                    IsPlayingVideo = true;
+                    WallpaperUptime.Restart();
+
                     pictureBoxWallpaper.Visible = false;
                     pictureBoxWallpaper.Enabled = false;
 
                     panelWallpaper.Enabled = true;
                     panelWallpaper.Visible = true;
                     player.Reload(imageLocation);
-                    
+
                     //xDebug.WriteLine(imageLocation);
-                    WallpaperData.VideoSettings VideoSettings = WallpaperData.GetImageData(imageLocation).VideoSettings;
-                    player.Volume = AudioManager.IsWallpapersMuted ? 0 : VideoSettings.Volume;
-                    //?player.Speed = VideoSettings.playbackSpeed;
+                    WallpaperData.VideoSettings videoSettings = WallpaperData.GetImageData(imageLocation).VideoSettings;
+                    player.Volume = AudioManager.IsWallpapersMuted ? 0 : videoSettings.Volume;
+                    player.Speed = videoSettings.PlaybackSpeed;
 
                     activeImagePath = imageLocation;
                 }
@@ -289,6 +302,11 @@ namespace WallpaperManager.Wallpaper
             {
                 player.Volume = WallpaperData.GetImageData(activeImagePath).VideoSettings.Volume;
             }
+        }
+
+        public void AwaitingEnd(int loops, float maxMilliseconds, Action<int> endEvent)
+        {
+
         }
     }
 }

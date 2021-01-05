@@ -20,6 +20,7 @@ using SharpDX.DXGI;
 using System.Runtime.InteropServices;
 using LanceTools;
 using WallpaperManager.Controls;
+using WallpaperManager.Options;
 
 namespace WallpaperManager
 {
@@ -87,13 +88,13 @@ namespace WallpaperManager
 
         private void IntervalElapsed(object sender, ElapsedEventArgs e)
         {
-            //? Without the BeginInvoke similar timers will be gauranteed to de-sync due to latency
+            //? Without the BeginInvoke similar timers will be guaranteed to de-sync due to latency (I think...)
             int index = timers.IndexOf(sender as Timer);
 
             if (!DisplaySettingsSynced)
             {
                 timerStopWatches[index].Restart();
-                this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(true, index); });
+                IntervalWallpaperSetter(index);
             }
             else if (index == 0)
             {
@@ -106,8 +107,27 @@ namespace WallpaperManager
                     timers[i].Start();
 
                     int indexForInvoke = i; // without doing this, i may change within the outside of the invoke, causing errors
-                    this.BeginInvoke((MethodInvoker)delegate { NextWallpaper(true, indexForInvoke); });
+                    IntervalWallpaperSetter(indexForInvoke);
                 }
+            }
+        }
+
+        private void IntervalWallpaperSetter(int index)
+        {
+            if (wallpapers[index].IsPlayingVideo)
+            {
+                Debug.WriteLine("Loops: " + wallpapers[index].Loops + " | Loop Min : " + OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops);
+                Debug.WriteLine("Timer: " + wallpapers[index].WallpaperUptime.ElapsedMilliseconds + " | Timer Max: " + OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000);
+                if (wallpapers[index].Loops >= OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops ||
+                    (wallpapers[index].WallpaperUptime.ElapsedMilliseconds >= OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000 && // 1 second = 1000 milliseconds
+                     OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime > 0))
+                {
+                    this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(true, index); });
+                }
+            }
+            else
+            {
+                this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(true, index); });
             }
         }
 
