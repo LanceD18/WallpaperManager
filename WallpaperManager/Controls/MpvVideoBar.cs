@@ -25,6 +25,7 @@ namespace WallpaperManager.Controls
 
         private bool playing = true;
         private bool dragging;
+        private bool setDraggingToFalse;
         private bool pausedByDrag;
         private int lastDraggedValue;
 
@@ -44,16 +45,16 @@ namespace WallpaperManager.Controls
 
             trackBarPosition.MouseMove += (s, e) =>
             {
-                if (dragging) trackBarPosition.SetValueToMousePosition(e);
+                if (!setDraggingToFalse) // while this is true this means that the mouse is no longer being held down
+                {
+                    if (dragging) trackBarPosition.SetValueToMousePosition(e);
+                }
             };
 
             trackBarPosition.MouseUp += (s, e) =>
             {
-                dragging = false;
-                mpvPlayer.Resume();
-
-                //double dblValue = (Convert.ToDouble(e.X) / Convert.ToDouble(trackBarPosition.Width)) * (trackBarPosition.Maximum - trackBarPosition.Minimum);
-                //trackBarPosition.Value = Convert.ToInt32(dblValue);
+                setDraggingToFalse = true; // this delays the ability to tell the program that dragging is false, preventing quick clicks/drags from being unidentified
+                if (playing) mpvPlayer.Resume();
             };
         }
 
@@ -134,7 +135,10 @@ namespace WallpaperManager.Controls
                         mpvPlayer.Resume();
                     }
 
-                    trackBarPosition.Value = (int) mpvPlayer.Position.Ticks;
+                    if (playing && !pausedByDrag)
+                    {
+                        trackBarPosition.Value = (int) mpvPlayer.Position.Ticks;
+                    }
                 }
                 else
                 {
@@ -147,12 +151,20 @@ namespace WallpaperManager.Controls
                     int positionValue = trackBarPosition.Value;
                     if (lastDraggedValue != positionValue) // no need to update this when it's already there
                     {
-                        Task.Run(() => mpvPlayer.Position = new TimeSpan(positionValue)); //! this is incredibly resource intensive, ensure that this is not called often
+                        mpvPlayer.Position = new TimeSpan(positionValue);  //! this is incredibly resource intensive, ensure that this is not called often
                         lastDraggedValue = trackBarPosition.Value;
                     }
                 }
                 trackBarPosition.ResumeLayout();
+
+                if (setDraggingToFalse)
+                {
+                    dragging = false; // this delays the ability to tell the program that dragging is false, preventing quick clicks/drags from being unidentified
+                    setDraggingToFalse = false;
+                }
             });
+
+            //? Don't forget that the above is a BeginInvoke so anything you expect to happen after it may not occur
         }
 
         private void buttonPlayPause_Click(object sender, EventArgs e)
