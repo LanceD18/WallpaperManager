@@ -116,18 +116,18 @@ namespace WallpaperManager
         {
             if (wallpapers[index].IsPlayingVideo)
             {
-                Debug.WriteLine("Loops: " + wallpapers[index].Loops + " | Loop Min : " + OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops);
-                Debug.WriteLine("Timer: " + wallpapers[index].WallpaperUptime.ElapsedMilliseconds + " | Timer Max: " + OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000);
+                //xDebug.WriteLine("Loops: " + wallpapers[index].Loops + " | Loop Min : " + OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops);
+                //xDebug.WriteLine("Timer: " + wallpapers[index].WallpaperUptime.ElapsedMilliseconds + " | Timer Max: " + OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000);
                 if (wallpapers[index].Loops >= OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops ||
                     (wallpapers[index].WallpaperUptime.ElapsedMilliseconds >= OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000 && // 1 second = 1000 milliseconds
                      OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime > 0))
                 {
-                    this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(true, index); });
+                    this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(index, true); });
                 }
             }
             else
             {
-                this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(true, index); });
+                this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(index, true); });
             }
         }
 
@@ -211,10 +211,10 @@ namespace WallpaperManager
 
         public void ResetTimer(int index)
         {
-            Debug.WriteLine("Resetting timer");
+            //xDebug.WriteLine("Resetting timer");
             if (timerMaxIntervals[index] != 0) // if this equals 0 then there is no timer
             {
-                Debug.WriteLine("Timer Set");
+                //xDebug.WriteLine("Timer Set");
                 timers[index].Interval = timerMaxIntervals[index];
                 timerStopWatches[index].Restart();
             }

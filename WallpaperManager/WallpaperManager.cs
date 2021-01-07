@@ -24,6 +24,7 @@ using Vlc.DotNet.Forms;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.Controls;
 using WallpaperManager.Options;
+using WallpaperManager.Pathing;
 using WallpaperManager.Tagging;
 using WallpaperManager.Wallpaper;
 
@@ -79,7 +80,7 @@ namespace WallpaperManager
             InitializeImageSelector();
             InitializeImageInspector();
 
-            PathData.Validate(); // ensures that all needed folders exist
+            WallpaperPathing.Validate(); // ensures that all needed folders exist
             WallpaperData.Initialize(false); // loads in all necessary data
             OptionsData.Initialize();
 
@@ -87,6 +88,11 @@ namespace WallpaperManager
             InitializeTimer();
             InitializeKeys();
             InitializeNotifyIcon();
+
+            new ToolTip(components).SetToolTip(buttonNameImage, "Renames images based on their given tags (If the image has any tags)");
+            new ToolTip(components).SetToolTip(buttonMoveImage, "If 'Allow Tag-Based Renaming for Moved Images' is selected, every moved image will be" +
+                                                                "\nrenamed based on their given tags (If the image has any tags)" +
+                                                                "\nThe default behavior will directly move the image as if you were to normally do so");
         }
 
         private void OnClosing(object sender, EventArgs e)
@@ -201,7 +207,7 @@ namespace WallpaperManager
         {
             if (OptionsData.EnableDefaultThemeHotkey)
             {
-                WallpaperData.SaveData(PathData.ActiveWallpaperTheme);
+                WallpaperData.SaveData(WallpaperPathing.ActiveWallpaperTheme);
                 WallpaperData.LoadDefaultTheme();
             }
         }

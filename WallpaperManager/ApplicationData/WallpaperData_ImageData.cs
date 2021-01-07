@@ -177,8 +177,12 @@ namespace WallpaperManager.ApplicationData
 
             public void UpdatePath(string newPath)
             {
+                RemoveImage(Path);
+
                 Path = newPath;
                 PathFolder = new FileInfo(Path).Directory.FullName;
+
+                AddImage(this);
             }
 
             public void AddTag(CategoryData category, string tag) => AddTag(TaggingInfo.GetTag(category, tag));
@@ -318,6 +322,10 @@ namespace WallpaperManager.ApplicationData
                 return orderedTags;
             }
 
+            /// <summary>
+            /// Generates a name based on an image's tags. Note that spaces will be converted into _
+            /// </summary>
+            /// <returns></returns>
             public string GetTaggedName()
             {
                 string taggedName = "";
@@ -351,7 +359,7 @@ namespace WallpaperManager.ApplicationData
                     }
                 }
 
-                return taggedName;
+                return taggedName.Replace(' ', '_');
             }
 
             public bool ToggleTagNamingException(string tag)

@@ -24,12 +24,14 @@ namespace WallpaperManager.Options
             InitializeComponent();
             this.FormClosed += SaveOptionsData;
 
+            new ToolTip(this.components).SetToolTip(checkBoxHigherRankedImagesOnLargerDisplays, "This is only usable while wallpapers are synced");
             toolTipEnableDetectionOfInactiveImages.SetToolTip(checkBoxEnableDetectionOfInactiveImages, "Allows inactive images to be detected by the image selector");
             new ToolTip(this.components).SetToolTip(labelMinVideoLoops, "Sets the minimum number of times a video will loop before changing wallpapers." +
                                                                         "\nSet to 0 to disable");
             new ToolTip(this.components).SetToolTip(labelMaxVideoTime, "Sets the maximum amount of time before a video awaiting a loop (Set by Minimum Video Loops) will be forced to change" +
                                                                        "\nSet to 0 to disable" +
                                                                        "\nMeasured in minutes");
+            new ToolTip(components).SetToolTip(checkBoxAllowTagNamingMoved, "Allows moved images to also be renamed upon moving to a new folder, if they have any tags");
 
             ThemeOptions = OptionsData.ThemeOptions;
 
@@ -44,8 +46,13 @@ namespace WallpaperManager.Options
             checkBoxHigherRankedImagesOnLargerDisplays.Checked = ThemeOptions.HigherRankedImagesOnLargerDisplays;
             checkBoxEnableDetectionOfInactiveImages.Checked = ThemeOptions.EnableDetectionOfInactiveImages;
             checkBoxWeightedRanks.Checked = ThemeOptions.WeightedRanks;
+            checkBoxAllowTagNamingMoved.Checked = ThemeOptions.AllowTagBasedRenamingForMovedImages;
 
-            //--Video Options--
+            checkBoxExcludeStatic.Checked = ThemeOptions.ExcludeRenamingStatic;
+            checkBoxExcludeGif.Checked = ThemeOptions.ExcludeRenamingGif;
+            checkBoxExcludeVideo.Checked = ThemeOptions.ExcludeRenamingVideo;
+
+            //-----[Theme Settings] Video Options-----
             checkBoxAudioPlaying.Checked = ThemeOptions.VideoOptions.MuteIfAudioPlaying;
             checkBoxApplicationMaximized.Checked = ThemeOptions.VideoOptions.MuteIfApplicationMaximized;
             checkBoxApplicationFocused.Checked = ThemeOptions.VideoOptions.MuteIfApplicationFocused;
@@ -75,6 +82,11 @@ namespace WallpaperManager.Options
             ThemeOptions.LargerImagesOnLargerDisplays = checkBoxLargerImagesOnLargerDisplays.Checked;
             ThemeOptions.HigherRankedImagesOnLargerDisplays = checkBoxHigherRankedImagesOnLargerDisplays.Checked;
             ThemeOptions.EnableDetectionOfInactiveImages = checkBoxEnableDetectionOfInactiveImages.Checked;
+            ThemeOptions.AllowTagBasedRenamingForMovedImages = checkBoxAllowTagNamingMoved.Checked;
+
+            ThemeOptions.ExcludeRenamingStatic = checkBoxExcludeStatic.Checked;
+            ThemeOptions.ExcludeRenamingGif = checkBoxExcludeGif.Checked;
+            ThemeOptions.ExcludeRenamingVideo = checkBoxExcludeVideo.Checked;
 
             bool updateRankPercentiles = ThemeOptions.WeightedRanks != checkBoxWeightedRanks.Checked;
             ThemeOptions.WeightedRanks = checkBoxWeightedRanks.Checked;
@@ -318,18 +330,18 @@ namespace WallpaperManager.Options
             switch (imageType)
             {
                 case ImageType.Static:
-                    textBoxRelativeStatic.Text = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] * 100 + "%";
-                    textBoxExactStatic.Text = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Static] * 100 + "%";
+                    textBoxRelativeStatic.Text = ThemeOptions.RelativeFrequency[ImageType.Static] * 100 + "%";
+                    textBoxExactStatic.Text = ThemeOptions.ExactFrequency[ImageType.Static] * 100 + "%";
                     break;
 
                 case ImageType.GIF:
-                    textBoxRelativeGIF.Text = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] * 100 + "%";
-                    textBoxExactGIF.Text = ThemeOptions.VideoOptions.ExactFrequency[ImageType.GIF] * 100 + "%";
+                    textBoxRelativeGIF.Text = ThemeOptions.RelativeFrequency[ImageType.GIF] * 100 + "%";
+                    textBoxExactGIF.Text = ThemeOptions.ExactFrequency[ImageType.GIF] * 100 + "%";
                     break;
 
                 case ImageType.Video:
-                    textBoxRelativeVideo.Text = ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] * 100 + "%";
-                    textBoxExactVideo.Text = ThemeOptions.VideoOptions.ExactFrequency[ImageType.Video] * 100 + "%";
+                    textBoxRelativeVideo.Text = ThemeOptions.RelativeFrequency[ImageType.Video] * 100 + "%";
+                    textBoxExactVideo.Text = ThemeOptions.ExactFrequency[ImageType.Video] * 100 + "%";
                     break;
             }
         }

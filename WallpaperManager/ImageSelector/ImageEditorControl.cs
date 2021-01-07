@@ -16,29 +16,29 @@ namespace WallpaperManager.ImageSelector
 {
     public partial class ImageEditorControl : UserControl
     {
-        private WallpaperData.ImageData imageData;
+        private WallpaperData.ImageData ImageData;
 
         public ImageEditorControl(WallpaperData.ImageData imageData)
         {
             InitializeComponent();
 
-            this.imageData = imageData;
+            this.ImageData = imageData;
 
             SuspendLayout();
-            buttonSelectImage.Click += (o, i) => { WallpaperData.WallpaperManagerForm.UpdateSelectedImage(imageData); };
+            buttonSelectImage.Click += (o, i) => { WallpaperData.WallpaperManagerForm.UpdateSelectedImage(ImageData); };
 
             // Rank Editor Lost Focus Event (Updates rank upon losing focus of the control)
-            textBoxRankEditor.Text = imageData.Rank.ToString();
+            textBoxRankEditor.Text = ImageData.Rank.ToString();
             textBoxRankEditor.LostFocus += (o, i) =>
             {
                 try
                 {
-                    imageData.Rank = int.Parse(textBoxRankEditor.Text);
-                    textBoxRankEditor.Text = imageData.Rank.ToString();
+                    ImageData.Rank = int.Parse(textBoxRankEditor.Text);
+                    textBoxRankEditor.Text = ImageData.Rank.ToString();
                 }
                 catch
                 {
-                    textBoxRankEditor.Text = imageData.Rank.ToString();
+                    textBoxRankEditor.Text = ImageData.Rank.ToString();
                 }
             };
 
@@ -49,43 +49,37 @@ namespace WallpaperManager.ImageSelector
                 {
                     try
                     {
-                        imageData.Rank = int.Parse(textBoxRankEditor.Text);
-                        textBoxRankEditor.Text = imageData.Rank.ToString();
+                        ImageData.Rank = int.Parse(textBoxRankEditor.Text);
+                        textBoxRankEditor.Text = ImageData.Rank.ToString();
                     }
                     catch
                     {
-                        textBoxRankEditor.Text = imageData.Rank.ToString();
+                        textBoxRankEditor.Text = ImageData.Rank.ToString();
                     }
 
                     i.SuppressKeyPress = true; // prevents windows 'ding' sound
                 }
             };
 
-            buttonMinus.Click += (o, i) => { imageData.Rank--; textBoxRankEditor.Text = imageData.Rank.ToString(); };
-            buttonPlus.Click += (o, i) => { imageData.Rank++; textBoxRankEditor.Text = imageData.Rank.ToString(); };
+            buttonMinus.Click += (o, i) => { ImageData.Rank--; textBoxRankEditor.Text = ImageData.Rank.ToString(); };
+            buttonPlus.Click += (o, i) => { ImageData.Rank++; textBoxRankEditor.Text = ImageData.Rank.ToString(); };
 
-            WallpaperData.WallpaperManagerForm.LoadImage(this, imageData.Path);
+            WallpaperData.WallpaperManagerForm.LoadImage(this, ImageData.Path); //? calls back to SetBackgroundImage after getting the needed info to set the background
 
-            if (!imageData.Active) // if EnableDetectionOfInactiveImages is true, this'll show which images are disabled
+            if (!ImageData.Active) // if EnableDetectionOfInactiveImages is true, this'll show which images are disabled
             {
                 buttonSelectImage.FlatAppearance.BorderColor = Color.Red;
             }
             ResumeLayout();
         }
 
-        public void SetBackgroundImage(Image image)
-        {
-            buttonSelectImage.BackgroundImage = image;
-        }
+        public void SetBackgroundImage(Image image) => buttonSelectImage.BackgroundImage = image;
 
-        public void UpdateRank()
-        {
-            textBoxRankEditor.Text = imageData.Rank.ToString();
-        }
+        public void UpdateRank() => textBoxRankEditor.Text = ImageData.Rank.ToString();
 
         private void buttonEditImage_Click(object sender, EventArgs e)
         {
-            using (ImageEditorForm f = new ImageEditorForm(imageData))
+            using (ImageEditorForm f = new ImageEditorForm(ImageData))
             {
                 f.ShowDialog();
             }

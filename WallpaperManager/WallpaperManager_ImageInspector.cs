@@ -19,6 +19,7 @@ using Vlc.DotNet.Forms;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
 using WallpaperManager.Controls;
+using WallpaperManager.Pathing;
 
 namespace WallpaperManager
 {
@@ -175,7 +176,7 @@ namespace WallpaperManager
             panelImageInspector.SuspendLayout();
             buttonInspectImage.Text = "Close Inspector";
 
-            if (!WallpaperData.GetAllImagesOfType(ImageType.Video).Contains(InspectedImage)) // display image
+            if (!WallpaperManagerTools.IsSupportedVideoType(InspectedImage)) // display image
             {
                 inspector_panelVideo.Visible = false;
                 inspector_panelVideo.Enabled = false;
@@ -183,6 +184,8 @@ namespace WallpaperManager
                 inspector_pictureBoxImage.Enabled = true;
                 inspector_pictureBoxImage.Visible = true;
                 inspector_pictureBoxImage.ImageLocation = InspectedImage;
+
+                inspector_pictureBoxImage.BringToFront(); //? despite disabling the other control, this still needs to be called
             }
             else // display video
             {
@@ -206,6 +209,8 @@ namespace WallpaperManager
                 //vlcControl1.SetMedia(new FileInfo("F:\\Documents\\Game Notes\\Main Theme\\Secondary Theme\\video0_7.mp4"), mediaOptions);
                 inspector_VlcControl.Play(new FileInfo(inspectedImage), mediaOptions);
                 */
+
+                inspector_panelVideo.BringToFront(); //? this doesn't need to be called for some reason, but for consistency with the above i'll keep it here
             }
 
             inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(InspectedImage).Rank.ToString();
@@ -237,9 +242,9 @@ namespace WallpaperManager
                 inspector_mpvVideoBar.GetVolume(),
                 inspector_mpvVideoBar.GetSpeed());
 
-            for (var i = 0; i < PathData.ActiveWallpapers.Length; i++)
+            for (var i = 0; i < WallpaperPathing.ActiveWallpapers.Length; i++)
             {
-                if (PathData.ActiveWallpapers[i] == InspectedImage) // this wallpaper is currently active, change its volume
+                if (WallpaperPathing.ActiveWallpapers[i] == InspectedImage) // this wallpaper is currently active, change its volume
                 {
                     wallpapers[i].SetVolume(inspector_mpvVideoBar.GetVolume());
                 }

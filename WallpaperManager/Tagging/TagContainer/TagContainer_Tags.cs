@@ -47,8 +47,8 @@ namespace WallpaperManager.Tagging
                 case TagFormStyle.Editor:
                     tagButton.Click += ButtonTagEditor;
                     tagButton.MouseDown += ParentTagTabControl.tagContainerButton_MouseDown;
-                    tagButton.MouseUp += ParentTagTabControl.tagContainerButton_MouseUp;
                     tagButton.MouseMove += ParentTagTabControl.tagContainerButton_MouseMove;
+                    tagButton.MouseUp += ParentTagTabControl.tagContainerButton_MouseUp;
                     tagButton.DragDrop += ParentTagTabControl.tagContainerButton_DragDrop;
                     break;
 

@@ -44,7 +44,7 @@ namespace WallpaperManager.ImageSelector
                 axWindowsMediaPlayer.settings.autoStart = true;
                 axWindowsMediaPlayer.settings.setMode("loop", true);
                 axWindowsMediaPlayer.URL = imageData.Path;
-                axWindowsMediaPlayer.settings.volume = imageData.VideoSettings.Volume;
+                axWindowsMediaPlayer.settings.volume = imageData.VideoSettings.Volume / 2; //? windows media player supports double the volume of mpv
                 axWindowsMediaPlayer.settings.rate = imageData.VideoSettings.PlaybackSpeed;
             }
 

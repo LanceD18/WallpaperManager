@@ -84,7 +84,7 @@ namespace WallpaperManager.ApplicationData
 
         // File Data
         #region File Data
-        public static ImageData AddImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
+        public static ImageData CreateImage(string path, int rank = 0, bool active = false, Dictionary<string, HashSet<string>> tags = null)
         {
             tags = tags ?? new Dictionary<string, HashSet<string>>(); // if null, the right-hand side of ?? will be called
             return AddImage(new ImageData(path, rank, active, tags));
@@ -492,7 +492,7 @@ namespace WallpaperManager.ApplicationData
                 }
                 else
                 {
-                    AddImage(path); // inserts newly added images into the theme, their active state will be determined in the constructor
+                    CreateImage(path); // inserts newly added images into the theme, their active state will be determined in the constructor
                 }
             }
         }
@@ -567,11 +567,14 @@ namespace WallpaperManager.ApplicationData
                 {
                     if (!FileData.ContainsKey(imagePath))
                     {
-                        AddImage(imagePath);
+                        CreateImage(imagePath);
                     }
                 }
             }
         }
+
+        public static bool ThemeContainsFolder(string folderPath) => ImageFolders.ContainsKey(folderPath);
+
         #endregion Image Folders
 
         // Misc

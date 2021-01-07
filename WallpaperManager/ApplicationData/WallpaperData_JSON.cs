@@ -10,6 +10,7 @@ using System.Xml;
 using Newtonsoft.Json;
 using WallpaperManager.Controls;
 using WallpaperManager.Options;
+using WallpaperManager.Pathing;
 using WallpaperManager.Tagging;
 using Formatting = Newtonsoft.Json.Formatting;
 
@@ -87,7 +88,7 @@ namespace WallpaperManager.ApplicationData
                     new JsonSerializer { Formatting = Formatting.Indented }.Serialize(file, jsonWallpaperData);
                 }
 
-                PathData.ActiveWallpaperTheme = path;
+                WallpaperPathing.ActiveWallpaperTheme = path;
             }
             else
             {
@@ -131,7 +132,7 @@ namespace WallpaperManager.ApplicationData
                 }
 
                 IsLoadingData = false;
-                PathData.ActiveWallpaperTheme = path;
+                WallpaperPathing.ActiveWallpaperTheme = path;
                 UpdateRankPercentiles(ImageType.None);  //! Now that image types exist this preemptive change may not be worth it
                 return true;
             }

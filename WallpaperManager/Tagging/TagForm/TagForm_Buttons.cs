@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using LanceTools;
 using Microsoft.VisualBasic;
 using WallpaperManager.ApplicationData;
+using WallpaperManager.Pathing;
 
 namespace WallpaperManager.Tagging
 {
@@ -128,7 +129,7 @@ namespace WallpaperManager.Tagging
             // Ask the user if they want to rename image's impacted by the UseForNaming change
             if (renameAffectedImages)
             {
-                PathData.RenameAffectedImagesPrompt(imagesToRename.ToArray());
+                ImagePathing_Old.RenameAffectedImagesPrompt(imagesToRename.ToArray());
             }
         }
 

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using LanceTools.FormUtil;
 using Microsoft.VisualBasic;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using WallpaperManager.ApplicationData;
+using WallpaperManager.Pathing;
 
 namespace WallpaperManager.ImageSelector
 {
@@ -35,11 +37,31 @@ namespace WallpaperManager.ImageSelector
 
         private void RebuildImageSelector_CheckRandomizer(string[] imagesToSelect)
         {
-            WallpaperData.WallpaperManagerForm.RebuildImageSelector(checkBoxRandomize.Checked ? imagesToSelect.Randomize().ToArray() : imagesToSelect);
+            if (checkBoxRandomize.Checked)
+            {
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesToSelect.Randomize().ToArray());
+            }
+            else
+            {
+                Array.Reverse(imagesToSelect); // generally, with the way the collections have been handled an "in-order" result will start from z, or backwards
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesToSelect);
+            }
             Close(); // if the program got to this point then the selection was complete so close the selection window
         }
 
-        private void buttonSelectActiveImages_Click(object sender, EventArgs e) => RebuildImageSelector_CheckRandomizer(PathData.ActiveWallpapers);
+        private void buttonSelectActiveImages_Click(object sender, EventArgs e)
+        {
+            List<string> imagesToSelect = new List<string>();
+            for (int i = 0; i < WallpaperPathing.ActiveWallpapers.Length; i++)
+            {
+                if (File.Exists(WallpaperPathing.ActiveWallpapers[i])) // depending on the setup, some wallpapers can be activated before others are put in place
+                {
+                    imagesToSelect.Add(WallpaperPathing.ActiveWallpapers[i]);
+                }
+            }
+
+            RebuildImageSelector_CheckRandomizer(imagesToSelect.ToArray());
+        }
 
         private void buttonSelectImagesOfRank_Click(object sender, EventArgs e) => SelectAllImagesOfRank();
 

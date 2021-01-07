@@ -104,16 +104,30 @@ namespace WallpaperManager.Tagging
         {
             selectedButtonPotentialTabPage = null; // prevents this from staying valid after releasing | MouseUp would require much more code to work properly
 
-            if (e.Button == MouseButtons.Left && selectedButton != null)
+            if (e.Button == MouseButtons.Left)
             {
-                // the parent here will be tagContainerFLP
-                (sender as Button).Parent.DoDragDrop(selectedButton, DragDropEffects.Move);
+                if (selectedButton != null)
+                {
+                    // this allows the button to still be selectable before 'extended' dragging, preventing accidentally making it unselectable
+                    if (!selectedButton.Bounds.Contains(e.Location)) // dragging
+                    {
+                        // the parent here will be tagContainerFLP
+                        selectedButton.Parent.DoDragDrop(selectedButton, DragDropEffects.Move);
+                    }
+                }
+            }
+            else // most effective means of cancelling the operation since DragDrop and MouseUp will only rarely trigger
+            {
+                selectedButton = null;
+                selectedButtonPotentialTabPage = null;
             }
         }
 
+        //! Do to the way Drag functions work this won't be called if a drag is started
         public void tagContainerButton_MouseUp(object sender, MouseEventArgs e)
         {
             selectedButtonPotentialTabPage = null;
+
         }
 
         public void tagContainerButton_DragOver(object sender, DragEventArgs e)
@@ -123,7 +137,6 @@ namespace WallpaperManager.Tagging
                 // requires tabControlImageTagger.AllowDrop to equal true to work
                 Button draggedButton = (Button)e.Data.GetData(typeof(Button));
                 TabPage pointedTab = GetPointedTab();
-
                 if (pointedTab != null && pointedTab != tabControlImageTagger.SelectedTab)
                 {
                     e.Effect = DragDropEffects.Move;

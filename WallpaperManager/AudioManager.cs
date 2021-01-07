@@ -11,6 +11,7 @@ using CSCore.CoreAudioAPI;
 using LanceTools.WindowUtil;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.Options;
+using WallpaperManager.Pathing;
 
 namespace WallpaperManager
 {
@@ -83,7 +84,7 @@ namespace WallpaperManager
                     foreach (var session in sessionEnumerator)
                     {
                         List<string> potentialNames = new List<string>();
-                        foreach (string wallpaper in PathData.ActiveWallpapers)
+                        foreach (string wallpaper in WallpaperPathing.ActiveWallpapers)
                         {
                             if (File.Exists(wallpaper))
                             {

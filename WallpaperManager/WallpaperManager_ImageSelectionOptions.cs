@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LanceTools;
 using LanceTools.FormUtil;
 using Microsoft.VisualBasic;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.ImageSelector;
+using WallpaperManager.Options;
+using WallpaperManager.Pathing;
 using WallpaperManager.Tagging;
 
 namespace WallpaperManager
@@ -50,45 +55,11 @@ namespace WallpaperManager
         {
             if (selectedImages != null)
             {
-                switch (WallpaperManagerTools.ChooseSelectionType())
-                {
-                    case SelectionType.Active:
-                        if (InspectedImage != "")
-                        {
-                            if (WallpaperData.ContainsImage(InspectedImage))
-                            {
-                                PathData.RenameImage(WallpaperData.GetImageData(InspectedImage));
-                            }
-                            else
-                            {
-                                MessageBox.Show("Invalid image");
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("There is no image selected");
-                        }
-
-                        break;
-
-                    case SelectionType.All:
-
-                        if (MessageBox.Show("Are you sure you want to rename ALL " + selectedImages.Length + " selected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                        {
-                            HashSet<WallpaperData.ImageData> imageDatas = new HashSet<WallpaperData.ImageData>();
-                            foreach (string image in selectedImages)
-                            {
-                                imageDatas.Add(WallpaperData.GetImageData(image));
-                            }
-
-                            PathData.RenameImages(imageDatas.ToArray());
-                        }
-                        break;
-                }
+                HandleImageRenaming(true);
             }
             else
             {
-                MessageBox.Show("There are no images selected to name");
+                MessageBox.Show("There are no images selected to rename");
             }
         }
 
@@ -96,15 +67,21 @@ namespace WallpaperManager
         {
             if (selectedImages != null)
             {
-                switch (WallpaperManagerTools.ChooseSelectionType())
+                using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
                 {
-                    case SelectionType.Active:
-                        MessageBox.Show("Selected");
-                        break;
+                    dialog.IsFolderPicker = true;
 
-                    case SelectionType.All:
-                        MessageBox.Show("All");
-                        break;
+                    if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                    {
+                        if (WallpaperData.ThemeContainsFolder(dialog.FileName))
+                        {
+                            HandleImageRenaming(OptionsData.ThemeOptions.AllowTagBasedRenamingForMovedImages, new DirectoryInfo(dialog.FileName));
+                        }
+                        else
+                        {
+                            MessageBox.Show("The selected folder is not included in your theme");
+                        }
+                    }
                 }
             }
             else
@@ -113,18 +90,62 @@ namespace WallpaperManager
             }
         }
 
+        private void HandleImageRenaming(bool allowTagBasedNaming, DirectoryInfo moveDirectory = null)
+        {
+            List<ImageType> filter = new List<ImageType>();
+
+            if (OptionsData.ThemeOptions.ExcludeRenamingStatic) filter.Add(ImageType.Static);
+            if (OptionsData.ThemeOptions.ExcludeRenamingGif) filter.Add(ImageType.GIF);
+            if (OptionsData.ThemeOptions.ExcludeRenamingVideo) filter.Add(ImageType.Video);
+
+            switch (WallpaperManagerTools.ChooseSelectionType())
+            {
+                case SelectionType.Active:
+                    if (InspectedImage != "")
+                    {
+                        if (WallpaperData.ContainsImage(InspectedImage))
+                        {
+                            int imageIndex = selectedImages.IndexOf(InspectedImage);
+                            string[] newName = ImagePathing.RenameImage(InspectedImage, moveDirectory, allowTagBasedNaming, filter.ToArray());
+                            selectedImages[imageIndex] = newName[0]; // there will only be one entry in this array, the renamed image
+                        }
+                        else
+                        {
+                            MessageBox.Show("Invalid image");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("There is no image selected");
+                    }
+                    break;
+
+                case SelectionType.All:
+                    if (MessageBox.Show("Are you sure you want to rename ALL " + selectedImages.Length + " selected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        // Doing this will require a rebuild of the image selector to keep it in tact
+                        RebuildImageSelector(ImagePathing.RenameImages(selectedImages, moveDirectory, allowTagBasedNaming, filter.ToArray()));
+                    }
+                    break;
+            }
+        }
+
         private void buttonDeleteImage_Click(object sender, EventArgs e)
         {
+            //! ADD A WARNING THAT LETS THE USER KNOW THAT THEY'LL BE REMOVING THE ACTUAL FILES (Which should get move to the recycling bin)
+            //! ADD A WARNING THAT LETS THE USER KNOW THAT THEY'LL BE REMOVING THE ACTUAL FILES (Which should get move to the recycling bin)
+            //! ADD A WARNING THAT LETS THE USER KNOW THAT THEY'LL BE REMOVING THE ACTUAL FILES (Which should get move to the recycling bin)
+
             if (selectedImages != null)
             {
                 switch (WallpaperManagerTools.ChooseSelectionType())
                 {
                     case SelectionType.Active:
-                        MessageBox.Show("Selected");
+                        MessageBox.Show("Selected [This function is currently in development]");
                         break;
 
                     case SelectionType.All:
-                        MessageBox.Show("All");
+                        MessageBox.Show("All [This function is currently in development]");
                         break;
                 }
             }
@@ -166,5 +187,7 @@ namespace WallpaperManager
                 MessageBox.Show("There are no images selected to rank");
             }
         }
+
+        private void buttonClearSelection_Click(object sender, EventArgs e) => ClearImageSelector();
     }
 }

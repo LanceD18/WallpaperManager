@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using LanceTools.Mpv;
 using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
+using WallpaperManager.Pathing;
 using WallpaperManager.Wallpaper;
 
 namespace WallpaperManager
@@ -91,10 +92,14 @@ namespace WallpaperManager
             }
         }
 
-        private void SetWallpaper(int index)
+        private void SetWallpaper(int index, bool ignoreIdenticalWallpapers)
         {
+            //-----Set Next Wallpaper-----
+            // this indicates that it's time to search for a new set of upcoming wallpapers
+            if (WallpaperPathing.ActiveWallpapers[index] == WallpaperPathing.NextWallpapers[index] && !ignoreIdenticalWallpapers) WallpaperPathing.SetNextWallpaperOrder(); // sets PathData.NextWallpapers
+            string wallpaperPath = WallpaperPathing.ActiveWallpapers[index] = WallpaperPathing.NextWallpapers[index];
+
             //-----Update Notify Icons-----
-            string wallpaperPath = PathData.ActiveWallpapers[index];
             string wallpaperName = new FileInfo(wallpaperPath).Name; // pathless string of file name
 
             wallpaperMenuItems[index].Text = WallpaperData.ContainsImage(wallpaperPath) ?
@@ -103,12 +108,12 @@ namespace WallpaperManager
 
             //? without this, if the inspector wasn't open prior to setting a new wallpaper it would never allow it's MvpPlayer to display
             // TODO find a permanent solution to this | Using a different player such as VLC did not work
-            WallpaperData.WallpaperManagerForm.FixInspectorPlayer(PathData.ActiveWallpapers[index]);
+            WallpaperData.WallpaperManagerForm.FixInspectorPlayer(WallpaperPathing.ActiveWallpapers[index]);
             //-----Update Wallpaper Forms-----
             //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings
             //! the moment this is shown, any new mpvplayers will stop working, only the ones that were player previously will continue to function
             if (!wallpapers[index].Visible) wallpapers[index].Show(); // this is processed only once after the first wallpaper change
-            wallpapers[index].SetWallpaper(PathData.ActiveWallpapers[index]);
+            wallpapers[index].SetWallpaper(WallpaperPathing.ActiveWallpapers[index]);
         }
 
         private bool fixAdministered = false;
@@ -131,7 +136,7 @@ namespace WallpaperManager
             // sets all wallpapers to their next wallpaper
             for (int i = 0; i < DisplayData.Displays.Length; i++)
             {
-                NextWallpaper(false, i);
+                NextWallpaper(i, false);
             }
         }
 
@@ -140,55 +145,51 @@ namespace WallpaperManager
             // sets all wallpapers to their next wallpaper
             for (int i = 0; i < DisplayData.Displays.Length; i++)
             {
-                NextWallpaper(ignoreErrorMessages, i);
+                NextWallpaper(i, ignoreErrorMessages);
             }
         }
 
-        public void NextWallpaper(bool ignoreErrorMessages, int wallpaperIndex)
+        public void NextWallpaper(int wallpaperIndex, bool ignoreErrorMessages)
         {
-            Debug.WriteLine("Next Wallpaper Index: " + wallpaperIndex);
             if (!WallpaperData.IsLoadingData) // Rank Percentiles won't be properly set-up until after a theme is loaded, which can cause a crash is NextWallpaper is called
             {
                 if (!WallpaperData.FileDataIsEmpty())
                 {
                     if (!WallpaperData.NoImagesActive() && WallpaperData.GetAllRankedImages().Length != 0)
                     {
-                        //TODO Prevent the first previous wallpaper from being filled with empty strings
                         ResetTimer(wallpaperIndex);
-                        string[] previousWallpapers = new string[PathData.ActiveWallpapers.Length];
-                        PathData.ActiveWallpapers.CopyTo(previousWallpapers, 0);
-                        PathData.PreviousWallpapers.Push(previousWallpapers);
-
-                        if (PathData.RandomizeWallpapers()) SetWallpaper(wallpaperIndex); // randomize wallpaper will check if it even can randomize the wallpapers first
+                        SetWallpaper(wallpaperIndex, false); // randomize wallpaper will check if it even can randomize the wallpapers first
                     }
                     else
                     {
-                        if (!ignoreErrorMessages) MessageBox.Show("No active wallpapers were found");
+                        if (!ignoreErrorMessages) MessageBox.Show("No active wallpapers were found " +
+                                                                  "\n(This can occur is none of your images have been ranked, you can rank them by selecting " +
+                                                                  "the images with the Select Image(s) button)");
                     }
                 }
                 else
                 {
-                    if (!ignoreErrorMessages) MessageBox.Show("Add some wallpapers first! Use the Add Folder button to add a collection of images that'll be used as potential wallpapers");
+                    if (!ignoreErrorMessages) MessageBox.Show("Add some wallpapers first! Use the Add Folder button to add a collection of images that'll be used as potential wallpapers" +
+                                                              "\n(Before they can be used, you'll have to rank your images. You can rank them by selecting the images the Select Image(s) button)");
                 }
             }
         }
 
+        // sets all wallpapers to their previous wallpaper, if one existed
         public void PreviousWallpaper()
         {
-            // sets all wallpapers to their previous wallpaper
-            for (int i = 0; i < DisplayData.Displays.Length; i++)
+            if (WallpaperPathing.PreviousWallpapers.Count > 1) // the first wallpaper will be filled with empty strings
             {
-                PreviousWallpaper(i);
-            }
-        }
+                WallpaperPathing.PreviousWallpapers.Pop().CopyTo(WallpaperPathing.NextWallpapers, 0);
 
-        public void PreviousWallpaper(int wallpaperIndex)
-        {
-            if (PathData.PreviousWallpapers.Count > 1) // the first wallpaper will be filled with empty strings
-            {
-                ResetTimer(wallpaperIndex);
-                PathData.PreviousWallpapers.Pop().CopyTo(PathData.ActiveWallpapers, 0);
-                SetWallpaper(wallpaperIndex);
+                for (int i = 0; i < WallpaperPathing.NextWallpapers.Length; i++)
+                {
+                    if (File.Exists(WallpaperPathing.NextWallpapers[i]))
+                    {
+                        ResetTimer(i);
+                        SetWallpaper(i, true);
+                    }
+                }
             }
             else
             {

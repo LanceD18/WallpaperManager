@@ -15,6 +15,14 @@ namespace WallpaperManager.Options
         public bool HigherRankedImagesOnLargerDisplays;
         public bool EnableDetectionOfInactiveImages;
         public bool WeightedRanks;
+        public bool AllowTagBasedRenamingForMovedImages;
+
+        public bool ExcludeRenamingStatic;
+        public bool ExcludeRenamingGif;
+        public bool ExcludeRenamingVideo;
+
+        public Dictionary<ImageType, double> RelativeFrequency;
+        public Dictionary<ImageType, double> ExactFrequency;
 
         public VideoOptions VideoOptions;
     }
@@ -26,11 +34,9 @@ namespace WallpaperManager.Options
         public bool MuteIfApplicationFocused;
         public int MinimumVideoLoops;
         public float MaximumVideoTime;
-        public Dictionary<ImageType, double> RelativeFrequency;
-        public Dictionary<ImageType, double> ExactFrequency;
     }
 
-    // TODO Set me up later
+    // TODO Set me up later, this will be used to diverge displays into independent sets of options
     // Display-Bound Settings
     public struct DisplayOptions
     {
@@ -48,7 +54,7 @@ namespace WallpaperManager.Options
         public static ThemeOptions ThemeOptions;
 
         // Monitor Options
-        public static DisplayOptions[] MonitorOptions;
+        public static DisplayOptions[] DisplayOptions;
 
         // Global Options
         public static string DefaultTheme;
@@ -65,9 +71,9 @@ namespace WallpaperManager.Options
         public static void InitializePotentialNulls()
         {
             // Initialize Relative Frequency if it hasn't been initialized from loading the theme
-            if (ThemeOptions.VideoOptions.RelativeFrequency == null)
+            if (ThemeOptions.RelativeFrequency == null)
             {
-                ThemeOptions.VideoOptions.RelativeFrequency = new Dictionary<ImageType, double>()
+                ThemeOptions.RelativeFrequency = new Dictionary<ImageType, double>()
                 {
                     {ImageType.Static, 1},
                     {ImageType.GIF, 1},
@@ -76,9 +82,9 @@ namespace WallpaperManager.Options
             }
 
             // Initialize Exact Frequency if it hasn't been initialized from loading the theme
-            if (ThemeOptions.VideoOptions.ExactFrequency == null)
+            if (ThemeOptions.ExactFrequency == null)
             {
-                ThemeOptions.VideoOptions.ExactFrequency = new Dictionary<ImageType, double>()
+                ThemeOptions.ExactFrequency = new Dictionary<ImageType, double>()
                 {
                     {ImageType.Static, 0.33},
                     {ImageType.GIF, 0.33},
@@ -89,11 +95,11 @@ namespace WallpaperManager.Options
 
         public static bool IsFrequencyEqual()
         {
-            return ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Static] == 1 &&
-                   ThemeOptions.VideoOptions.RelativeFrequency[ImageType.GIF] == 1 &&
-                   ThemeOptions.VideoOptions.RelativeFrequency[ImageType.Video] == 1;
+            return ThemeOptions.RelativeFrequency[ImageType.Static] == 1 &&
+                   ThemeOptions.RelativeFrequency[ImageType.GIF] == 1 &&
+                   ThemeOptions.RelativeFrequency[ImageType.Video] == 1;
         }
 
-        public static double GetExactFrequency(ImageType imageType) => ThemeOptions.VideoOptions.ExactFrequency[imageType];
+        public static double GetExactFrequency(ImageType imageType) => ThemeOptions.ExactFrequency[imageType];
     }
 }

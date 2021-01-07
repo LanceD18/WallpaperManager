@@ -43,6 +43,11 @@
             this.checkBoxWeightedRanks = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageThemeOptions = new System.Windows.Forms.TabPage();
+            this.checkBoxExcludeVideo = new System.Windows.Forms.CheckBox();
+            this.checkBoxExcludeGif = new System.Windows.Forms.CheckBox();
+            this.checkBoxExcludeStatic = new System.Windows.Forms.CheckBox();
+            this.labelExcludeRenamingImageType = new System.Windows.Forms.Label();
+            this.checkBoxAllowTagNamingMoved = new System.Windows.Forms.CheckBox();
             this.textBoxMaximumVideoTime = new System.Windows.Forms.TextBox();
             this.textBoxMinimumVideoLoops = new System.Windows.Forms.TextBox();
             this.buttonsync = new System.Windows.Forms.Button();
@@ -226,6 +231,11 @@
             // tabPageThemeOptions
             // 
             this.tabPageThemeOptions.BackColor = System.Drawing.Color.Black;
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxExcludeVideo);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxExcludeGif);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxExcludeStatic);
+            this.tabPageThemeOptions.Controls.Add(this.labelExcludeRenamingImageType);
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxAllowTagNamingMoved);
             this.tabPageThemeOptions.Controls.Add(this.textBoxMaximumVideoTime);
             this.tabPageThemeOptions.Controls.Add(this.textBoxMinimumVideoLoops);
             this.tabPageThemeOptions.Controls.Add(this.buttonsync);
@@ -248,6 +258,61 @@
             this.tabPageThemeOptions.Size = new System.Drawing.Size(477, 423);
             this.tabPageThemeOptions.TabIndex = 0;
             this.tabPageThemeOptions.Text = "Theme Options";
+            // 
+            // checkBoxExcludeVideo
+            // 
+            this.checkBoxExcludeVideo.AutoSize = true;
+            this.checkBoxExcludeVideo.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxExcludeVideo.Location = new System.Drawing.Point(395, 194);
+            this.checkBoxExcludeVideo.Name = "checkBoxExcludeVideo";
+            this.checkBoxExcludeVideo.Size = new System.Drawing.Size(53, 17);
+            this.checkBoxExcludeVideo.TabIndex = 66;
+            this.checkBoxExcludeVideo.Text = "Video";
+            this.checkBoxExcludeVideo.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxExcludeGif
+            // 
+            this.checkBoxExcludeGif.AutoSize = true;
+            this.checkBoxExcludeGif.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxExcludeGif.Location = new System.Drawing.Point(346, 194);
+            this.checkBoxExcludeGif.Name = "checkBoxExcludeGif";
+            this.checkBoxExcludeGif.Size = new System.Drawing.Size(43, 17);
+            this.checkBoxExcludeGif.TabIndex = 65;
+            this.checkBoxExcludeGif.Text = "GIF";
+            this.checkBoxExcludeGif.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxExcludeStatic
+            // 
+            this.checkBoxExcludeStatic.AutoSize = true;
+            this.checkBoxExcludeStatic.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.checkBoxExcludeStatic.Location = new System.Drawing.Point(287, 194);
+            this.checkBoxExcludeStatic.Name = "checkBoxExcludeStatic";
+            this.checkBoxExcludeStatic.Size = new System.Drawing.Size(53, 17);
+            this.checkBoxExcludeStatic.TabIndex = 64;
+            this.checkBoxExcludeStatic.Text = "Static";
+            this.checkBoxExcludeStatic.UseVisualStyleBackColor = true;
+            // 
+            // labelExcludeRenamingImageType
+            // 
+            this.labelExcludeRenamingImageType.AutoSize = true;
+            this.labelExcludeRenamingImageType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelExcludeRenamingImageType.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.labelExcludeRenamingImageType.Location = new System.Drawing.Point(284, 174);
+            this.labelExcludeRenamingImageType.Name = "labelExcludeRenamingImageType";
+            this.labelExcludeRenamingImageType.Size = new System.Drawing.Size(190, 13);
+            this.labelExcludeRenamingImageType.TabIndex = 63;
+            this.labelExcludeRenamingImageType.Text = "Exclude Renaming Image Type: ";
+            // 
+            // checkBoxAllowTagNamingMoved
+            // 
+            this.checkBoxAllowTagNamingMoved.AutoSize = true;
+            this.checkBoxAllowTagNamingMoved.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.checkBoxAllowTagNamingMoved.Location = new System.Drawing.Point(6, 398);
+            this.checkBoxAllowTagNamingMoved.Name = "checkBoxAllowTagNamingMoved";
+            this.checkBoxAllowTagNamingMoved.Size = new System.Drawing.Size(245, 17);
+            this.checkBoxAllowTagNamingMoved.TabIndex = 62;
+            this.checkBoxAllowTagNamingMoved.Text = "Allow Tag-Based Renaming for Moved Images";
+            this.checkBoxAllowTagNamingMoved.UseVisualStyleBackColor = true;
             // 
             // textBoxMaximumVideoTime
             // 
@@ -281,7 +346,8 @@
             // 
             // buttonsync
             // 
-            this.buttonsync.Location = new System.Drawing.Point(284, 201);
+            this.buttonsync.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.buttonsync.Location = new System.Drawing.Point(6, 290);
             this.buttonsync.Name = "buttonsync";
             this.buttonsync.Size = new System.Drawing.Size(123, 23);
             this.buttonsync.TabIndex = 59;
@@ -597,5 +663,10 @@
         private System.Windows.Forms.Button buttonsync;
         private System.Windows.Forms.TextBox textBoxMaximumVideoTime;
         private System.Windows.Forms.TextBox textBoxMinimumVideoLoops;
+        private System.Windows.Forms.CheckBox checkBoxAllowTagNamingMoved;
+        private System.Windows.Forms.Label labelExcludeRenamingImageType;
+        private System.Windows.Forms.CheckBox checkBoxExcludeStatic;
+        private System.Windows.Forms.CheckBox checkBoxExcludeVideo;
+        private System.Windows.Forms.CheckBox checkBoxExcludeGif;
     }
 }

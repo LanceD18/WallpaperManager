@@ -26,7 +26,7 @@ namespace WallpaperManager
         private float initialLabelSelectedImageFontSize;
 
         private Queue<FlowLayoutPanel> loadedTabs = new Queue<FlowLayoutPanel>();
-        private Queue<Image> loadedImages = new Queue<Image>();
+        private Queue<Bitmap> loadedImages = new Queue<Bitmap>();
         private int maxLoadedTabs;
 
         private SmoothScrollFlowLayoutPanel activeTabLayoutPanel;
@@ -37,11 +37,6 @@ namespace WallpaperManager
         private void tabLayoutPanel_MouseClick(object sender, EventArgs e)
         {
             (sender as SmoothScrollFlowLayoutPanel).Focus();
-        }
-
-        private void buttonClearSelection_Click(object sender, EventArgs e)
-        {
-            ClearImageSelector();
         }
 
         private void ClearImageSelector()
@@ -57,7 +52,6 @@ namespace WallpaperManager
 
             tabControlImagePages.SuspendLayout();
             tabControlImagePages.Flush();
-            tabControlImagePages.Refresh();
             tabControlImagePages.ResumeLayout();
 
             ClearLoadedImages();
@@ -103,11 +97,7 @@ namespace WallpaperManager
                 return;
             }
 
-            InspectedImage = "";
-            DeactivateImageInspector();
-            labelSelectedImage.Text = "Select an image for more info";
-            tabControlImagePages.SuspendLayout();
-            tabControlImagePages.Flush();
+            ClearImageSelector();
 
             // Ensure that only enabled images are selected
             if (!OptionsData.ThemeOptions.EnableDetectionOfInactiveImages)
@@ -281,8 +271,12 @@ namespace WallpaperManager
                 Image image = WallpaperManagerTools.GetImageFromFile(imagePath);
                 if (image == null) return; // this will happen to unsupported file types
 
-                loadedImages.Enqueue(image); //? Disposes images later
-                parentEditorControl.SetBackgroundImage(image);
+                //? the image must be re-drawn to prevent it from being used by wallpaper manager
+                Bitmap imageBitmap = new Bitmap(image.Width, image.Height);
+                using (Graphics g = Graphics.FromImage(imageBitmap)) g.DrawImage(image, 0, 0, image.Width, image.Height);
+
+                loadedImages.Enqueue(imageBitmap); //? Disposes images later
+                parentEditorControl.SetBackgroundImage(imageBitmap);
 
             });
             thread.Start();
