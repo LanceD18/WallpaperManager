@@ -78,7 +78,7 @@ namespace WallpaperManager.Tagging
                 }
 
                 string[] selectedImages = randomize == DialogResult.Yes ? images.Randomize().ToArray() : images.ToArray();
-                WallpaperData.WallpaperManagerForm.RebuildImageSelector(selectedImages);
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(selectedImages, randomize != DialogResult.Yes);
             }
         }
 
@@ -98,7 +98,7 @@ namespace WallpaperManager.Tagging
         private void buttonApplyDefaultSettings_Click(object sender, EventArgs e)
         {
             bool renameAffectedImages = false;
-            HashSet<WallpaperData.ImageData> imagesToRename = new HashSet<WallpaperData.ImageData>();
+            List<string> imagesToRename = new List<string>();
 
             // Loop through and update all tags
             foreach (TagData tag in ActiveCategory.Tags)
@@ -110,7 +110,7 @@ namespace WallpaperManager.Tagging
 
                     foreach (string image in tag.GetLinkedImages())
                     {
-                        imagesToRename.Add(WallpaperData.GetImageData(image));
+                        imagesToRename.Add(image);
                     }
                 }
 
@@ -129,7 +129,7 @@ namespace WallpaperManager.Tagging
             // Ask the user if they want to rename image's impacted by the UseForNaming change
             if (renameAffectedImages)
             {
-                ImagePathing_Old.RenameAffectedImagesPrompt(imagesToRename.ToArray());
+                ImagePathing.RenameAffectedImagesPrompt(imagesToRename.ToArray());
             }
         }
 

@@ -46,7 +46,7 @@ namespace WallpaperManager
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    RebuildImageSelector(dialog.FileNames);
+                    RebuildImageSelector(dialog.FileNames, false); // this will be in order by default
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace WallpaperManager
                         if (WallpaperData.ContainsImage(InspectedImage))
                         {
                             int imageIndex = selectedImages.IndexOf(InspectedImage);
-                            string[] newName = ImagePathing.RenameImage(InspectedImage, moveDirectory, allowTagBasedNaming, filter.ToArray());
+                            string[] newName = ImagePathing.RenameImage(InspectedImage, moveDirectory, allowTagBasedNaming);
                             selectedImages[imageIndex] = newName[0]; // there will only be one entry in this array, the renamed image
                         }
                         else
@@ -124,7 +124,7 @@ namespace WallpaperManager
                     if (MessageBox.Show("Are you sure you want to rename ALL " + selectedImages.Length + " selected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
                         // Doing this will require a rebuild of the image selector to keep it in tact
-                        RebuildImageSelector(ImagePathing.RenameImages(selectedImages, moveDirectory, allowTagBasedNaming, filter.ToArray()));
+                        RebuildImageSelector(ImagePathing.RenameImages(selectedImages, moveDirectory, allowTagBasedNaming), false);
                     }
                     break;
             }

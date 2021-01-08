@@ -124,6 +124,8 @@ namespace WallpaperManager.Wallpaper
                     pictureBoxWallpaper.ImageLocation = imageLocation;
                     pictureBoxWallpaper.Enabled = true;
                     pictureBoxWallpaper.Visible = true;
+
+                    activeImagePath = null;
                 }
                 else
                 {
@@ -298,15 +300,10 @@ namespace WallpaperManager.Wallpaper
 
         public void Unmute()
         {
-            if (player != null)
+            if (player != null && activeImagePath != null)
             {
                 player.Volume = WallpaperData.GetImageData(activeImagePath).VideoSettings.Volume;
             }
-        }
-
-        public void AwaitingEnd(int loops, float maxMilliseconds, Action<int> endEvent)
-        {
-
         }
     }
 }

@@ -64,9 +64,16 @@ namespace WallpaperManager
             labelSelectedImage.TextChanged += labelSelectedImage_TextChanged;
             initialLabelSelectedImageFontSize = labelSelectedImage.Font.Size;
             labelImageSize.Text = "";
+
+            new ToolTip(components).SetToolTip(buttonNameImage, "Renames images based on their given tags (If the image has any tags)" +
+                                                                "\n*The theme will auto-save after renaming*");
+            new ToolTip(components).SetToolTip(buttonMoveImage, "If 'Allow Tag-Based Renaming for Moved Images' is selected, every moved image will be" +
+                                                                "\nrenamed based on their given tags (If the image has any tags)" +
+                                                                "\nThe default behavior will directly move the image as if you were to normally do so" +
+                                                                "\n*The theme will auto-save after moving");
         }
 
-        public void RebuildImageSelector(string[] selectedImages, int imagesPerPage = 30, int maxLoadedTabs = 25)
+        public void RebuildImageSelector(string[] selectedImages, bool reverseOrder, int imagesPerPage = 30, int maxLoadedTabs = 25)
         {
             // Cancel the rebuild early if there were no images selected
             if (selectedImages == null)
@@ -98,6 +105,8 @@ namespace WallpaperManager
             }
 
             ClearImageSelector();
+
+            if (reverseOrder) Array.Reverse(selectedImages); // generally, with the way the collections have been handled an "in-order" result will start from z, or backwards
 
             // Ensure that only enabled images are selected
             if (!OptionsData.ThemeOptions.EnableDetectionOfInactiveImages)

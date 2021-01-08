@@ -119,14 +119,22 @@ namespace WallpaperManager.Controls
         {
             trackBarPosition.BeginInvoke((MethodInvoker) delegate
             {
+                double largeDurationRatio = 1;
                 trackBarPosition.SuspendLayout();
                 if (trackBarPosition.Maximum != (int) mpvPlayer.Duration.Ticks && mpvPlayer.Duration.Ticks != 0) // no need to recalculate everything if the calculation is already done
                 {
                     //! managing this section improperly can cause the program to freeze for an extended period of time
-                    trackBarPosition.TickFrequency = Math.Max(1, (int) mpvPlayer.Duration.Ticks); //? reducing this dramatically improves tick creation time
-                    trackBarPosition.Maximum = (int) mpvPlayer.Duration.Ticks; //! this is incredibly resource intensive with low tick frequencies
+                    trackBarPosition.TickFrequency = Int32.MaxValue; //Math.Max(1, (int) mpvPlayer.Duration.Ticks); //? increasing this dramatically improves tick creation time
+
+                    //? if the ratio is below 1 then no modifications are required since this means that the duration is within the int range
+                    largeDurationRatio = Math.Max((double)mpvPlayer.Duration.Ticks / Int32.MaxValue, 1);
+                    //xDebug.WriteLine(largeDurationRatio);
+
+                    //! this is incredibly resource intensive with low tick frequencies
+                    trackBarPosition.Maximum = mpvPlayer.Duration.Ticks <= Int32.MaxValue ? (int)mpvPlayer.Duration.Ticks : Int32.MaxValue;
                 }
 
+                //xDebug.WriteLine("Position: " + mpvPlayer.Position.Ticks);
                 if (!dragging)
                 {
                     if (playing && pausedByDrag)
@@ -137,7 +145,22 @@ namespace WallpaperManager.Controls
 
                     if (playing && !pausedByDrag)
                     {
-                        trackBarPosition.Value = (int) mpvPlayer.Position.Ticks;
+                        try // sometimes the previous player updates this before the track bar can be reset, causing a crash. This just ensures the intended action is performed
+                        {
+                            trackBarPosition.Value = (int) ((double)mpvPlayer.Position.Ticks / largeDurationRatio);
+                        }
+                        catch (Exception exception)
+                        {
+                            try
+                            {
+                                trackBarPosition.Value = 0;
+                            }
+                            catch
+                            {
+                                // if even that doesn't work something may be wrong with the video (or it's just taking too long to load)
+                                // do nothing and see if the auto-updater can fix it
+                            }
+                        }
                     }
                 }
                 else
@@ -148,7 +171,20 @@ namespace WallpaperManager.Controls
                         mpvPlayer.Pause();
                     }
 
-                    int positionValue = trackBarPosition.Value;
+                    long positionValue = (long)(trackBarPosition.Value * largeDurationRatio);
+
+                    if (positionValue < 0 )
+                    {
+                        Debug.WriteLine("Resetting Position to 0");
+                        positionValue = 0;
+                    }
+
+                    if (positionValue > mpvPlayer.Duration.Ticks)
+                    {
+                        Debug.WriteLine("Resetting Position to max");
+                        positionValue = mpvPlayer.Duration.Ticks;
+                    }
+
                     if (lastDraggedValue != positionValue) // no need to update this when it's already there
                     {
                         mpvPlayer.Position = new TimeSpan(positionValue);  //! this is incredibly resource intensive, ensure that this is not called often

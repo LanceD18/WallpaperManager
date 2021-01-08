@@ -225,6 +225,7 @@ namespace WallpaperManager
 
             panelImageInspector.SuspendLayout();
             inspector_mpvPlayer.Stop();
+            inspector_mpvPlayer.Volume = 0;
             //!inspector_VlcControl.Stop();
             inspector_panelVideo.Enabled = false;
 

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LanceTools.IO;
 using WallpaperManager.ApplicationData;
+using WallpaperManager.Options;
 
 namespace WallpaperManager.Pathing
 {
@@ -15,14 +16,37 @@ namespace WallpaperManager.Pathing
     {
         private static readonly string TempImageLocation = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\TempImageLocation.file";
 
-        public static string[] RenameImage(string image, DirectoryInfo moveDirectory, bool allowTagBasedNaming, ImageType[] filter)
+        private static ImageType[] GetFilter()
         {
-            return RenameImages(new string[] {image}, moveDirectory, allowTagBasedNaming, filter);
+            List<ImageType> filter = new List<ImageType>();
+
+            if (OptionsData.ThemeOptions.ExcludeRenamingStatic) filter.Add(ImageType.Static);
+            if (OptionsData.ThemeOptions.ExcludeRenamingGif) filter.Add(ImageType.GIF);
+            if (OptionsData.ThemeOptions.ExcludeRenamingVideo) filter.Add(ImageType.Video);
+
+            return filter.ToArray();
         }
 
-        public static string[] RenameImages(string[] images, DirectoryInfo moveDirectory, bool allowTagBasedNaming, ImageType[] filter)
+        public static string[] RenameImage(string image, DirectoryInfo moveDirectory, bool allowTagBasedNaming)
         {
+            return RenameImages(new string[] {image}, moveDirectory, allowTagBasedNaming);
+        }
+
+        public static void RenameAffectedImagesPrompt(string[] images)
+        {
+            if (MessageBox.Show("Rename affected images?", "Choose an option", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                RenameImages(images, null, true);
+            }
+        }
+
+        public static string[] RenameImages(string[] images, DirectoryInfo moveDirectory, bool allowTagBaseNaming)
+        {
+            ///-----Filtering & Initial Processing-----
+
+            // Convert string array to WallpaperData.ImageData array and remove images that conflict with the user's filter
             List<WallpaperData.ImageData> imagesData = new List<WallpaperData.ImageData>();
+            ImageType[] filter = GetFilter();
             foreach (string image in images)
             {
                 bool filterBreached = false;
@@ -40,18 +64,21 @@ namespace WallpaperManager.Pathing
                 imagesData.Add(WallpaperData.GetImageData(image));
             }
 
-            return RenameImages(imagesData.ToArray(), moveDirectory, allowTagBasedNaming);
-        }
+            WallpaperData.ImageData[] imagesToRename = imagesData.ToArray();
 
-        private static string[] RenameImages(WallpaperData.ImageData[] imagesToRename, DirectoryInfo moveDirectory, bool allowTagBaseNaming)
-        {
+            //? This checks if all images were filtered out
             if (imagesToRename.Length == 0)
             {
                 MessageBox.Show("None of the given images were able to be renamed");
                 return null;
             }
 
-            ;
+            //-----Begin Renaming Process-----
+
+            //! Don't forget to save the theme after renaming! (Take note of the return statements)
+            //! Don't forget to save the theme after renaming! (Take note of the return statements)
+            //! Don't forget to save the theme after renaming! (Take note of the return statements)
+
             if (allowTagBaseNaming)
             {
                 return TagBasedNaming(imagesToRename, moveDirectory);
@@ -169,6 +196,7 @@ namespace WallpaperManager.Pathing
                 }
             }
 
+            WallpaperData.SaveData(WallpaperPathing.ActiveWallpaperTheme); //! Forgetting to save after renaming images could destroy a theme depending on the scale
             return finalNames.ToArray();
         }
 

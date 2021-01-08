@@ -54,7 +54,17 @@ namespace WallpaperManager
         public static readonly string IMAGE_FILES_FILTER = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.gif, *.mp4, *.webm, *.avi)" +
                                                            " | *.jpg; *.jpeg; *.jpe; *.jfif; *.png; *.gif; *.mp4; *.webm; *.avi";
 
-        public static bool IsSupportedVideoType(string filePath) => IsSupportedVideoType(new FileInfo(filePath));
+        public static bool IsSupportedVideoType(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                return IsSupportedVideoType(new FileInfo(filePath));
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public static bool IsSupportedVideoType(FileInfo fileInfo)
         {

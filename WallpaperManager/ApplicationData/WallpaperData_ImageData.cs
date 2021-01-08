@@ -284,14 +284,8 @@ namespace WallpaperManager.ApplicationData
 
             public void RenameCategory(string oldName, string newName)
             {
-                Dictionary<string, HashSet<string>> tempTags = new Dictionary<string, HashSet<string>>();
-
-                foreach (string category in Tags.Keys)
-                {
-                    tempTags.Add(category == oldName ? newName : category, Tags[oldName]);
-                }
-
-                Tags = tempTags;
+                Tags.Add(newName, Tags[oldName]);
+                Tags.Remove(oldName);
             }
 
             public void RenameTag(string category, string oldName, string newName)

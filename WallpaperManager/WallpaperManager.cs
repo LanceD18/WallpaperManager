@@ -88,11 +88,6 @@ namespace WallpaperManager
             InitializeTimer();
             InitializeKeys();
             InitializeNotifyIcon();
-
-            new ToolTip(components).SetToolTip(buttonNameImage, "Renames images based on their given tags (If the image has any tags)");
-            new ToolTip(components).SetToolTip(buttonMoveImage, "If 'Allow Tag-Based Renaming for Moved Images' is selected, every moved image will be" +
-                                                                "\nrenamed based on their given tags (If the image has any tags)" +
-                                                                "\nThe default behavior will directly move the image as if you were to normally do so");
         }
 
         private void OnClosing(object sender, EventArgs e)

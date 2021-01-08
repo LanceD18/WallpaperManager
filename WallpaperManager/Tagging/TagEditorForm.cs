@@ -182,7 +182,7 @@ namespace WallpaperManager.Tagging
             if (randomize != DialogResult.Cancel)
             {
                 string[] selectedImages = randomize == DialogResult.Yes ? activeTag.GetLinkedImages().Randomize().ToArray() : activeTag.GetLinkedImages();
-                WallpaperData.WallpaperManagerForm.RebuildImageSelector(selectedImages);
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(selectedImages, randomize != DialogResult.Yes);
             }
         }
 

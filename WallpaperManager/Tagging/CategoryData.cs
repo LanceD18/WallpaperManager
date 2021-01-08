@@ -29,6 +29,8 @@ namespace WallpaperManager.Tagging
 
                         foreach (string image in tag.GetLinkedImages())
                         {
+                            //? while the HashSet itself prevents duplicates, this contains reference is also done fastest through HashSet
+                            //? which the rename category section needs
                             if (!alteredImages.Contains(image))
                             {
                                 WallpaperData.GetImageData(image).RenameCategory(name, value);

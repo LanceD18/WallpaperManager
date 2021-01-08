@@ -73,6 +73,7 @@
             this.labelFrequency = new System.Windows.Forms.Label();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
             this.toolTipEnableDetectionOfInactiveImages = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxWeightedFrequency = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPageThemeOptions.SuspendLayout();
             this.panelFrequency.SuspendLayout();
@@ -231,6 +232,7 @@
             // tabPageThemeOptions
             // 
             this.tabPageThemeOptions.BackColor = System.Drawing.Color.Black;
+            this.tabPageThemeOptions.Controls.Add(this.checkBoxWeightedFrequency);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxExcludeVideo);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxExcludeGif);
             this.tabPageThemeOptions.Controls.Add(this.checkBoxExcludeStatic);
@@ -602,6 +604,18 @@
             this.tabPageGlobalOptions.TabIndex = 1;
             this.tabPageGlobalOptions.Text = "Global Options";
             // 
+            // checkBoxWeightedFrequency
+            // 
+            this.checkBoxWeightedFrequency.AutoSize = true;
+            this.checkBoxWeightedFrequency.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBoxWeightedFrequency.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.checkBoxWeightedFrequency.Location = new System.Drawing.Point(118, 75);
+            this.checkBoxWeightedFrequency.Name = "checkBoxWeightedFrequency";
+            this.checkBoxWeightedFrequency.Size = new System.Drawing.Size(125, 17);
+            this.checkBoxWeightedFrequency.TabIndex = 67;
+            this.checkBoxWeightedFrequency.Text = "Weighted Frequency";
+            this.checkBoxWeightedFrequency.UseVisualStyleBackColor = true;
+            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -668,5 +682,6 @@
         private System.Windows.Forms.CheckBox checkBoxExcludeStatic;
         private System.Windows.Forms.CheckBox checkBoxExcludeVideo;
         private System.Windows.Forms.CheckBox checkBoxExcludeGif;
+        private System.Windows.Forms.CheckBox checkBoxWeightedFrequency;
     }
 }

@@ -29,7 +29,6 @@ namespace WallpaperManager.ImageSelector
             checkBoxRandomize.Checked = WallpaperData.RandomizeSelection;
         }
 
-
         private void checkBoxRandomize_CheckedChanged(object sender, EventArgs e)
         {
             WallpaperData.RandomizeSelection = checkBoxRandomize.Checked;
@@ -39,12 +38,11 @@ namespace WallpaperManager.ImageSelector
         {
             if (checkBoxRandomize.Checked)
             {
-                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesToSelect.Randomize().ToArray());
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesToSelect.Randomize().ToArray(), false);
             }
             else
             {
-                Array.Reverse(imagesToSelect); // generally, with the way the collections have been handled an "in-order" result will start from z, or backwards
-                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesToSelect);
+                WallpaperData.WallpaperManagerForm.RebuildImageSelector(imagesToSelect, true);
             }
             Close(); // if the program got to this point then the selection was complete so close the selection window
         }
@@ -82,7 +80,6 @@ namespace WallpaperManager.ImageSelector
             {
                 string[] imagesToSelect = WallpaperData.GetImagesOfRank(selectedRank);
                 RebuildImageSelector_CheckRandomizer(imagesToSelect);
-
             }
             else
             {
