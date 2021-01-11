@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using LanceTools;
+using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager.Options
 {
@@ -13,9 +14,8 @@ namespace WallpaperManager.Options
     {
         public static void UpdateFrequency(object sender, ImageType imageType, FrequencyType frequencyType, ref ThemeOptions ThemeOptions)
         {
-            TextBox sourceTextBox = sender as TextBox;
-
             double input = 0;
+            TextBox sourceTextBox = sender as TextBox;
 
             // Process the Input
             try
@@ -34,6 +34,7 @@ namespace WallpaperManager.Options
             }
             catch (Exception exception)
             {
+                Debug.WriteLine(exception);
                 // incorrect value entered, end update and reset text (reset externally)
                 return;
             }
@@ -128,13 +129,23 @@ namespace WallpaperManager.Options
 
             Debug.WriteLine("chanceTotal: " + chanceTotal);
 
-            Debug.WriteLine(ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal);
-            Debug.WriteLine(ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal);
-            Debug.WriteLine(ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal);
+            Debug.WriteLine("Static: " + ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal);
+            Debug.WriteLine("GIF: " + ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal);
+            Debug.WriteLine("Video: " + ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal);
 
-            ThemeOptions.ExactFrequency[ImageType.Static] = ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal;
-            ThemeOptions.ExactFrequency[ImageType.GIF] = ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal;
-            ThemeOptions.ExactFrequency[ImageType.Video] = ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal;
+            if (!ThemeOptions.WeightedFrequency)
+            {
+                ThemeOptions.ExactFrequency[ImageType.Static] = ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal;
+                ThemeOptions.ExactFrequency[ImageType.GIF] = ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal;
+                ThemeOptions.ExactFrequency[ImageType.Video] = ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal;
+            }
+            else
+            {
+                // Gets the average of both the weighted frequency and the original exact frequency, allowing relative frequency to have an impact on the weight
+                ThemeOptions.ExactFrequency[ImageType.Static] = (WallpaperData.GetImageOfTypeWeight(ImageType.Static) + (ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal)) / 2;
+                ThemeOptions.ExactFrequency[ImageType.GIF] = (WallpaperData.GetImageOfTypeWeight(ImageType.GIF) + (ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal)) / 2;
+                ThemeOptions.ExactFrequency[ImageType.Video] = (WallpaperData.GetImageOfTypeWeight(ImageType.Video) + (ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal)) / 2;
+            }
         }
 
         private static void CalculateExactFrequency(ImageType changedImageType, ref ThemeOptions ThemeOptions)

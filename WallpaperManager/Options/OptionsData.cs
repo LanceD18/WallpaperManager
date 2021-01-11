@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager.Options
 {
@@ -15,6 +16,7 @@ namespace WallpaperManager.Options
         public bool HigherRankedImagesOnLargerDisplays;
         public bool EnableDetectionOfInactiveImages;
         public bool WeightedRanks;
+        public bool WeightedFrequency;
         public bool AllowTagBasedRenamingForMovedImages;
 
         public bool ExcludeRenamingStatic;
@@ -91,13 +93,6 @@ namespace WallpaperManager.Options
                     {ImageType.Video, 0.33}
                 };
             }
-        }
-
-        public static bool IsFrequencyEqual()
-        {
-            return ThemeOptions.RelativeFrequency[ImageType.Static] == 1 &&
-                   ThemeOptions.RelativeFrequency[ImageType.GIF] == 1 &&
-                   ThemeOptions.RelativeFrequency[ImageType.Video] == 1;
         }
 
         public static double GetExactFrequency(ImageType imageType) => ThemeOptions.ExactFrequency[imageType];

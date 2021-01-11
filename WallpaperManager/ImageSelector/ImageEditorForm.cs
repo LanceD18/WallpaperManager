@@ -52,7 +52,7 @@ namespace WallpaperManager.ImageSelector
             foreach (CategoryData category in WallpaperData.TaggingInfo.GetAllCategories())
             {
                 string categoryName = category.Name;
-                if (imageData.Tags.ContainsKey(categoryName)) // remember that imageData.Tags may be ordered improperly
+                if (imageData.Tags.ContainsKey(categoryName)) //? remember that imageData.Tags may be ordered improperly
                 {
                     tagButtons.Add(categoryName, new HashSet<Tuple<string, Button>>());
 

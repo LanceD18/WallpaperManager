@@ -58,7 +58,7 @@ namespace WallpaperManager.ApplicationData
             if (useLastLoadedTheme) LoadDefaultTheme(); //! This should be placed at the very end
         }
 
-        public static void InitializeImagesOfType() // this needs to be reloaded whenever a theme is loaded
+        public static void InitializeImagesOfType() //? this needs to be reloaded whenever a theme is loaded
         {
             ImagesOfType = new Dictionary<ImageType, Dictionary<string, ImageData>>()
             {
@@ -226,10 +226,12 @@ namespace WallpaperManager.ApplicationData
             // Set RankData
             if (RankData.Count == 0) // Initialize RankData
             {
-                RankData.Add(new ReactiveList<string>());
+                RankData.Add(new ReactiveList<string>()); // this will be rank 0
 
                 for (int i = 0; i < newRankMax; i++)
                 {
+                    // adds ranks from 1 to the max, there will be 1 additional slot to account for rank 0
+                    // due to this, you can directly reference an index by its rank
                     RankData.Add(new ReactiveList<string>());
                 }
             }
@@ -394,11 +396,18 @@ namespace WallpaperManager.ApplicationData
             return modifiedRankPercentiles;
         }
 
+        // TODO Async this at some point, but remember that this has to be done before the wallpaper is set (So the await key must be in the SetWallpaper method)
         public static void UpdateRankPercentiles(ImageType imageType)
         {
-            potentialWeightedRankUpdate = false;
-            potentialRegularRankUpdate = false;
+            Debug.WriteLine("Updating Weight Percentiles");
+            potentialWeightedRankUpdate = false; //? Prevents this from being called often due to the potential performance costs
+            potentialRegularRankUpdate = false; //? Prevents this from being called often due to the potential performance costs
             modifiedRankPercentiles = OptionsData.ThemeOptions.WeightedRanks ? GetWeightedRankPercentiles(imageType) : GetModifiedRankPercentiles(imageType);
+
+            if (OptionsData.ThemeOptions.WeightedFrequency)
+            {
+                UpdateImageTypeWeights();
+            }
         }
         #endregion
 

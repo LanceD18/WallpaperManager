@@ -59,7 +59,7 @@ namespace WallpaperManager
             this.buttonMoveImage = new System.Windows.Forms.Button();
             this.buttonDeleteImage = new System.Windows.Forms.Button();
             this.panelImageSelector = new System.Windows.Forms.Panel();
-            this.tabControlImagePages = new System.Windows.Forms.TabControl();
+            this.tabControlImagePages = new LanceTools.ControlLibrary.DoubleBufferedTabControl();
             this.labelSelectedImage = new System.Windows.Forms.Label();
             this.panelImageInspector = new System.Windows.Forms.Panel();
             this.inspector_panelVideoAndBar = new System.Windows.Forms.Panel();
@@ -570,7 +570,7 @@ namespace WallpaperManager
         private Button buttonMoveImage;
         private Panel panelImageSelector;
         private Label labelSelectedImage;
-        private TabControl tabControlImagePages;
+        private LanceTools.ControlLibrary.DoubleBufferedTabControl tabControlImagePages;
         private Button buttonClearSelection;
         private Button buttonInspectImage;
         private Panel panelImageInspector;

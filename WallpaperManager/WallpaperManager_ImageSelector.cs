@@ -50,12 +50,12 @@ namespace WallpaperManager
             labelSelectedImage.Text = "Select an image for more info";
             labelImageSize.Text = "";
 
+            ClearLoadedImages();
+            loadedTabs.Clear();
+
             tabControlImagePages.SuspendLayout();
             tabControlImagePages.Flush();
             tabControlImagePages.ResumeLayout();
-
-            ClearLoadedImages();
-            loadedTabs.Clear();
         }
 
         private void InitializeImageSelector()

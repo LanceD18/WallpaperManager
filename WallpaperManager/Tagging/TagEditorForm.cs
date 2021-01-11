@@ -221,7 +221,7 @@ namespace WallpaperManager.Tagging
                 {
                     activeTag.SetName(tagName);
                     labelTagName.Text = tagName;
-                    TaggingTools.UpdateTagButton(activeTagButton, activeTag); //! must be place lower than the call to activeTag.SetName()
+                    TaggingTools.UpdateTagButton(activeTagButton, activeTag); //! must be placed lower than the call to activeTag.SetName()
                 }
                 else
                 {

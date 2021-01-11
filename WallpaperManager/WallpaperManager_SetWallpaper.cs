@@ -96,7 +96,7 @@ namespace WallpaperManager
         {
             //-----Set Next Wallpaper-----
             // this indicates that it's time to search for a new set of upcoming wallpapers
-            if (WallpaperPathing.ActiveWallpapers[index] == WallpaperPathing.NextWallpapers[index] && !ignoreIdenticalWallpapers) WallpaperPathing.SetNextWallpaperOrder(); // sets PathData.NextWallpapers
+            if (WallpaperPathing.ActiveWallpapers[index] == WallpaperPathing.NextWallpapers[index] && !ignoreIdenticalWallpapers) WallpaperPathing.SetNextWallpaperOrder(index); // sets PathData.NextWallpapers
             string wallpaperPath = WallpaperPathing.ActiveWallpapers[index] = WallpaperPathing.NextWallpapers[index];
 
             //-----Update Notify Icons-----
@@ -109,6 +109,7 @@ namespace WallpaperManager
             //? without this, if the inspector wasn't open prior to setting a new wallpaper it would never allow it's MvpPlayer to display
             // TODO find a permanent solution to this | Using a different player such as VLC did not work
             WallpaperData.WallpaperManagerForm.FixInspectorPlayer(WallpaperPathing.ActiveWallpapers[index]);
+
             //-----Update Wallpaper Forms-----
             //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings
             //! the moment this is shown, any new mpvplayers will stop working, only the ones that were player previously will continue to function
@@ -149,7 +150,7 @@ namespace WallpaperManager
             }
         }
 
-        public void NextWallpaper(int wallpaperIndex, bool ignoreErrorMessages)
+        public void NextWallpaper(int index, bool ignoreErrorMessages)
         {
             if (!WallpaperData.IsLoadingData) // Rank Percentiles won't be properly set-up until after a theme is loaded, which can cause a crash is NextWallpaper is called
             {
@@ -157,8 +158,12 @@ namespace WallpaperManager
                 {
                     if (!WallpaperData.NoImagesActive() && WallpaperData.GetAllRankedImages().Length != 0)
                     {
-                        ResetTimer(wallpaperIndex);
-                        SetWallpaper(wallpaperIndex, false); // randomize wallpaper will check if it even can randomize the wallpapers first
+                        //? Note that Previous Wallpaper should only be set when Next Wallpaper is updated
+                        // Set push the current wallpaper to its corresponding index in previous wallpapers if a wallpaper exists
+                        if (WallpaperPathing.ActiveWallpapers[index] != null) WallpaperPathing.PreviousWallpapers[index].Push(WallpaperPathing.ActiveWallpapers[index]);
+
+                        ResetTimer(index);
+                        SetWallpaper(index, false); // randomize wallpaper will check if it even can randomize the wallpapers first
                     }
                     else
                     {
@@ -175,26 +180,33 @@ namespace WallpaperManager
             }
         }
 
-        // sets all wallpapers to their previous wallpaper, if one existed
         public void PreviousWallpaper()
         {
-            if (WallpaperPathing.PreviousWallpapers.Count > 1) // the first wallpaper will be filled with empty strings
+            for (int i = 0; i < WallpaperPathing.PreviousWallpapers.Length; i++)
             {
-                WallpaperPathing.PreviousWallpapers.Pop().CopyTo(WallpaperPathing.NextWallpapers, 0);
+                PreviousWallpaper(i);
+            }
+        }
 
-                for (int i = 0; i < WallpaperPathing.NextWallpapers.Length; i++)
+        // sets all wallpapers to their previous wallpaper, if one existed
+        public void PreviousWallpaper(int index)
+        {
+            if (WallpaperPathing.PreviousWallpapers[index].Count > 0)
+            {
+                WallpaperPathing.NextWallpapers[index] = WallpaperPathing.PreviousWallpapers[index].Pop();
+
+                if (File.Exists(WallpaperPathing.NextWallpapers[index]))
                 {
-                    if (File.Exists(WallpaperPathing.NextWallpapers[i]))
-                    {
-                        ResetTimer(i);
-                        SetWallpaper(i, true);
-                    }
+                    ResetTimer(index);
+                    SetWallpaper(index, true);
                 }
             }
+            /*
             else
             {
                 MessageBox.Show("There are no more previous wallpapers");
             }
+            */
         }
     }
 }

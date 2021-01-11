@@ -15,7 +15,7 @@ namespace WallpaperManager.Pathing
     {
         public static string[] ActiveWallpapers = new string[Screen.AllScreens.Length]; // holds paths of the currently active wallpapers
         public static string[] NextWallpapers = new string[Screen.AllScreens.Length]; // derived from UpcomingWallpapers, holds the next set of wallpapers
-        public static Stack<string[]> PreviousWallpapers = new Stack<string[]>(); // allows you to return back to every wallpaper encountered during the current session
+        public static Stack<string>[] PreviousWallpapers = new Stack<string>[Screen.AllScreens.Length]; // allows you to return back to every wallpaper encountered during the current session
         public static Queue<string[]> UpcomingWallpapers = new Queue<string[]>(); // allows display-dependent wallpaper orders to be set without synced displays
         public static readonly string WallpaperDataDirectory = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData";
         public static readonly string ActiveWallpaperImageFile = Path.GetDirectoryName(Application.ExecutablePath) + @"\WallpaperData\ActiveWallpaperImage.bmp";
@@ -23,13 +23,18 @@ namespace WallpaperManager.Pathing
         public static string ActiveWallpaperTheme; // the currently loaded wallpaper theme
 
         /// <summary>
-        /// Ensures that all necessary folders exist
+        /// Ensures that all necessary folders exist & creates the stacks for previous wallpapers
         /// </summary>
         public static void Validate()
         {
             if (!Directory.Exists(WallpaperDataDirectory))
             {
                 Directory.CreateDirectory(WallpaperDataDirectory);
+            }
+
+            for (int i = 0; i < PreviousWallpapers.Length; i++)
+            {
+                PreviousWallpapers[i] = new Stack<string>();
             }
         }
 
@@ -46,12 +51,8 @@ namespace WallpaperManager.Pathing
             return true;
         }
 
-        public static void SetNextWallpaperOrder()
+        public static void SetNextWallpaperOrder(int index)
         {
-            string[] previousWallpapers = new string[ActiveWallpapers.Length];
-            ActiveWallpapers.CopyTo(previousWallpapers, 0);
-            PreviousWallpapers.Push(previousWallpapers);
-
             RandomizeWallpapers(); // enqueues next set of upcoming wallpapers
             NextWallpapers = UpcomingWallpapers.Dequeue();
         }
@@ -66,24 +67,22 @@ namespace WallpaperManager.Pathing
             for (int i = 0; i < DisplayData.Displays.Length; i++)
             {
                 ImageType imageTypeToSearchFor = ImageType.None;
-                if (!OptionsData.IsFrequencyEqual())
+                
+                double staticChance = OptionsData.GetExactFrequency(ImageType.Static);
+                double gifChance = OptionsData.GetExactFrequency(ImageType.GIF);
+                double videoChance = OptionsData.GetExactFrequency(ImageType.Video);
+
+                ImageType[] imageTypeIndexes = {ImageType.Static, ImageType.GIF, ImageType.Video};
+                double[] imageTypePercentages = {staticChance, gifChance, videoChance};
+
+                imageTypeToSearchFor = rand.NextInWeightedArray(imageTypeIndexes, imageTypePercentages);
+
+                if (WallpaperData.IsAllImagesOfTypeUnranked(imageTypeToSearchFor))
                 {
-                    double staticChance = OptionsData.GetExactFrequency(ImageType.Static);
-                    double gifChance = OptionsData.GetExactFrequency(ImageType.GIF);
-                    double videoChance = OptionsData.GetExactFrequency(ImageType.Video);
-
-                    ImageType[] imageTypeIndexes = {ImageType.Static, ImageType.GIF, ImageType.Video};
-                    double[] imageTypePercentages = {staticChance, gifChance, videoChance};
-
-                    imageTypeToSearchFor = rand.NextInWeightedArray(imageTypeIndexes, imageTypePercentages);
-
-                    if (WallpaperData.IsAllImagesOfTypeUnranked(imageTypeToSearchFor))
-                    {
-                        MessageBox.Show("Attempted to set a wallpaper to an image type with no valid/ranked images. Wallpaper Change Cancelled [IMAGE TYPE: " + imageTypeToSearchFor + "]" +
-                                        "\n\nEither change relative frequency chance of the above image type to 0% (Under Frequency in the options menu)" +
-                                        "or activate some wallpapers of the above image type (Unranked images with a rank of 0 are inactive");
-                        return false;
-                    }
+                    MessageBox.Show("Attempted to set a wallpaper to an image type with no valid/ranked images. Wallpaper Change Cancelled [IMAGE TYPE: " + imageTypeToSearchFor + "]" +
+                                    "\n\nEither change relative frequency chance of the above image type to 0% (Under Frequency in the options menu)" +
+                                    "or activate some wallpapers of the above image type (Unranked images with a rank of 0 are inactive");
+                    return false;
                 }
 
                 int randomRank = GetRandomRank(ref rand, imageTypeToSearchFor);

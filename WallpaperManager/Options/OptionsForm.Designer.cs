@@ -615,6 +615,7 @@
             this.checkBoxWeightedFrequency.TabIndex = 67;
             this.checkBoxWeightedFrequency.Text = "Weighted Frequency";
             this.checkBoxWeightedFrequency.UseVisualStyleBackColor = true;
+            this.checkBoxWeightedFrequency.CheckedChanged += new System.EventHandler(this.checkBoxWeightedFrequency_CheckedChanged);
             // 
             // OptionsForm
             // 

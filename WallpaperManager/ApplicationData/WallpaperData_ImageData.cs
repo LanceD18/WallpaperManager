@@ -27,10 +27,48 @@ namespace WallpaperManager.ApplicationData
         //? this doesn't need to be reactive lists since the regular RankData does enough to handle the issue presented (Checking if rank percentiles should be updated)
         private static Dictionary<ImageType, List<List<string>>> ImagesOfTypeRankData;
 
+        private static Dictionary<ImageType, double> ImageTypeWeights = new Dictionary<ImageType, double>()
+        {
+            {ImageType.Static, 0},
+            {ImageType.GIF, 0},
+            {ImageType.Video, 0}
+        };
+
         //! No longer needed currently, consider removing this in the future
         private static Dictionary<ImageType, List<string>> ActiveImagesOfType;
 
         public static string[] GetAllImagesOfType(ImageType imageType) => ImagesOfType[imageType].Keys.ToArray();
+
+        public static int GetImagesOfTypeRankSum(ImageType imageType)
+        {
+            int count = 0;
+            for (var i = 1; i < ImagesOfTypeRankData[imageType].Count; i++) //? i starts at 1 since rank 0 images are not included [Although they are likely inactive anyways]
+            {
+                List<string> rank = ImagesOfTypeRankData[imageType][i];
+                count += rank.Count * i; // i = rank
+            }
+
+            return count;
+        }
+
+        public static void UpdateImageTypeWeights()
+        {
+            int totalSum = 0;
+            Dictionary<ImageType, int> ImageTypeRankSum = new Dictionary<ImageType, int>();
+            foreach (ImageType imageType in ImageTypeWeights.Keys)
+            {
+                int sum = GetImagesOfTypeRankSum(imageType);
+                ImageTypeRankSum.Add(imageType, sum);
+                totalSum += sum;
+            }
+
+            foreach (ImageType imageType in ImageTypeRankSum.Keys)
+            {
+                ImageTypeWeights[imageType] = (double)ImageTypeRankSum[imageType] / totalSum;
+            }
+        }
+
+        public static double GetImageOfTypeWeight(ImageType imageType) => ImageTypeWeights[imageType];
 
         public static bool IsAllImagesOfTypeUnranked(ImageType imageType) => ImagesOfTypeRankData[imageType][0].Count == ImagesOfType[imageType].Count;
 
@@ -324,32 +362,38 @@ namespace WallpaperManager.ApplicationData
             {
                 string taggedName = "";
 
-                foreach (string category in Tags.Keys)
+                foreach (CategoryData category in TaggingInfo.GetAllCategories()) //? ordering matters here so we'll have to get the proper order
                 {
-                    //List<string> tagsOrderedByCount = Tags[category].OrderBy(t => TaggingInfo.GetTag(category, t).GetLinkedImageCount()).ToList();
-                    List<string> alphabeticTags = Tags[category].OrderBy(t => t).ToList();
-
-                    foreach (TagData tag in GetTags())
+                    string categoryName = category.Name;
+                    if (Tags.ContainsKey(categoryName)) //? remember that imageData.Tags may be ordered improperly
                     {
-                        if (!tag.UseForNaming)
-                        {
-                            alphabeticTags.Remove(tag.Name);
-                            continue;
-                        }
+                        //? This block will set the alphabetic order of every tag contained within this category before moving onto the next category
 
-                        for (int i = alphabeticTags.Count - 1; i >= 0; i--)
+                        //List<string> tagsOrderedByCount = Tags[category].OrderBy(t => TaggingInfo.GetTag(category, t).GetLinkedImageCount()).ToList();
+                        List<string> alphabeticTags = Tags[categoryName].OrderBy(t => t).ToList();
+
+                        foreach (TagData tag in GetTags())
                         {
-                            Tuple<string, string> tagInfo = new Tuple<string, string>(category, alphabeticTags[i]);
-                            if (tag.ParentTags.Contains(tagInfo) && !TagNamingExceptions.Contains(tagInfo))
+                            if (!tag.UseForNaming)
                             {
-                                alphabeticTags.RemoveAt(i);
+                                alphabeticTags.Remove(tag.Name);
+                                continue;
+                            }
+
+                            for (int i = alphabeticTags.Count - 1; i >= 0; i--)
+                            {
+                                Tuple<string, string> tagInfo = new Tuple<string, string>(categoryName, alphabeticTags[i]);
+                                if (tag.ParentTags.Contains(tagInfo) && !TagNamingExceptions.Contains(tagInfo)) // this prevents the parent tags of a tag from being included
+                                {
+                                    alphabeticTags.RemoveAt(i);
+                                }
                             }
                         }
-                    }
 
-                    foreach (string tag in alphabeticTags)
-                    {
-                        taggedName += tag;
+                        foreach (string tag in alphabeticTags)
+                        {
+                            taggedName += tag;
+                        }
                     }
                 }
 

@@ -172,26 +172,33 @@ namespace WallpaperManager.Tagging
 
         public void SetName(string newName)
         {
-            foreach (string image in LinkedImages)
+            if (Name != newName)
             {
-                WallpaperData.GetImageData(image).RenameTag(ParentCategoryName, Name, newName);
-            }
+                foreach (string image in LinkedImages)
+                {
+                    WallpaperData.GetImageData(image).RenameTag(ParentCategoryName, Name, newName);
+                }
 
-            foreach (Tuple<string, string> tagInfo in ParentTags)
+                foreach (Tuple<string, string> tagInfo in ParentTags)
+                {
+                    TagData parentTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2);
+                    parentTag.ChildTags.Remove(new Tuple<string, string>(ParentCategoryName, Name));
+                    parentTag.ChildTags.Add(new Tuple<string, string>(ParentCategoryName, newName));
+                }
+
+                foreach (Tuple<string, string> tagInfo in ChildTags)
+                {
+                    TagData childTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2);
+                    childTag.ParentTags.Remove(new Tuple<string, string>(ParentCategoryName, Name));
+                    childTag.ParentTags.Add(new Tuple<string, string>(ParentCategoryName, newName));
+                }
+
+                Name = newName;
+            }
+            else
             {
-                TagData parentTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2);
-                parentTag.ChildTags.Remove(new Tuple<string, string>(ParentCategoryName, Name));
-                parentTag.ChildTags.Add(new Tuple<string, string>(ParentCategoryName, newName));
+                Debug.WriteLine("Attempted to rename a tag to the same name, operation cancelled");
             }
-
-            foreach (Tuple<string, string> tagInfo in ChildTags)
-            {
-                TagData childTag = WallpaperData.TaggingInfo.GetTag(tagInfo.Item1, tagInfo.Item2);
-                childTag.ParentTags.Remove(new Tuple<string, string>(ParentCategoryName, Name));
-                childTag.ParentTags.Add(new Tuple<string, string>(ParentCategoryName, newName));
-            }
-
-            Name = newName;
         }
 
         /// <summary>

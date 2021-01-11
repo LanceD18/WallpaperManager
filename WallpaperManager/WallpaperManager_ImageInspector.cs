@@ -235,14 +235,8 @@ namespace WallpaperManager
             panelImageInspector.Visible = false;
             panelImageInspector.ResumeLayout();
             UpdateImageRanks();
-        }
 
-        private void MpvBarUpdater()
-        {
-            WallpaperData.GetImageData(InspectedImage).VideoSettings = new WallpaperData.VideoSettings(
-                inspector_mpvVideoBar.GetVolume(),
-                inspector_mpvVideoBar.GetSpeed());
-
+            //? The volume may have been updated, this ensures that it does so
             for (var i = 0; i < WallpaperPathing.ActiveWallpapers.Length; i++)
             {
                 if (WallpaperPathing.ActiveWallpapers[i] == InspectedImage) // this wallpaper is currently active, change its volume
@@ -250,6 +244,13 @@ namespace WallpaperManager
                     wallpapers[i].SetVolume(inspector_mpvVideoBar.GetVolume());
                 }
             }
+        }
+
+        private void MpvBarUpdater()
+        {
+            WallpaperData.GetImageData(InspectedImage).VideoSettings = new WallpaperData.VideoSettings(
+                inspector_mpvVideoBar.GetVolume(),
+                inspector_mpvVideoBar.GetSpeed());
         }
     }
 }

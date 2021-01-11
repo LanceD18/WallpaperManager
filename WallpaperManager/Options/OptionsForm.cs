@@ -45,7 +45,10 @@ namespace WallpaperManager.Options
             checkBoxLargerImagesOnLargerDisplays.Checked = ThemeOptions.LargerImagesOnLargerDisplays;
             checkBoxHigherRankedImagesOnLargerDisplays.Checked = ThemeOptions.HigherRankedImagesOnLargerDisplays;
             checkBoxEnableDetectionOfInactiveImages.Checked = ThemeOptions.EnableDetectionOfInactiveImages;
+
             checkBoxWeightedRanks.Checked = ThemeOptions.WeightedRanks;
+            checkBoxWeightedFrequency.Checked = ThemeOptions.WeightedFrequency;
+
             checkBoxAllowTagNamingMoved.Checked = ThemeOptions.AllowTagBasedRenamingForMovedImages;
 
             checkBoxExcludeStatic.Checked = ThemeOptions.ExcludeRenamingStatic;
@@ -88,8 +91,10 @@ namespace WallpaperManager.Options
             ThemeOptions.ExcludeRenamingGif = checkBoxExcludeGif.Checked;
             ThemeOptions.ExcludeRenamingVideo = checkBoxExcludeVideo.Checked;
 
-            bool updateRankPercentiles = ThemeOptions.WeightedRanks != checkBoxWeightedRanks.Checked;
+            //? This will tell the program to update rank percentiles on the next wallpaper change
+            bool updateRankPercentiles = ThemeOptions.WeightedRanks != checkBoxWeightedRanks.Checked || ThemeOptions.WeightedFrequency != checkBoxWeightedFrequency.Checked;
             ThemeOptions.WeightedRanks = checkBoxWeightedRanks.Checked;
+            ThemeOptions.WeightedFrequency = checkBoxWeightedFrequency.Checked;
 
             //--Video Options--
             ThemeOptions.VideoOptions.MuteIfAudioPlaying = checkBoxAudioPlaying.Checked;
@@ -267,6 +272,8 @@ namespace WallpaperManager.Options
 
             // Updates Frequency on pressing the enter key
             // the SuppressKeyPress prevents the ding audio when pressing enter btw
+
+            // Relative
             textBoxRelativeStatic.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter)
@@ -292,6 +299,7 @@ namespace WallpaperManager.Options
                 }
             };
 
+            // Exact
             textBoxExactStatic.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter)
@@ -352,5 +360,14 @@ namespace WallpaperManager.Options
             ResetFrequencyText();
         }
         #endregion
+
+        private void checkBoxWeightedFrequency_CheckedChanged(object sender, EventArgs e)
+        {
+            WallpaperData.UpdateImageTypeWeights();
+            ThemeOptions.WeightedFrequency = checkBoxWeightedFrequency.Checked; //? this needs to be modified before the below is called
+            //? the image type doesn't matter here, only calling this so that the exact frequencies can be updated | ToString() must remain to use the proper method
+            FrequencyCalculator.UpdateFrequency(textBoxRelativeStatic, ImageType.Static, FrequencyType.Relative, ref ThemeOptions);
+            ResetFrequencyText();
+        }
     }
 }
