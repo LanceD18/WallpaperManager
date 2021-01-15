@@ -1,4 +1,4 @@
-﻿namespace WallpaperManager.Wallpaper
+﻿namespace WallpaperManager.WallpaperForm
 {
     partial class WallpaperForm
     {
@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBoxWallpaper = new System.Windows.Forms.PictureBox();
             this.panelWallpaper = new System.Windows.Forms.Panel();
+            this.timerAudioFixer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWallpaper)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,6 +49,11 @@
             this.panelWallpaper.Name = "panelWallpaper";
             this.panelWallpaper.Size = new System.Drawing.Size(200, 100);
             this.panelWallpaper.TabIndex = 2;
+            // 
+            // timerAudioFixer
+            // 
+            this.timerAudioFixer.Enabled = true;
+            this.timerAudioFixer.Tick += new System.EventHandler(this.timerAudioFixer_Tick);
             // 
             // WallpaperForm
             // 
@@ -67,5 +74,6 @@
 
         private System.Windows.Forms.PictureBox pictureBoxWallpaper;
         private System.Windows.Forms.Panel panelWallpaper;
+        private System.Windows.Forms.Timer timerAudioFixer;
     }
 }

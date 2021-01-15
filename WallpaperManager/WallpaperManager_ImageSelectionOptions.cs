@@ -107,7 +107,10 @@ namespace WallpaperManager
                         {
                             int imageIndex = selectedImages.IndexOf(InspectedImage);
                             string[] newName = ImagePathing.RenameImage(InspectedImage, moveDirectory, allowTagBasedNaming);
-                            selectedImages[imageIndex] = newName[0]; // there will only be one entry in this array, the renamed image
+                            if (newName != null && newName.Length > 0) // this can occur if the given image is not able to be named
+                            {
+                                selectedImages[imageIndex] = newName[0]; // there will only be one entry in this array, the renamed image
+                            }
                         }
                         else
                         {

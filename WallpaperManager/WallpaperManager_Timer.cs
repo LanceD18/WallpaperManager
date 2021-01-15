@@ -118,9 +118,20 @@ namespace WallpaperManager
             {
                 //xDebug.WriteLine("Loops: " + wallpapers[index].Loops + " | Loop Min : " + OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops);
                 //xDebug.WriteLine("Timer: " + wallpapers[index].WallpaperUptime.ElapsedMilliseconds + " | Timer Max: " + OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000);
-                if (wallpapers[index].Loops >= OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops ||
-                    (wallpapers[index].WallpaperUptime.ElapsedMilliseconds >= OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000 && // 1 second = 1000 milliseconds
-                     OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime > 0))
+                bool readyToSetWallpaper;
+
+                // checking this property at 0 would make it always true, when it's intended to be infinite
+                if (OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime > 0)
+                {
+                    readyToSetWallpaper = wallpapers[index].Loops >= OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops ||
+                                          wallpapers[index].WallpaperUptime.ElapsedMilliseconds >= OptionsData.ThemeOptions.VideoOptions.MaximumVideoTime * 1000; // 1 second = 1000 milliseconds)
+                }
+                else
+                {
+                    readyToSetWallpaper = wallpapers[index].Loops >= OptionsData.ThemeOptions.VideoOptions.MinimumVideoLoops;
+                }
+
+                if (readyToSetWallpaper)
                 {
                     this.BeginInvoke((MethodInvoker) delegate { NextWallpaper(index, true); });
                 }

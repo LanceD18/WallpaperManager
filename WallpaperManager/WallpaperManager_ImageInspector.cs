@@ -195,7 +195,7 @@ namespace WallpaperManager
                 inspector_panelVideo.Enabled = true;
                 inspector_panelVideo.Visible = true;
 
-                inspector_mpvPlayer.Reload(InspectedImage);
+                Task.Run(() => inspector_mpvPlayer.Reload(InspectedImage));
                 WallpaperData.VideoSettings VideoSettings = WallpaperData.GetImageData(InspectedImage).VideoSettings;
                 inspector_mpvPlayer.Volume = VideoSettings.Volume;
                 inspector_mpvPlayer.Speed = VideoSettings.PlaybackSpeed;

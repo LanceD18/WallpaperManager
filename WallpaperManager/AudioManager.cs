@@ -28,7 +28,7 @@ namespace WallpaperManager
 
         public static void CheckForMuteConditions()
         {
-            Thread thread = new Thread(() =>
+            Task.Run(() =>
             {
                 int potentialAudioCount = 0;
                 foreach (string wallpaper in WallpaperPathing.ActiveWallpapers)
@@ -90,7 +90,6 @@ namespace WallpaperManager
 
                 if (IsWallpapersMuted && !muted) UnmuteWallpapers();
             });
-            thread.Start();
 
             //x while (thread.IsAlive) { /* do nothing | Thread.Join() will just freeze the application */ } << this is only needed if you're returning something
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Emgu.CV;
 using LanceTools;
@@ -9,7 +10,7 @@ using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
 using Color = System.Drawing.Color;
 
-namespace WallpaperManager.Wallpaper
+namespace WallpaperManager.WallpaperForm
 {
     public partial class WallpaperForm : Form
     {
@@ -19,7 +20,7 @@ namespace WallpaperManager.Wallpaper
         private const double FRAME_LENGTH = (double)1 / 60;
 
         private MpvPlayer player;
-        private string activeImagePath;
+        private string activeVideoImagePath;
 
         public int Loops { get; private set; }
         public Stopwatch WallpaperUptime { get; private set; } = new Stopwatch();
@@ -125,7 +126,7 @@ namespace WallpaperManager.Wallpaper
                     pictureBoxWallpaper.Enabled = true;
                     pictureBoxWallpaper.Visible = true;
 
-                    activeImagePath = null;
+                    activeVideoImagePath = null;
                 }
                 else
                 {
@@ -137,14 +138,18 @@ namespace WallpaperManager.Wallpaper
 
                     panelWallpaper.Enabled = true;
                     panelWallpaper.Visible = true;
-                    player.Reload(imageLocation);
 
-                    //xDebug.WriteLine(imageLocation);
-                    WallpaperData.VideoSettings videoSettings = WallpaperData.GetImageData(imageLocation).VideoSettings;
-                    player.Volume = AudioManager.IsWallpapersMuted ? 0 : videoSettings.Volume;
-                    player.Speed = videoSettings.PlaybackSpeed;
+                    activeVideoImagePath = imageLocation;
 
-                    activeImagePath = imageLocation;
+                    Task.Run(() =>
+                    {
+                        player.Reload(imageLocation);
+
+                        WallpaperData.VideoSettings videoSettings = WallpaperData.GetImageData(imageLocation).VideoSettings;
+                        player.Volume = AudioManager.IsWallpapersMuted ? 0 : videoSettings.Volume;
+                        player.Speed = videoSettings.PlaybackSpeed;
+                    });
+
                 }
             }
 
@@ -207,7 +212,7 @@ namespace WallpaperManager.Wallpaper
                 if (panelWallpaper.Visible)
                 {
                     panelWallpaper.SuspendLayout();
-                    using (VideoCapture video = new VideoCapture(activeImagePath))
+                    using (VideoCapture video = new VideoCapture(activeVideoImagePath))
                     {
                         using (Mat m = new Mat()) video.Read(m);
                         //video.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosAviRatio, 0);
@@ -300,9 +305,28 @@ namespace WallpaperManager.Wallpaper
 
         public void Unmute()
         {
-            if (player != null && activeImagePath != null)
+            if (player != null && activeVideoImagePath != null)
             {
-                player.Volume = WallpaperData.GetImageData(activeImagePath).VideoSettings.Volume;
+                player.Volume = WallpaperData.GetImageData(activeVideoImagePath).VideoSettings.Volume;
+            }
+        }
+
+        private void timerAudioFixer_Tick(object sender, EventArgs e)
+        {
+            if (IsPlayingVideo && !AudioManager.IsWallpapersMuted)
+            {
+                // TODO For whatever reason videos randomly use the audio of a previous video, find a more permanent solution to this fix
+                // TODO The commented fix did not solve this
+                // TODO The occurence is 'rare' enough for me to not know if the below fix has actually done anything yet
+                player.Volume = WallpaperData.GetImageData(activeVideoImagePath).VideoSettings.Volume;
+                /*
+                WallpaperData.VideoSettings videoSettings = WallpaperData.GetImageData(activeVideoImagePath).VideoSettings;
+                if (player.Volume != videoSettings.Volume)
+                {
+                    Debug.WriteLine("Error: Had to fix the volume of a wallpaper with the timerAudioFix control");
+                    player.Volume = videoSettings.Volume;
+                }
+                */
             }
         }
     }

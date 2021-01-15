@@ -12,14 +12,14 @@ using LanceTools.Mpv;
 using Mpv.NET.Player;
 using WallpaperManager.ApplicationData;
 using WallpaperManager.Pathing;
-using WallpaperManager.Wallpaper;
+using WallpaperManager.WallpaperForm;
 
 namespace WallpaperManager
 {
     //? Implementation of wallpaper via placing a borderless form behind the desktop icons
     public partial class WallpaperManagerForm : Form
     {
-        private WallpaperForm[] wallpapers;
+        private WallpaperForm.WallpaperForm[] wallpapers;
 
         // Derived from: https://www.codeproject.com/Articles/856020/Draw-Behind-Desktop-Icons-in-Windows-plus
 
@@ -85,26 +85,35 @@ namespace WallpaperManager
             IntPtr workerw = GetDesktopWorkerW();
 
             int monitorCount = DisplayData.Displays.Length;
-            wallpapers = new WallpaperForm[monitorCount];
+            wallpapers = new WallpaperForm.WallpaperForm[monitorCount];
             for (int i = 0; i < monitorCount; i++)
             {
-                wallpapers[i] = new WallpaperForm(DisplayData.Displays[i], workerw);
+                wallpapers[i] = new WallpaperForm.WallpaperForm(DisplayData.Displays[i], workerw);
             }
         }
 
         private void SetWallpaper(int index, bool ignoreIdenticalWallpapers)
         {
             //-----Set Next Wallpaper-----
-            // this indicates that it's time to search for a new set of upcoming wallpapers
-            if (WallpaperPathing.ActiveWallpapers[index] == WallpaperPathing.NextWallpapers[index] && !ignoreIdenticalWallpapers) WallpaperPathing.SetNextWallpaperOrder(index); // sets PathData.NextWallpapers
-            string wallpaperPath = WallpaperPathing.ActiveWallpapers[index] = WallpaperPathing.NextWallpapers[index];
+            string wallpaperPath = WallpaperPathing.SetNextWallpaperOrder(index, ignoreIdenticalWallpapers);
 
             //-----Update Notify Icons-----
             string wallpaperName = new FileInfo(wallpaperPath).Name; // pathless string of file name
 
-            wallpaperMenuItems[index].Text = WallpaperData.ContainsImage(wallpaperPath) ?
-                index + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName :
-                index + 1 + " | [NOT FOUND]" + wallpaperName; wallpaperMenuItems[index].Text = WallpaperData.ContainsImage(wallpaperPath) ? index + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName : index + 1 + " | [NOT FOUND]" + wallpaperName;
+            if (WallpaperData.ContainsImage(wallpaperPath))
+            {
+                /*x
+                wallpaperMenuItems[index].Text = WallpaperData.ContainsImage(wallpaperPath) ?
+                    index + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName :
+                    index + 1 + " | [NOT FOUND]" + wallpaperName;
+                */
+
+                wallpaperMenuItems[index].Text = index + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName;
+            }
+            else //? this can occur after swapping themes as next wallpaper still holds data from the previous theme
+            {
+                WallpaperPathing.SetNextWallpaperOrder(index, ignoreIdenticalWallpapers);
+            }
 
             //? without this, if the inspector wasn't open prior to setting a new wallpaper it would never allow it's MvpPlayer to display
             // TODO find a permanent solution to this | Using a different player such as VLC did not work
@@ -112,7 +121,7 @@ namespace WallpaperManager
 
             //-----Update Wallpaper Forms-----
             //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings
-            //! the moment this is shown, any new mpvplayers will stop working, only the ones that were player previously will continue to function
+            //! the moment this is shown, any new MpvPlayers will stop working, only the ones that were started by the player previously will continue to function
             if (!wallpapers[index].Visible) wallpapers[index].Show(); // this is processed only once after the first wallpaper change
             wallpapers[index].SetWallpaper(WallpaperPathing.ActiveWallpapers[index]);
         }

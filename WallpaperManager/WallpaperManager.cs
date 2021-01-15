@@ -26,7 +26,7 @@ using WallpaperManager.Controls;
 using WallpaperManager.Options;
 using WallpaperManager.Pathing;
 using WallpaperManager.Tagging;
-using WallpaperManager.Wallpaper;
+using WallpaperManager.WallpaperForm;
 
 namespace WallpaperManager
 {
@@ -100,7 +100,7 @@ namespace WallpaperManager
             // Upon closing the application you'll revert back to your default, windows wallpapers
             SystemParametersInfo(SetDeskWallpaper, 0, null, UpdateIniFile | SendWinIniChange);
 
-            foreach (WallpaperForm wallpaper in wallpapers)
+            foreach (WallpaperForm.WallpaperForm wallpaper in wallpapers)
             {
                 if (!wallpaper.InvokeRequired)
                 {
@@ -166,6 +166,7 @@ namespace WallpaperManager
             {
                 Hide();
                 notifyIconWallpaperManager.Visible = true;
+                DeactivateImageInspector(); // turn off the inspector if it's on, otherwise videos will continue to play in the background (with audio)
             }
         }
 
@@ -200,6 +201,7 @@ namespace WallpaperManager
 
         private void HandleHotKey()
         {
+            // opens the default theme
             if (OptionsData.EnableDefaultThemeHotkey)
             {
                 WallpaperData.SaveData(WallpaperPathing.ActiveWallpaperTheme);
@@ -250,6 +252,6 @@ namespace WallpaperManager
             ClearImageFolders();
         }
 
-        public WallpaperForm[] GetWallpapers() => wallpapers;
+        public WallpaperForm.WallpaperForm[] GetWallpapers() => wallpapers;
     }
 }

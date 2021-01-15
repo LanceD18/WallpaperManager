@@ -275,7 +275,7 @@ namespace WallpaperManager
         //? This allows the image to be disposed when changing pages, otherwise it would just be loaded in the ImageEditorControl
         public void LoadImage(ImageEditorControl parentEditorControl, string imagePath)
         {
-            Thread thread = new Thread(() =>
+            Task.Run(() =>
             {
                 Image image = WallpaperManagerTools.GetImageFromFile(imagePath);
                 if (image == null) return; // this will happen to unsupported file types
@@ -288,7 +288,6 @@ namespace WallpaperManager
                 parentEditorControl.SetBackgroundImage(imageBitmap);
 
             });
-            thread.Start();
         }
 
         public string GetActiveImage()

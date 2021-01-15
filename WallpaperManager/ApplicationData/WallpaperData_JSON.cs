@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -23,6 +24,8 @@ namespace WallpaperManager.ApplicationData
         public static readonly int LargestMaxRank = 1000;
         private static string jpxToJpgWarning;
 
+        public static Thread SavingThread;
+
         public class JsonWallpaperData
         {
             [JsonProperty("ThemeOptions")] public ThemeOptions themeOptions;
@@ -40,8 +43,8 @@ namespace WallpaperManager.ApplicationData
             public JsonWallpaperData(ImageData[] imageData, Dictionary<string, bool> imageFolders)
             {
                 //! This handles SAVING!!! | Don't go to this code segment for modifying how data is loaded!
-                themeOptions = OptionsData.ThemeOptions;
                 miscData = new MiscData(); // values are updated in the constructor
+                themeOptions = OptionsData.ThemeOptions;
                 this.imageFolders = imageFolders;
                 tagData = TaggingInfo.GetAllCategories();
                 this.imageData = imageData;
@@ -77,18 +80,25 @@ namespace WallpaperManager.ApplicationData
         }
 
         // Save Data
-        public static void SaveData(string path)
+        public static async void SaveData(string path)
         {
+            if (SavingThread != null && SavingThread.IsAlive) return;
+
             if (path != null)
             {
+                WallpaperPathing.ActiveWallpaperTheme = path;
                 JsonWallpaperData jsonWallpaperData = new JsonWallpaperData(FileData.Values.ToArray(), ImageFolders);
 
-                using (StreamWriter file = File.CreateText(path))
+                //? using a regular Task.Run process here will cause the program to crash (and save to be incomplete) if this method is accessed too rapidly
+                //? this allows this method to only be accessed if the thread is done
+                SavingThread = new Thread( () =>
                 {
-                    new JsonSerializer { Formatting = Formatting.Indented }.Serialize(file, jsonWallpaperData);
-                }
-
-                WallpaperPathing.ActiveWallpaperTheme = path;
+                    using (StreamWriter file = File.CreateText(path))
+                    {
+                        new JsonSerializer {Formatting = Formatting.Indented}.Serialize(file, jsonWallpaperData);
+                    }
+                });
+                SavingThread.Start();
             }
             else
             {
@@ -156,6 +166,8 @@ namespace WallpaperManager.ApplicationData
             ImagesOfType.Clear();
             ImagesOfTypeRankData.Clear();
             ActiveImagesOfType.Clear();
+
+            WallpaperPathing.Reset();
 
             InitializeImagesOfType();
 

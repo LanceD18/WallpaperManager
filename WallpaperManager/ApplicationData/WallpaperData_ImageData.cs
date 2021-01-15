@@ -374,16 +374,30 @@ namespace WallpaperManager.ApplicationData
 
                         foreach (TagData tag in GetTags())
                         {
-                            if (!tag.UseForNaming)
+                            //? don't allow the contains check to cover this entire block as it'll cause issues with handling parent tag removal
+                            if (alphabeticTags.Contains(tag.Name))
+                            {
+                                Tuple<string, string> curTagInfo = new Tuple<string, string>(categoryName, alphabeticTags[alphabeticTags.IndexOf(tag.Name)]);
+
+                                // tags with a naming exception can be used regardless of constraints
+                                if (TagNamingExceptions.Contains(curTagInfo)) continue;
+                            }
+
+                            // removes tags that are specifically disabled from renaming
+                            if (tag.ParentCategoryName == categoryName && !tag.UseForNaming)
                             {
                                 alphabeticTags.Remove(tag.Name);
                                 continue;
                             }
 
+                            // remove parent tags
+                            //? this loop should continue for the entire list as a tag can have multiple parents
                             for (int i = alphabeticTags.Count - 1; i >= 0; i--)
                             {
                                 Tuple<string, string> tagInfo = new Tuple<string, string>(categoryName, alphabeticTags[i]);
-                                if (tag.ParentTags.Contains(tagInfo) && !TagNamingExceptions.Contains(tagInfo)) // this prevents the parent tags of a tag from being included
+                                // this prevents the parent tags of a tag from being included
+                                //? yes TagNamingExceptions should be checked here too otherwise some parent tags may be removed
+                                if (tag.ParentTags.Contains(tagInfo) && !TagNamingExceptions.Contains(tagInfo))
                                 {
                                     alphabeticTags.RemoveAt(i);
                                 }

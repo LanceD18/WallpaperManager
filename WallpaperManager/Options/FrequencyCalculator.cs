@@ -127,24 +127,62 @@ namespace WallpaperManager.Options
                                  ThemeOptions.RelativeFrequency[ImageType.GIF] + 
                                  ThemeOptions.RelativeFrequency[ImageType.Video];
 
-            Debug.WriteLine("chanceTotal: " + chanceTotal);
 
-            Debug.WriteLine("Static: " + ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal);
-            Debug.WriteLine("GIF: " + ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal);
-            Debug.WriteLine("Video: " + ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal);
+            double staticRelativeChance = ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal;
+            double gifRelativeChance = ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal;
+            double videoRelativeChance = ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal;
+
+            Debug.WriteLine("chanceTotal: " + chanceTotal);
+            Debug.WriteLine("Static: " + staticRelativeChance);
+            Debug.WriteLine("GIF: " + gifRelativeChance);
+            Debug.WriteLine("Video: " + videoRelativeChance);
 
             if (!ThemeOptions.WeightedFrequency)
             {
-                ThemeOptions.ExactFrequency[ImageType.Static] = ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal;
-                ThemeOptions.ExactFrequency[ImageType.GIF] = ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal;
-                ThemeOptions.ExactFrequency[ImageType.Video] = ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal;
+                ThemeOptions.ExactFrequency[ImageType.Static] = staticRelativeChance;
+                ThemeOptions.ExactFrequency[ImageType.GIF] = gifRelativeChance;
+                ThemeOptions.ExactFrequency[ImageType.Video] = videoRelativeChance;
             }
             else
             {
                 // Gets the average of both the weighted frequency and the original exact frequency, allowing relative frequency to have an impact on the weight
-                ThemeOptions.ExactFrequency[ImageType.Static] = (WallpaperData.GetImageOfTypeWeight(ImageType.Static) + (ThemeOptions.RelativeFrequency[ImageType.Static] / chanceTotal)) / 2;
-                ThemeOptions.ExactFrequency[ImageType.GIF] = (WallpaperData.GetImageOfTypeWeight(ImageType.GIF) + (ThemeOptions.RelativeFrequency[ImageType.GIF] / chanceTotal)) / 2;
-                ThemeOptions.ExactFrequency[ImageType.Video] = (WallpaperData.GetImageOfTypeWeight(ImageType.Video) + (ThemeOptions.RelativeFrequency[ImageType.Video] / chanceTotal)) / 2;
+                double staticWeightedChance = WallpaperData.GetImageOfTypeWeight(ImageType.Static);
+                double gifWeightedChance = WallpaperData.GetImageOfTypeWeight(ImageType.GIF);
+                double videoWeightedChance = WallpaperData.GetImageOfTypeWeight(ImageType.Video);
+
+                if (staticWeightedChance == 1) // prevents a division by 0 error below
+                {
+                    ThemeOptions.ExactFrequency[ImageType.Static] = 1;
+                    ThemeOptions.ExactFrequency[ImageType.GIF] = ThemeOptions.ExactFrequency[ImageType.Video] = 0;
+                    return;
+                }
+                if (gifWeightedChance == 1) // prevents a division by 0 error below
+                {
+                    ThemeOptions.ExactFrequency[ImageType.GIF] = 1;
+                    ThemeOptions.ExactFrequency[ImageType.Static] = ThemeOptions.ExactFrequency[ImageType.Video] = 0;
+                    return;
+                }
+                if (videoWeightedChance == 1) // prevents a division by 0 error below
+                {
+                    ThemeOptions.ExactFrequency[ImageType.Video] = 1;
+                    ThemeOptions.ExactFrequency[ImageType.Static] = ThemeOptions.ExactFrequency[ImageType.GIF] = 0;
+                    return;
+                }
+
+                /*x
+                ThemeOptions.ExactFrequency[ImageType.Static] = (staticWeightedChance + staticRelativeChance) / 2;
+                ThemeOptions.ExactFrequency[ImageType.GIF] = (gifWeightedChance + gifRelativeChance) / 2;
+                ThemeOptions.ExactFrequency[ImageType.Video] = (videoWeightedChance + videoRelativeChance) / 2;
+                */
+
+                double staticWeightedRelativeChance = staticRelativeChance / (1 - staticWeightedChance);
+                double gifWeightedRelativeChance = gifRelativeChance / (1 - gifWeightedChance);
+                double videoWeightedRelativeChance = videoRelativeChance / (1 - videoWeightedChance);
+                double weightedChanceTotal = staticWeightedRelativeChance + gifWeightedRelativeChance + videoWeightedRelativeChance;
+
+                ThemeOptions.ExactFrequency[ImageType.Static] = staticWeightedRelativeChance / weightedChanceTotal;
+                ThemeOptions.ExactFrequency[ImageType.GIF] = gifWeightedRelativeChance / weightedChanceTotal;
+                ThemeOptions.ExactFrequency[ImageType.Video] = videoWeightedRelativeChance / weightedChanceTotal;
             }
         }
 

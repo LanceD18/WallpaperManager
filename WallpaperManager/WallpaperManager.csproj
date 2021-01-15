@@ -98,6 +98,9 @@
     <Reference Include="LanceTools.ControlLibrary">
       <HintPath>..\..\..\..\Code Library\C#\LanceTools\LanceTools\LanceTools.ControlLibrary\bin\Release\LanceTools.ControlLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="LanceTools.MpvExtensions">
+      <HintPath>..\..\..\..\Code Library\C#\LanceTools\LanceTools\LanceTools.MpvExtensions\bin\Release\LanceTools.MpvExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="LanceTools.VisualBasic">
       <HintPath>..\..\..\..\Code Library\C#\LanceTools\LanceTools\LanceTools.VisualBasic\bin\Release\netstandard2.0\LanceTools.VisualBasic.dll</HintPath>
     </Reference>
@@ -333,10 +336,10 @@
     <Compile Include="WallpaperManager_Display.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Wallpaper\WallpaperForm.cs">
+    <Compile Include="Wallpaper Form\WallpaperForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Wallpaper\WallpaperForm.Designer.cs">
+    <Compile Include="Wallpaper Form\WallpaperForm.Designer.cs">
       <DependentUpon>WallpaperForm.cs</DependentUpon>
     </Compile>
     <Compile Include="WallpaperManagerTools.cs" />
@@ -428,7 +431,7 @@
     <EmbeddedResource Include="Tagging\TagTabControl\TagTabControl.resx">
       <DependentUpon>TagTabControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Wallpaper\WallpaperForm.resx">
+    <EmbeddedResource Include="Wallpaper Form\WallpaperForm.resx">
       <DependentUpon>WallpaperForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WallpaperManager.resx">

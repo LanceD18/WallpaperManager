@@ -32,10 +32,22 @@ namespace WallpaperManager.Pathing
                 Directory.CreateDirectory(WallpaperDataDirectory);
             }
 
-            for (int i = 0; i < PreviousWallpapers.Length; i++)
-            {
-                PreviousWallpapers[i] = new Stack<string>();
-            }
+            InitializePreviousWallpapers();
+        }
+
+        public static void Reset() // resets all theme-related data to their default state
+        {
+            ActiveWallpapers = new string[Screen.AllScreens.Length];
+            NextWallpapers = new string[Screen.AllScreens.Length];
+            PreviousWallpapers = new Stack<string>[Screen.AllScreens.Length];
+            UpcomingWallpapers = new Queue<string[]>(); 
+
+            InitializePreviousWallpapers();
+        }
+
+        private static void InitializePreviousWallpapers()
+        {
+            for (int i = 0; i < PreviousWallpapers.Length; i++) PreviousWallpapers[i] = new Stack<string>();
         }
 
         public static bool IsWallpapersValid(string[] wallpapers)
@@ -51,10 +63,16 @@ namespace WallpaperManager.Pathing
             return true;
         }
 
-        public static void SetNextWallpaperOrder(int index)
+        public static string SetNextWallpaperOrder(int index, bool ignoreIdenticalWallpapers)
         {
-            RandomizeWallpapers(); // enqueues next set of upcoming wallpapers
-            NextWallpapers = UpcomingWallpapers.Dequeue();
+            // this indicates that it's time to search for a new set of upcoming wallpapers
+            if (ActiveWallpapers[index] == NextWallpapers[index] && !ignoreIdenticalWallpapers)
+            {
+                RandomizeWallpapers(); // enqueues next set of upcoming wallpapers
+                NextWallpapers = UpcomingWallpapers.Dequeue();
+            }
+
+            return ActiveWallpapers[index] = NextWallpapers[index];
         }
 
         private static bool RandomizeWallpapers()
