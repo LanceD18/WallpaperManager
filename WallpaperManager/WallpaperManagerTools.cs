@@ -92,6 +92,7 @@ namespace WallpaperManager
             }
         }
 
+        //! be careful not to have multiple threads accessing this at the same time, you can't have two threads accessing a bitmap at the same time
         public static Bitmap GetFirstVideoFrame(string videoPath)
         {
             Bitmap bitmap;

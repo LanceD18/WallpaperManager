@@ -33,22 +33,7 @@ namespace WallpaperManager
             {
                 _inspectedImage = value; 
                 labelSelectedImage.Text = value;
-
-                if (File.Exists(value))
-                {
-                    Image image = WallpaperManagerTools.GetImageFromFile(value);
-
-                    if (image != null)
-                    {
-                        labelImageSize.Text = image.Width + "x" + image.Height;
-                        labelImageSize.Left = panelImageSelector.Location.X - labelImageSize.Size.Width - 5;
-                        image.Dispose();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Attempted to load an unsupported file type");
-                    }
-                }
+                UpdateInspectedImageSizeText(value);
             }
         }
 
@@ -88,11 +73,13 @@ namespace WallpaperManager
 
             // Inspector Button Events
             SuspendLayout();
+            inspector_textBoxRankEditor.Click += (o, i) => inspector_textBoxRankEditor.SelectAll();
+
             inspector_textBoxRankEditor.LostFocus += (o, i) =>
             {
                 try
                 {
-                    WallpaperData.GetImageData(InspectedImage).Rank = Int32.Parse(inspector_textBoxRankEditor.Text);
+                    WallpaperData.GetImageData(InspectedImage).Rank = int.Parse(inspector_textBoxRankEditor.Text);
                     inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString();
                 }
                 catch
@@ -107,7 +94,7 @@ namespace WallpaperManager
                 {
                     try
                     {
-                        WallpaperData.GetImageData(InspectedImage).Rank = Int32.Parse(inspector_textBoxRankEditor.Text);
+                        WallpaperData.GetImageData(InspectedImage).Rank = int.Parse(inspector_textBoxRankEditor.Text);
                         inspector_textBoxRankEditor.Text = WallpaperData.GetImageRank(InspectedImage).ToString();
                     }
                     catch
@@ -169,7 +156,7 @@ namespace WallpaperManager
         }
 
         // also used for updating the image inspector
-        private void ActivateImageInspector()
+        private async void ActivateImageInspector()
         {
             IsViewingInspector = true;
 
@@ -195,7 +182,9 @@ namespace WallpaperManager
                 inspector_panelVideo.Enabled = true;
                 inspector_panelVideo.Visible = true;
 
-                Task.Run(() => inspector_mpvPlayer.Reload(InspectedImage));
+                await Task.Run(() => { inspector_mpvPlayer.Reload(InspectedImage); }).ConfigureAwait(false);
+
+                //? mpvPlayer functions do not need to be run from within an invoker as they are not on the UI thread
                 WallpaperData.VideoSettings VideoSettings = WallpaperData.GetImageData(InspectedImage).VideoSettings;
                 inspector_mpvPlayer.Volume = VideoSettings.Volume;
                 inspector_mpvPlayer.Speed = VideoSettings.PlaybackSpeed;
@@ -203,20 +192,19 @@ namespace WallpaperManager
 
                 inspector_mpvVideoBar.UpdatePlayerVolume(); //! This must be done after inspector_mpvPlayer settings are set otherwise the bar won't update properly to the new video
 
-                /*!
-                inspector_VlcControl.Audio.Volume = WallpaperData.GetImageData(inspectedImage).VideoSettings.volume;
-                string[] mediaOptions = new[] { "input-repeat=65535" }; // 65535 is the max https://wiki.videolan.org/VLC_command-line_help/
-                //vlcControl1.SetMedia(new FileInfo("F:\\Documents\\Game Notes\\Main Theme\\Secondary Theme\\video0_7.mp4"), mediaOptions);
-                inspector_VlcControl.Play(new FileInfo(inspectedImage), mediaOptions);
-                */
-
-                inspector_panelVideo.BringToFront(); //? this doesn't need to be called for some reason, but for consistency with the above i'll keep it here
+                Invoke((MethodInvoker)delegate // prevents the program from crashing when the await function in this method is called
+                {
+                    inspector_panelVideo.BringToFront(); //? this doesn't need to be called for some reason, but for consistency with the above i'll keep it here
+                });
             }
 
-            inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(InspectedImage).Rank.ToString();
+            Invoke((MethodInvoker) delegate // prevents the program from crashing when the await function in this method is called
+            {
+                inspector_textBoxRankEditor.Text = WallpaperData.GetImageData(InspectedImage).Rank.ToString();
 
-            panelImageInspector.ResumeLayout();
-            panelImageInspector.Visible = true;
+                panelImageInspector.ResumeLayout();
+                panelImageInspector.Visible = true;
+            });
         }
 
         private void DeactivateImageInspector()
@@ -251,6 +239,48 @@ namespace WallpaperManager
             WallpaperData.GetImageData(InspectedImage).VideoSettings = new WallpaperData.VideoSettings(
                 inspector_mpvVideoBar.GetVolume(),
                 inspector_mpvVideoBar.GetSpeed());
+        }
+
+        private async void UpdateInspectedImageSizeText(string imagePath)
+        {
+            await Task.Run(async () =>
+            {
+                if (File.Exists(imagePath))
+                {
+                    labelImageSize.BeginInvoke((MethodInvoker)delegate
+                    {
+                        // This segment just lets the user know that the active image they are clicking on has not yet had it's bitmap (thumbnail) loaded
+                        labelImageSize.Text = "";
+                    });
+
+                    // delays the below code until the bitmap for the image in the inspector itself has been created
+                    while (!loadedImageInfo.ContainsKey(imagePath))
+                    {
+                        // the image hasn't been processed yet
+                        // once it does it'll be added *with* it's bitmap and the below should follow smoothly
+                        await Task.Delay(25).ConfigureAwait(false);
+                    }
+
+                    // this can change if the user clicks on another image before this one manages to load
+                    if (InspectedImage == imagePath) // if the user clicks on another image before this one manages to load, just cancel the process
+                    {
+
+                        Bitmap imageBitmap = loadedImageInfo[imagePath];
+                        if (imageBitmap != null)
+                        {
+                            labelImageSize.BeginInvoke((MethodInvoker) delegate
+                            {
+                                labelImageSize.Text = imageBitmap.Width + "x" + imageBitmap.Height;
+                                labelImageSize.Left = panelImageSelector.Location.X - labelImageSize.Size.Width - 5;
+                            });
+                        }
+                        else
+                        {
+                            MessageBox.Show("Attempted to load an unsupported file type");
+                        }
+                    }
+                }
+            }).ConfigureAwait(false);
         }
     }
 }

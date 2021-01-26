@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.buttonPlayPause = new System.Windows.Forms.Button();
-            this.trackBarPosition = new System.Windows.Forms.TrackBar();
+            this.trackBarPosition = new LanceTools.ControlLibrary.DoubleBufferedTrackBar();
             this.labelVolume = new System.Windows.Forms.Label();
             this.trackBarVolume = new System.Windows.Forms.TrackBar();
             this.labelVolumeValue = new System.Windows.Forms.Label();
@@ -117,7 +117,7 @@
         #endregion
 
         private System.Windows.Forms.Button buttonPlayPause;
-        private System.Windows.Forms.TrackBar trackBarPosition;
+        private LanceTools.ControlLibrary.DoubleBufferedTrackBar trackBarPosition;
         private System.Windows.Forms.Label labelVolume;
         private System.Windows.Forms.TrackBar trackBarVolume;
         private System.Windows.Forms.Label labelVolumeValue;

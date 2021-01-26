@@ -26,9 +26,9 @@ namespace WallpaperManager
 
         //private static Guid guid = Guid.NewGuid();
 
-        public static void CheckForMuteConditions()
+        public static async void CheckForMuteConditions()
         {
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 int potentialAudioCount = 0;
                 foreach (string wallpaper in WallpaperPathing.ActiveWallpapers)
@@ -80,7 +80,7 @@ namespace WallpaperManager
                     //xDebug.WriteLine("Ms taken to check for maximized app: " + test.ElapsedMilliseconds);
                 }
 
-                if (OptionsData.ThemeOptions.VideoOptions.MuteIfAudioPlaying && !muted)
+                if ((OptionsData.ThemeOptions.VideoOptions.MuteIfAudioPlaying || WallpaperData.WallpaperManagerForm.IsViewingInspector) && !muted)
                 {
                     if (CheckForExternalAudio()) //? CheckForExternalAudio cannot be done on the UI thread | async doesn't fix this
                     {
@@ -89,7 +89,7 @@ namespace WallpaperManager
                 }
 
                 if (IsWallpapersMuted && !muted) UnmuteWallpapers();
-            });
+            }).ConfigureAwait(false);
 
             //x while (thread.IsAlive) { /* do nothing | Thread.Join() will just freeze the application */ } << this is only needed if you're returning something
         }
@@ -140,15 +140,18 @@ namespace WallpaperManager
                             continue;
                         }
 
-                        if (!potentialNames.Contains(sessionVideoName)) // checking an audio source that doesn't match up with to the active wallpapers
+                        if (OptionsData.ThemeOptions.VideoOptions.MuteIfAudioPlaying) // this is checked again since in some cases this code was only called due to the inspector
                         {
-                            using (var audioMeterInformation = session.QueryInterface<AudioMeterInformation>())
+                            if (!potentialNames.Contains(sessionVideoName)) // checking an audio source that doesn't match up with to the active wallpapers
                             {
-                                if (audioMeterInformation.GetPeakValue() > MIN_VOLUME) // if the volume of this application is greater than MIN_VOLUME, mute all wallpapers
+                                using (var audioMeterInformation = session.QueryInterface<AudioMeterInformation>())
                                 {
-                                    Debug.WriteLine("External Audio Playing: " + session.DisplayName);
-                                    //xDebug.WriteLine(audioMeterInformation.GetPeakValue());
-                                    return true;
+                                    if (audioMeterInformation.GetPeakValue() > MIN_VOLUME) // if the volume of this application is greater than MIN_VOLUME, mute all wallpapers
+                                    {
+                                        Debug.WriteLine("External Audio Playing: " + session.DisplayName);
+                                        //xDebug.WriteLine(audioMeterInformation.GetPeakValue());
+                                        return true;
+                                    }
                                 }
                             }
                         }

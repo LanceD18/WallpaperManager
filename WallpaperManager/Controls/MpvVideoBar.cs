@@ -68,8 +68,19 @@ namespace WallpaperManager.Controls
         // only the volume is updated here because the video won't update fast enough for the duration to be ready, it'll have to get included elsewhere
         public void UpdatePlayerVolume()
         {
-            trackBarVolume.Value = mpvPlayer.Volume;
-            labelVolumeValue.Text = trackBarVolume.Value.ToString();
+            if (!InvokeRequired)
+            {
+                trackBarVolume.Value = mpvPlayer.Volume;
+                labelVolumeValue.Text = trackBarVolume.Value.ToString();
+            }
+            else
+            {
+                Invoke((MethodInvoker) delegate
+                {
+                    trackBarVolume.Value = mpvPlayer.Volume;
+                    labelVolumeValue.Text = trackBarVolume.Value.ToString();
+                });
+            }
         }
 
         public int GetVolume() => mpvPlayer.Volume;

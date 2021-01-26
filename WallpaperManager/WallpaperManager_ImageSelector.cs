@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LanceTools;
 using LanceTools.ControlLibrary;
 using LanceTools.FormUtil;
 using Mpv.NET.Player;
@@ -26,7 +27,9 @@ namespace WallpaperManager
         private float initialLabelSelectedImageFontSize;
 
         private Queue<FlowLayoutPanel> loadedTabs = new Queue<FlowLayoutPanel>();
-        private Queue<Bitmap> loadedImages = new Queue<Bitmap>();
+        private Dictionary<string, Bitmap> loadedImageInfo = new Dictionary<string, Bitmap>();
+        //!private List<Bitmap> loadedImages = new List<Bitmap>(); //? consider making this a ReactiveList, although note that OnAdd won't be able to find the string
+        //!private List<string> loadedImagePaths = new List<string>();
         private int maxLoadedTabs;
 
         private SmoothScrollFlowLayoutPanel activeTabLayoutPanel;
@@ -159,7 +162,7 @@ namespace WallpaperManager
             LoadTab(tabControlImagePages.SelectedIndex);
         }
 
-        private void LoadTab(int tabIndex)
+        private async void LoadTab(int tabIndex)
         {
             if (tabIndex != -1 && selectedImages != null) // tabIndex will equal -1 when resetting the tabControl | selectedImages may equal null when clearing
             {
@@ -197,7 +200,7 @@ namespace WallpaperManager
                     {
                         if (selectedImages[i] != null && File.Exists(selectedImages[i]) && WallpaperData.ContainsImage(selectedImages[i]))
                         {
-                            tabLayoutPanel.Controls.Add(new ImageEditorControl(WallpaperData.GetImageData(selectedImages[i])));
+                            tabLayoutPanel.Controls.Add(new ImageEditorControl(WallpaperData.GetImageData(selectedImages[i]), false));
                         }
                         else
                         {
@@ -208,6 +211,17 @@ namespace WallpaperManager
 
                 //?tabLayoutPanel.UpdateScroll(); Used in the FastScrollFlowLayoutPanel version of the tabLayoutPanel, may swap back to this in the future
                 tabLayoutPanel.ResumeLayout();
+
+                // Loading all of these at the same time is not ideal
+                await Task.Run(() =>
+                {
+                    ImageEditorControl[] imageEditorControls = tabLayoutPanel.Controls.OfType<ImageEditorControl>().ToArray();
+
+                    foreach (ImageEditorControl control in imageEditorControls)
+                    {
+                        LoadImage(control, control.ImageData.Path);
+                    }
+                });
 
                 tabLayoutPanel.Focus(); // clicking on the Tab Control to change pages loses the focus of the panel
                 activeTabLayoutPanel = tabLayoutPanel;
@@ -228,10 +242,9 @@ namespace WallpaperManager
 
         private void ClearLoadedImages()
         {
-            while (loadedImages.Count > 0)
-            {
-                loadedImages.Dequeue()?.Dispose();
-            }
+            // the bitmaps aren't saved anywhere so they must be disposed here
+            foreach (Bitmap bitmap in loadedImageInfo.Values) bitmap?.Dispose();
+            loadedImageInfo.Clear();
         }
 
         private void labelSelectedImage_TextChanged(object sender, EventArgs e) // resize if bounds extend too far to the right
@@ -273,21 +286,25 @@ namespace WallpaperManager
         }
 
         //? This allows the image to be disposed when changing pages, otherwise it would just be loaded in the ImageEditorControl
-        public void LoadImage(ImageEditorControl parentEditorControl, string imagePath)
+        public async void LoadImage(ImageEditorControl parentEditorControl, string imagePath)
         {
-            Task.Run(() =>
+            await Task.Run(() =>
             {
-                Image image = WallpaperManagerTools.GetImageFromFile(imagePath);
-                if (image == null) return; // this will happen to unsupported file types
+                using (Image image = WallpaperManagerTools.GetImageFromFile(imagePath))
+                {
+                    if (image != null) // this will happen to unsupported file types
+                    {
+                        //! the image must be re-drawn to prevent it from being used by wallpaper manager
+                        //! which is why it needed to be put onto a bitmap
+                        //! don't change to image, if you do make sure to test what happens when an image is used & loaded simultaneously
+                        Bitmap imageBitmap = new Bitmap(image.Width, image.Height);
+                        using (Graphics g = Graphics.FromImage(imageBitmap)) g.DrawImage(image, 0, 0, image.Width, image.Height);
 
-                //? the image must be re-drawn to prevent it from being used by wallpaper manager
-                Bitmap imageBitmap = new Bitmap(image.Width, image.Height);
-                using (Graphics g = Graphics.FromImage(imageBitmap)) g.DrawImage(image, 0, 0, image.Width, image.Height);
-
-                loadedImages.Enqueue(imageBitmap); //? Disposes images later
-                parentEditorControl.SetBackgroundImage(imageBitmap);
-
-            });
+                        loadedImageInfo.Add(imagePath, imageBitmap);  //? Disposes images later (Whenever the page is changed)
+                        parentEditorControl.SetBackgroundImage(imageBitmap);
+                    }
+                }
+            }).ConfigureAwait(false); // ConfigureAwait(false) prevents a UI deadlock in the instance that the calling function needed to do LoadImage().Result
         }
 
         public string GetActiveImage()

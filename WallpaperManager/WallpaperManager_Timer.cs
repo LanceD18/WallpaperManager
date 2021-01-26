@@ -231,6 +231,6 @@ namespace WallpaperManager
             }
         }
 
-        private void timerAudioChecker_Tick(object sender, EventArgs e) => Task.Run(() => AudioManager.CheckForMuteConditions());
+        private void timerAudioChecker_Tick(object sender, EventArgs e) => AudioManager.CheckForMuteConditions();
     }
 }

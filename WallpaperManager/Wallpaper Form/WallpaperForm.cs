@@ -72,7 +72,7 @@ namespace WallpaperManager.WallpaperForm
 
                 player.Stop();
                 /*! //the below caused an assertion failed error
-                await Task.Delay(1000);
+                await Task.Delay(1000).ConfigureAwait(false);
                 player.Dispose();
                 */
 
@@ -105,14 +105,14 @@ namespace WallpaperManager.WallpaperForm
 
             if (InvokeRequired)
             {
-                this.Invoke((MethodInvoker)delegate { SetWallpaperProcess(); });
+                this.BeginInvoke((MethodInvoker)delegate { SetWallpaperProcess(); });
             }
             else
             {
                 SetWallpaperProcess();
             }
 
-            void SetWallpaperProcess()
+            async void SetWallpaperProcess()
             {
                 if (!WallpaperManagerTools.IsSupportedVideoType(imageLocation))
                 {
@@ -141,14 +141,14 @@ namespace WallpaperManager.WallpaperForm
 
                     activeVideoImagePath = imageLocation;
 
-                    Task.Run(() =>
+                    await Task.Run(() =>
                     {
                         player.Reload(imageLocation);
 
                         WallpaperData.VideoSettings videoSettings = WallpaperData.GetImageData(imageLocation).VideoSettings;
                         player.Volume = AudioManager.IsWallpapersMuted ? 0 : videoSettings.Volume;
                         player.Speed = videoSettings.PlaybackSpeed;
-                    });
+                    }).ConfigureAwait(false);
 
                 }
             }

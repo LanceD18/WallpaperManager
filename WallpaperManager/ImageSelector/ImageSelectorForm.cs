@@ -12,8 +12,10 @@ using WallpaperManager.ApplicationData;
 
 namespace WallpaperManager.ImageSelector
 {
+
     public partial class ImageSelectorForm : Form
     {
+        /*x
         private string[] selectedImages;
         private int imagesPerPage;
 
@@ -80,7 +82,7 @@ namespace WallpaperManager.ImageSelector
                 {
                     if (selectedImages[i] != null && WallpaperData.ContainsImage(selectedImages[i]))
                     {
-                        curTabLayoutPanel.Controls.Add(new ImageEditorControl(WallpaperData.GetImageData(selectedImages[i])));
+                        curTabLayoutPanel.Controls.Add(new ImageEditorControl(WallpaperData.GetImageData(selectedImages[i]), false));
                     }
                     else
                     {
@@ -100,5 +102,6 @@ namespace WallpaperManager.ImageSelector
         {
             labelSelectedImage.Text = imageData.Path;
         }
+        */
     }
 }
