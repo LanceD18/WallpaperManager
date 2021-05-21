@@ -92,27 +92,21 @@ namespace WallpaperManager
             }
         }
 
-        private void SetWallpaper(int index, bool ignoreIdenticalWallpapers)
+        private void SetWallpaper(int index, bool ignoreRandomization)
         {
             //-----Set Next Wallpaper-----
-            string wallpaperPath = WallpaperPathing.SetNextWallpaperOrder(index, ignoreIdenticalWallpapers);
+            string wallpaperPath = WallpaperPathing.SetNextWallpaperOrder(index, ignoreRandomization);
 
             //-----Update Notify Icons-----
             string wallpaperName = new FileInfo(wallpaperPath).Name; // pathless string of file name
 
             if (WallpaperData.ContainsImage(wallpaperPath))
             {
-                /*x
-                wallpaperMenuItems[index].Text = WallpaperData.ContainsImage(wallpaperPath) ?
-                    index + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName :
-                    index + 1 + " | [NOT FOUND]" + wallpaperName;
-                */
-
                 wallpaperMenuItems[index].Text = index + 1 + " | R: " + WallpaperData.GetImageRank(wallpaperPath) + " | " + wallpaperName;
             }
             else //? this can occur after swapping themes as next wallpaper still holds data from the previous theme
             {
-                WallpaperPathing.SetNextWallpaperOrder(index, ignoreIdenticalWallpapers);
+                WallpaperPathing.SetNextWallpaperOrder(index, ignoreRandomization);
             }
 
             //? without this, if the inspector wasn't open prior to setting a new wallpaper it would never allow it's MvpPlayer to display
@@ -168,7 +162,7 @@ namespace WallpaperManager
                     if (!WallpaperData.NoImagesActive() && WallpaperData.GetAllRankedImages().Length != 0)
                     {
                         //? Note that Previous Wallpaper should only be set when Next Wallpaper is updated
-                        // Set push the current wallpaper to its corresponding index in previous wallpapers if a wallpaper exists
+                        // Pushes to the previous wallpaper array using the corresponding index
                         if (WallpaperPathing.ActiveWallpapers[index] != null) WallpaperPathing.PreviousWallpapers[index].Push(WallpaperPathing.ActiveWallpapers[index]);
 
                         ResetTimer(index);

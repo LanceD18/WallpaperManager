@@ -109,6 +109,7 @@
             this.Controls.Add(this.buttonAddTag);
             this.Controls.Add(this.imageTagsFLP);
             this.Controls.Add(this.pictureBoxImage);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ImageEditorForm";
             this.Text = "ImageEditorForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).EndInit();

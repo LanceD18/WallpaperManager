@@ -63,7 +63,6 @@ namespace WallpaperManager
             this.labelSelectedImage = new System.Windows.Forms.Label();
             this.panelImageInspector = new System.Windows.Forms.Panel();
             this.inspector_panelVideoAndBar = new System.Windows.Forms.Panel();
-            this.inspector_mpvVideoBar = new WallpaperManager.Controls.MpvVideoBar();
             this.inspector_panelVideo = new System.Windows.Forms.Panel();
             this.inspector_buttonRight = new System.Windows.Forms.Button();
             this.inspector_buttonLeft = new System.Windows.Forms.Button();
@@ -77,6 +76,7 @@ namespace WallpaperManager
             this.buttonSyncDisplaySettings = new System.Windows.Forms.Button();
             this.tabControlDisplaySettings = new System.Windows.Forms.TabControl();
             this.tabPageDisplay1 = new System.Windows.Forms.TabPage();
+            this.inspector_mpvVideoBar = new WallpaperManager.Controls.MpvVideoBar();
             this.panelImageFolders.SuspendLayout();
             this.panelImageSettings.SuspendLayout();
             this.panelImageSelector.SuspendLayout();
@@ -383,15 +383,6 @@ namespace WallpaperManager
             this.inspector_panelVideoAndBar.Size = new System.Drawing.Size(645, 576);
             this.inspector_panelVideoAndBar.TabIndex = 42;
             // 
-            // inspector_mpvVideoBar
-            // 
-            this.inspector_mpvVideoBar.BackColor = System.Drawing.SystemColors.ControlText;
-            this.inspector_mpvVideoBar.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.inspector_mpvVideoBar.Location = new System.Drawing.Point(0, 523);
-            this.inspector_mpvVideoBar.Name = "inspector_mpvVideoBar";
-            this.inspector_mpvVideoBar.Size = new System.Drawing.Size(645, 50);
-            this.inspector_mpvVideoBar.TabIndex = 41;
-            // 
             // inspector_panelVideo
             // 
             this.inspector_panelVideo.Location = new System.Drawing.Point(0, 0);
@@ -511,6 +502,15 @@ namespace WallpaperManager
             this.tabPageDisplay1.TabIndex = 0;
             this.tabPageDisplay1.Text = "Display 1";
             // 
+            // inspector_mpvVideoBar
+            // 
+            this.inspector_mpvVideoBar.BackColor = System.Drawing.SystemColors.ControlText;
+            this.inspector_mpvVideoBar.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.inspector_mpvVideoBar.Location = new System.Drawing.Point(0, 523);
+            this.inspector_mpvVideoBar.Name = "inspector_mpvVideoBar";
+            this.inspector_mpvVideoBar.Size = new System.Drawing.Size(645, 50);
+            this.inspector_mpvVideoBar.TabIndex = 41;
+            // 
             // WallpaperManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -533,6 +533,7 @@ namespace WallpaperManager
             this.Controls.Add(this.buttonChangeDisplay);
             this.Controls.Add(this.buttonPreviousWallpaper);
             this.Controls.Add(this.buttonNextWallpaper);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "WallpaperManagerForm";
             this.Text = "WallpaperManager";
             this.Click += new System.EventHandler(this.WallpaperManager_Click);

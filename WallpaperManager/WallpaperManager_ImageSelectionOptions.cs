@@ -135,12 +135,10 @@ namespace WallpaperManager
 
         private void buttonDeleteImage_Click(object sender, EventArgs e)
         {
-            //! ADD A WARNING THAT LETS THE USER KNOW THAT THEY'LL BE REMOVING THE ACTUAL FILES (Which should get move to the recycling bin)
-            //! ADD A WARNING THAT LETS THE USER KNOW THAT THEY'LL BE REMOVING THE ACTUAL FILES (Which should get move to the recycling bin)
-            //! ADD A WARNING THAT LETS THE USER KNOW THAT THEY'LL BE REMOVING THE ACTUAL FILES (Which should get move to the recycling bin)
-
             if (selectedImages != null)
             {
+                //! Always ensure that this is emphasized somewhere
+                MessageBox.Show("NOTE: This deletes the actual image file! (While also safely removing the image from the application)");
                 switch (WallpaperManagerTools.ChooseSelectionType())
                 {
                     case SelectionType.Active:

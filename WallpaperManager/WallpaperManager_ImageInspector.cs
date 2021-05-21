@@ -264,7 +264,6 @@ namespace WallpaperManager
                     // this can change if the user clicks on another image before this one manages to load
                     if (InspectedImage == imagePath) // if the user clicks on another image before this one manages to load, just cancel the process
                     {
-
                         Bitmap imageBitmap = loadedImageInfo[imagePath];
                         if (imageBitmap != null)
                         {

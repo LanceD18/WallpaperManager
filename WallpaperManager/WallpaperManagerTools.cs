@@ -104,7 +104,15 @@ namespace WallpaperManager
                 Mat m = new Mat();
                 video.Read(m);
                 video.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosAviRatio, 0);
-                bitmap = video.QueryFrame().ToBitmap().Clone(new Rectangle(0, 0, video.Width, video.Height), System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                try
+                {
+                    bitmap = video.QueryFrame().ToBitmap().Clone(new Rectangle(0, 0, video.Width, video.Height), System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                }
+                catch
+                {
+                    Debug.WriteLine("Bitmap failed to load for video: " + videoPath);
+                    bitmap = new Bitmap(0, 0);
+                }
             }
 
             return bitmap;

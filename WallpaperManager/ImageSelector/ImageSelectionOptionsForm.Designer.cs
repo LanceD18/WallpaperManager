@@ -169,6 +169,7 @@
             this.Controls.Add(this.checkBoxRandomize);
             this.Controls.Add(this.buttonSelectImagesOfRank);
             this.Controls.Add(this.buttonSelectActiveImages);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ImageSelectionOptionsForm";
             this.Text = "Image Selector";
             this.panel1.ResumeLayout(false);

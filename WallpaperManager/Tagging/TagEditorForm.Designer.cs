@@ -200,6 +200,7 @@
             this.Controls.Add(this.buttonDeleteTag);
             this.Controls.Add(this.buttonSelectImagesWithTag);
             this.Controls.Add(this.buttonAddToSelectedImages);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TagEditorForm";
             this.Text = "TagEditorForm";
             this.ResumeLayout(false);

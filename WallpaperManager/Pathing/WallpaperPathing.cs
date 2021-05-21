@@ -63,13 +63,16 @@ namespace WallpaperManager.Pathing
             return true;
         }
 
-        public static string SetNextWallpaperOrder(int index, bool ignoreIdenticalWallpapers)
+        public static string SetNextWallpaperOrder(int index, bool ignoreRandomization)
         {
             // this indicates that it's time to search for a new set of upcoming wallpapers
-            if (ActiveWallpapers[index] == NextWallpapers[index] && !ignoreIdenticalWallpapers)
+            //? ActiveWallpapers[index] == NextWallpapers[index] checks if the next set of wallpapers have been updated. If not, randomization will occur
+            //? ignoreRandomization allows the next set of wallpapers to be directly applied. This helps the previous wallpapers setting function as intended
+            if (ActiveWallpapers[index] == NextWallpapers[index] && !ignoreRandomization)
             {
                 RandomizeWallpapers(); // enqueues next set of upcoming wallpapers
                 NextWallpapers = UpcomingWallpapers.Dequeue();
+                Debug.WriteLine("Setting Next Set of Wallpapers");
             }
 
             return ActiveWallpapers[index] = NextWallpapers[index];

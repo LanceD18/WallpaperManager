@@ -77,6 +77,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.labelImageCount);
             this.Controls.Add(this.chartRankDistribution);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "RankDistributionChart";
             this.Text = "RankDistributionGraph";
             ((System.ComponentModel.ISupportInitialize)(this.chartRankDistribution)).EndInit();

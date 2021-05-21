@@ -227,6 +227,7 @@
             this.Controls.Add(this.buttonAddTag);
             this.Controls.Add(this.buttonAddCategory);
             this.Controls.Add(this.buttonRemoveCategory);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TagForm";
             this.Text = "TagForm";
             this.ResumeLayout(false);

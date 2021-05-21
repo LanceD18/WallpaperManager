@@ -72,6 +72,7 @@
             this.Controls.Add(this.labelSelectedImage);
             this.Controls.Add(this.tabControlImagePages);
             this.Controls.Add(this.flowLayoutPanelImageContainer);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ImageSelectorForm";
             this.Text = "ImageSelectorForm";
             this.ResumeLayout(false);

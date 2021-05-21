@@ -86,13 +86,13 @@ namespace WallpaperManager.ApplicationData
 
             if (path != null)
             {
-                WallpaperPathing.ActiveWallpaperTheme = path;
-                JsonWallpaperData jsonWallpaperData = new JsonWallpaperData(FileData.Values.ToArray(), ImageFolders);
-
-                //? using a regular Task.Run process here will cause the program to crash (and save to be incomplete) if this method is accessed too rapidly
-                //? this allows this method to only be accessed if the thread is done
-                SavingThread = new Thread( () =>
+                //? using a regular Task.Run process here will cause the program to crash (and save to be incomplete)
+                //?  if this method is accessed too rapidly this allows this method to only be accessed if the thread is done
+                SavingThread = new Thread(() =>
                 {
+                    WallpaperPathing.ActiveWallpaperTheme = path;
+                    JsonWallpaperData jsonWallpaperData = new JsonWallpaperData(FileData.Values.ToArray(), ImageFolders);
+
                     using (StreamWriter file = File.CreateText(path))
                     {
                         new JsonSerializer {Formatting = Formatting.Indented}.Serialize(file, jsonWallpaperData);
@@ -143,10 +143,10 @@ namespace WallpaperManager.ApplicationData
 
                 IsLoadingData = false;
                 WallpaperPathing.ActiveWallpaperTheme = path;
-                UpdateRankPercentiles(ImageType.None);  //! Now that image types exist this preemptive change may not be worth it
+                UpdateRankPercentiles(ImageType.None); //! Now that image types exist this preemptive change may not be worth it
                 return true;
             }
-            else  //! MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
+            else //! MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
             {
                 Debug.WriteLine("Attempted to load a non-existant file");
                 return false;
@@ -206,7 +206,7 @@ namespace WallpaperManager.ApplicationData
             {
                 MessageBox.Show(invalidImagesString);
             }
-            
+
             // since activating an image folder also adds undeteced images, this needs to be loaded last
             IsLoadingImageFolders = true; // this is used to override the IsLoading bool for new images added when loading image folders
             WallpaperManagerForm.LoadImageFolders(jsonWallpaperData.imageFolders);

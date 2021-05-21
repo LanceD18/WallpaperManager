@@ -43,6 +43,7 @@
             this.checkBoxWeightedRanks = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageThemeOptions = new System.Windows.Forms.TabPage();
+            this.checkBoxWeightedFrequency = new System.Windows.Forms.CheckBox();
             this.checkBoxExcludeVideo = new System.Windows.Forms.CheckBox();
             this.checkBoxExcludeGif = new System.Windows.Forms.CheckBox();
             this.checkBoxExcludeStatic = new System.Windows.Forms.CheckBox();
@@ -73,7 +74,6 @@
             this.labelFrequency = new System.Windows.Forms.Label();
             this.tabPageGlobalOptions = new System.Windows.Forms.TabPage();
             this.toolTipEnableDetectionOfInactiveImages = new System.Windows.Forms.ToolTip(this.components);
-            this.checkBoxWeightedFrequency = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPageThemeOptions.SuspendLayout();
             this.panelFrequency.SuspendLayout();
@@ -260,6 +260,19 @@
             this.tabPageThemeOptions.Size = new System.Drawing.Size(477, 423);
             this.tabPageThemeOptions.TabIndex = 0;
             this.tabPageThemeOptions.Text = "Theme Options";
+            // 
+            // checkBoxWeightedFrequency
+            // 
+            this.checkBoxWeightedFrequency.AutoSize = true;
+            this.checkBoxWeightedFrequency.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.checkBoxWeightedFrequency.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.checkBoxWeightedFrequency.Location = new System.Drawing.Point(118, 75);
+            this.checkBoxWeightedFrequency.Name = "checkBoxWeightedFrequency";
+            this.checkBoxWeightedFrequency.Size = new System.Drawing.Size(125, 17);
+            this.checkBoxWeightedFrequency.TabIndex = 67;
+            this.checkBoxWeightedFrequency.Text = "Weighted Frequency";
+            this.checkBoxWeightedFrequency.UseVisualStyleBackColor = true;
+            this.checkBoxWeightedFrequency.CheckedChanged += new System.EventHandler(this.checkBoxWeightedFrequency_CheckedChanged);
             // 
             // checkBoxExcludeVideo
             // 
@@ -604,19 +617,6 @@
             this.tabPageGlobalOptions.TabIndex = 1;
             this.tabPageGlobalOptions.Text = "Global Options";
             // 
-            // checkBoxWeightedFrequency
-            // 
-            this.checkBoxWeightedFrequency.AutoSize = true;
-            this.checkBoxWeightedFrequency.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBoxWeightedFrequency.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.checkBoxWeightedFrequency.Location = new System.Drawing.Point(118, 75);
-            this.checkBoxWeightedFrequency.Name = "checkBoxWeightedFrequency";
-            this.checkBoxWeightedFrequency.Size = new System.Drawing.Size(125, 17);
-            this.checkBoxWeightedFrequency.TabIndex = 67;
-            this.checkBoxWeightedFrequency.Text = "Weighted Frequency";
-            this.checkBoxWeightedFrequency.UseVisualStyleBackColor = true;
-            this.checkBoxWeightedFrequency.CheckedChanged += new System.EventHandler(this.checkBoxWeightedFrequency_CheckedChanged);
-            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -624,6 +624,7 @@
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(484, 450);
             this.Controls.Add(this.tabControl1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "OptionsForm";
             this.Text = "Options";
             this.tabControl1.ResumeLayout(false);

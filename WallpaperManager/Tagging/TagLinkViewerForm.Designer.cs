@@ -70,6 +70,7 @@
             this.Controls.Add(this.labelRemovalReminder);
             this.Controls.Add(this.linkedTagsFLP);
             this.Controls.Add(this.labelXTags);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TagLinkViewerForm";
             this.Text = "TagLinkViewerForm";
             this.ResumeLayout(false);
