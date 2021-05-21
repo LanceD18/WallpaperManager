@@ -80,16 +80,42 @@ namespace WallpaperManager.ApplicationData
         }
 
         // Save Data
-        public static async void SaveData(string path)
+        public static void SaveData(string path)
         {
             if (SavingThread != null && SavingThread.IsAlive) return;
 
             if (path != null)
             {
-                //? using a regular Task.Run process here will cause the program to crash (and save to be incomplete)
-                //?  if this method is accessed too rapidly this allows this method to only be accessed if the thread is done
-                SavingThread = new Thread(() =>
+                // Create a temporary backup in the save file's directory for just in case something goes wrong during the saving process
+                FileInfo pathFile = new FileInfo(path);
+                string tempPathName = pathFile.DirectoryName + "\\" + Path.GetFileNameWithoutExtension(pathFile.Name) + "_TEMP_BACKUP";
+                string tempPath = tempPathName + pathFile.Extension;
+
+                // for just in case the user ends up with multiple accidents, we don't want to overwrite any backups with the damaged file
+                if (File.Exists(tempPath))
                 {
+                    int tempPathCount = 1;
+                    string newTempPath = tempPath;
+                    while (File.Exists(newTempPath))
+                    {
+                        newTempPath = tempPathName + "_" + tempPathCount + pathFile.Extension; // updates the temp path name with a number
+                        tempPathCount++;
+                    }
+
+                    tempPath = newTempPath;
+                }
+
+                Debug.WriteLine("Temp File Location: " + tempPath);
+                File.Copy(path, tempPath);
+
+                //x using a regular Task.Run process here will cause the program to crash (and save to be incomplete)
+                //x if this method is accessed too rapidly this allows this method to only be accessed if the thread is done
+                //xSavingThread = new Thread(() =>
+                //x{
+                    //? The thread was removed so that any potential changes made to the program would be impossible while saving
+                    //? If you can make this safer in the future, go ahead and put it back in but for now it should stay like this
+                    //! Also NOTE: Some of the data accessed require using controls, which will cause an error involving accessing a control from the wrong stream
+
                     WallpaperPathing.ActiveWallpaperTheme = path;
                     JsonWallpaperData jsonWallpaperData = new JsonWallpaperData(FileData.Values.ToArray(), ImageFolders);
 
@@ -97,8 +123,11 @@ namespace WallpaperManager.ApplicationData
                     {
                         new JsonSerializer {Formatting = Formatting.Indented}.Serialize(file, jsonWallpaperData);
                     }
-                });
-                SavingThread.Start();
+                //x});
+                //xSavingThread.Start();
+
+                // Remove the backup
+                File.Delete(tempPath);
             }
             else
             {
@@ -109,16 +138,22 @@ namespace WallpaperManager.ApplicationData
         // Load Data
         public static bool LoadData(string path)
         {
+            Debug.WriteLine("Load Data");
+
             if (File.Exists(path))
             {
                 IsLoadingData = true; // used to speed up the loading process by preventing unnecessary calls
                 jpxToJpgWarning = "";
 
+                Debug.WriteLine("Resetting Wallpaper Manager");
+
                 ResetWallpaperManager();
 
+                Debug.WriteLine("Resetting Core Data");
                 //! This must be called before loading JsonWallpaperData to avoid issues
                 ResetCoreData();
 
+                Debug.WriteLine("Loading JSON Data");
                 //? RankData and ActiveImages will both be automatically set when jsonWallpaperData is loaded as the constructors for ImageData is what sets them
                 JsonWallpaperData jsonWallpaperData;
                 using (StreamReader file = File.OpenText(path))
@@ -132,6 +167,7 @@ namespace WallpaperManager.ApplicationData
                     return false;
                 }
 
+                Debug.WriteLine("Inserting JSON Data");
                 LoadCoreData(jsonWallpaperData);
                 LoadOptionsData(jsonWallpaperData);
                 LoadMiscData(jsonWallpaperData);
@@ -144,6 +180,8 @@ namespace WallpaperManager.ApplicationData
                 IsLoadingData = false;
                 WallpaperPathing.ActiveWallpaperTheme = path;
                 UpdateRankPercentiles(ImageType.None); //! Now that image types exist this preemptive change may not be worth it
+
+                Debug.WriteLine("Finished Loading");
                 return true;
             }
             else //! MessageBox warnings for non-existant files should not be used in this method but rather the ones that call it
