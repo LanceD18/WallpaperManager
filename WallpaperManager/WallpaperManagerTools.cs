@@ -50,32 +50,6 @@ namespace WallpaperManager
         Exact
     }
 
-    public static class ControlHelper
-    {
-        #region Redraw Suspend/Resume
-        [DllImport("user32.dll", EntryPoint = "SendMessageA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]
-        private static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
-        private const int WM_SETREDRAW = 0xB;
-
-        // An alternative to SuspendLayout (Which only suspends the layout as it says) | This should be used when for instance setting the background image of a button
-        public static void SuspendDrawing(this Control target)
-        {
-            SendMessage(target.Handle, WM_SETREDRAW, 0, 0);
-        }
-
-        public static void ResumeDrawing(this Control target) { ResumeDrawing(target, true); }
-        public static void ResumeDrawing(this Control target, bool redraw)
-        {
-            SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
-
-            if (redraw)
-            {
-                target.Refresh();
-            }
-        }
-        #endregion
-    }
-
     public static class WallpaperManagerTools
     {
         public static readonly string IMAGE_FILES_FILTER = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.gif, *.mp4, *.webm, *.avi)" +
@@ -145,70 +119,6 @@ namespace WallpaperManager
 
             return bitmap;
         }
-
-        /*x
-        public static AxWindowsMediaPlayer InitializeWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, bool editable)
-        {
-            axWindowsMediaPlayer.Enabled = false;
-            axWindowsMediaPlayer.stretchToFit = true;
-            axWindowsMediaPlayer.settings.setMode("loop", true);
-            axWindowsMediaPlayer.PlayStateChange += (s, e) =>
-            {
-                // ensures that the video auto-starts, some video types fail to do so regularly, such as .webm (They generally take longer to load too)
-                //if (axWindowsMediaPlayer.playState == WMPPlayState.wmppsReady) 
-                if (e.newState == 10) // ready state
-                {
-                    try // this may sometimes cause an error however this doesn't break the program so just ignore it, the video should eventually play
-                    {
-                        Action playInvoker = () => axWindowsMediaPlayer.Ctlcontrols.play();
-
-                        axWindowsMediaPlayer.BeginInvoke(playInvoker); // ensures that the program waits for the media to load before playing it
-                        Debug.WriteLine("Playing: " + axWindowsMediaPlayer.URL);
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.WriteLine(exception);
-                    }
-                }
-
-                Debug.WriteLine(axWindowsMediaPlayer.playState.ToString() + '[' + axWindowsMediaPlayer.URL + ']');
-            };
-
-            if (editable) // If editable, allow the volume slider to be saved
-            {
-                //? The MouseDownEvent will only save the volume at the time of clicking while the MouseUpEvent won't work while using the slider
-                //TODO To improve this you'll need to make your own slider and attach it to the control
-                axWindowsMediaPlayer.MouseMoveEvent += (s, e) =>
-                {
-                    //! This event should only be added once!!!
-                    WallpaperData.GetImageData(axWindowsMediaPlayer.URL).VideoSettings.volume = axWindowsMediaPlayer.settings.volume;
-                };
-            }
-            else // Not editable, disable UI
-            {
-                axWindowsMediaPlayer.uiMode = "none";
-            }
-
-            return axWindowsMediaPlayer;
-        }
-
-        public static AxWindowsMediaPlayer UpdateWindowsMediaPlayer(AxWindowsMediaPlayer axWindowsMediaPlayer, string videoPath)
-        {
-            axWindowsMediaPlayer.URL = videoPath;
-
-            WallpaperData.VideoSettings VideoSettings = WallpaperData.GetImageData(videoPath).VideoSettings;
-            axWindowsMediaPlayer.settings.volume = VideoSettings.volume;
-            axWindowsMediaPlayer.settings.rate = VideoSettings.playbackSpeed;
-            axWindowsMediaPlayer.Enabled = true;
-            axWindowsMediaPlayer.settings.autoStart = true;
-
-            // these two lines force the video to autoplay regardless of its video type, I hope
-            axWindowsMediaPlayer.Ctlcontrols.currentPosition = 0;
-            axWindowsMediaPlayer.Ctlcontrols.play();
-
-            return axWindowsMediaPlayer;
-        }
-        */
 
         public static SelectionType ChooseSelectionType()
         {
