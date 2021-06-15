@@ -112,19 +112,12 @@ namespace WallpaperManager
                 }
             }
 
+            // With the current method, SystemParametersInfo() is no longer needed as it is never touched
+            /*x
             // Upon closing the application you'll revert back to your default, windows wallpapers
             //? Pretty sure you don't need this but I'm posting this here for just in case the invoke fails and the wallpaper continues to draw (This happened twice)
             // TODO Thoroughly test the use of this copy
             SystemParametersInfo(SetDeskWallpaper, 0, null, UpdateIniFile | SendWinIniChange);
-
-            //? WallpaperData.SaveDefaultData(); | I feel like this is prone to overwrite accidents
-
-            // TODO Set Default theme if enabled
-            /*
-            if (setDefaultThemeOnExit)
-            {
-                SetDefaultTheme();
-            }
             */
 
             // TODO Unregister keys (Not sure if this is needed actually but won't hurt to add)

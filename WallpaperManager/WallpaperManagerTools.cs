@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,6 +48,32 @@ namespace WallpaperManager
     {
         Relative,
         Exact
+    }
+
+    public static class ControlHelper
+    {
+        #region Redraw Suspend/Resume
+        [DllImport("user32.dll", EntryPoint = "SendMessageA", ExactSpelling = true, CharSet = CharSet.Ansi, SetLastError = true)]
+        private static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+        private const int WM_SETREDRAW = 0xB;
+
+        // An alternative to SuspendLayout (Which only suspends the layout as it says) | This should be used when for instance setting the background image of a button
+        public static void SuspendDrawing(this Control target)
+        {
+            SendMessage(target.Handle, WM_SETREDRAW, 0, 0);
+        }
+
+        public static void ResumeDrawing(this Control target) { ResumeDrawing(target, true); }
+        public static void ResumeDrawing(this Control target, bool redraw)
+        {
+            SendMessage(target.Handle, WM_SETREDRAW, 1, 0);
+
+            if (redraw)
+            {
+                target.Refresh();
+            }
+        }
+        #endregion
     }
 
     public static class WallpaperManagerTools
@@ -92,26 +119,27 @@ namespace WallpaperManager
             }
         }
 
+        public static Thread QueryVideoThread;
+        public static Queue<string> videoQueue = new Queue<string>();
+
         //! be careful not to have multiple threads accessing this at the same time, you can't have two threads accessing a bitmap at the same time
         public static Bitmap GetFirstVideoFrame(string videoPath)
         {
+            //xwhile (QueryVideoThread.IsAlive) Thread.Sleep(1000);
+
+            PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+
             Bitmap bitmap;
             using (VideoCapture video = new VideoCapture(videoPath))
             {
-                var videoInfo = new MediaFile {Filename = videoPath}; //! This is part of the below
-                using (var engine = new Engine()) { engine.GetMetadata(videoInfo); } //! Not sure what this was here for
-
-                Mat m = new Mat();
-                video.Read(m);
-                video.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosAviRatio, 0);
                 try
                 {
-                    bitmap = video.QueryFrame().ToBitmap().Clone(new Rectangle(0, 0, video.Width, video.Height), System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                    bitmap = video.QueryFrame().ToBitmap(); /*.Clone(new Rectangle(0, 0, video.Width, video.Height), System.Drawing.Imaging.PixelFormat.Format32bppRgb);*/ //System.Drawing.Imaging.PixelFormat.Format32bppRgb);
                 }
                 catch
                 {
                     Debug.WriteLine("Bitmap failed to load for video: " + videoPath);
-                    bitmap = new Bitmap(0, 0);
+                    bitmap = new Bitmap(1, 1); // TODO test what happens when you try to load a bitmap with a height and width of 0
                 }
             }
 

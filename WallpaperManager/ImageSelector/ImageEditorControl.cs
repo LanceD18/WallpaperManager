@@ -50,6 +50,8 @@ namespace WallpaperManager.ImageSelector
 
         public void SetBackgroundImage(Image image) => buttonSelectImage.BackgroundImage = image;
 
+        public Size GetBackgroundImageSize() => buttonSelectImage.Size;
+
         public void UpdateRank() => textBoxRankEditor.Text = ImageData.Rank.ToString();
 
         protected override System.Drawing.Point ScrollToControl(Control activeControl)

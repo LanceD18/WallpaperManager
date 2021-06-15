@@ -82,10 +82,11 @@ namespace WallpaperManager.ApplicationData
         // Save Data
         public static void SaveData(string path)
         {
-            if (SavingThread != null && SavingThread.IsAlive) return;
+            //xif (SavingThread != null && SavingThread.IsAlive) return;
 
             if (path != null)
             {
+                //-----Backup-----
                 // Create a temporary backup in the save file's directory for just in case something goes wrong during the saving process
                 FileInfo pathFile = new FileInfo(path);
                 string tempPathName = pathFile.DirectoryName + "\\" + Path.GetFileNameWithoutExtension(pathFile.Name) + "_TEMP_BACKUP";
@@ -108,6 +109,7 @@ namespace WallpaperManager.ApplicationData
                 Debug.WriteLine("Temp File Location: " + tempPath);
                 File.Copy(path, tempPath);
 
+                //-----Write to JSON File-----
                 //x using a regular Task.Run process here will cause the program to crash (and save to be incomplete)
                 //x if this method is accessed too rapidly this allows this method to only be accessed if the thread is done
                 //xSavingThread = new Thread(() =>
@@ -115,10 +117,13 @@ namespace WallpaperManager.ApplicationData
                     //? The thread was removed so that any potential changes made to the program would be impossible while saving
                     //? If you can make this safer in the future, go ahead and put it back in but for now it should stay like this
                     //! Also NOTE: Some of the data accessed require using controls, which will cause an error involving accessing a control from the wrong stream
+                    //! Another NOTE: I believe making this a thread may have caused the Default Theme save errors
 
-                    WallpaperPathing.ActiveWallpaperTheme = path;
+                    Debug.WriteLine("Saving to: " + path);
+
                     JsonWallpaperData jsonWallpaperData = new JsonWallpaperData(FileData.Values.ToArray(), ImageFolders);
-
+                    
+                    Debug.WriteLine("Writing to JSON file");
                     using (StreamWriter file = File.CreateText(path))
                     {
                         new JsonSerializer {Formatting = Formatting.Indented}.Serialize(file, jsonWallpaperData);
@@ -126,7 +131,7 @@ namespace WallpaperManager.ApplicationData
                 //x});
                 //xSavingThread.Start();
 
-                // Remove the backup
+                //-----Remove the backup-----
                 File.Delete(tempPath);
             }
             else
