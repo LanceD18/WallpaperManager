@@ -24,7 +24,7 @@ namespace WallpaperManager
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     WallpaperData.LoadData(dialog.FileName);
-                    WallpaperPathing.ActiveWallpaperTheme = dialog.FileName;
+                    WallpaperPathSetter.ActiveWallpaperTheme = dialog.FileName;
                     //? Shouldn't be needed here | WallpaperData.EvaluateImageFolders(); // scans for new images
                 }
             }
@@ -47,7 +47,7 @@ namespace WallpaperManager
         private void buttonUpdateTheme_Click(object sender, EventArgs e)
         {
             WallpaperData.EvaluateImageFolders(); // scans for new images
-            WallpaperData.SaveData(WallpaperPathing.ActiveWallpaperTheme);
+            WallpaperData.SaveData(WallpaperPathSetter.ActiveWallpaperTheme);
         }
     }
 }

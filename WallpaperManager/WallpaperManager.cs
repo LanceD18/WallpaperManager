@@ -80,7 +80,7 @@ namespace WallpaperManager
             InitializeImageSelector();
             InitializeImageInspector();
 
-            WallpaperPathing.Validate(); // ensures that all needed folders exist
+            WallpaperPathSetter.Validate(); // ensures that all needed folders exist
             WallpaperData.Initialize(false); // loads in all necessary data
             OptionsData.Initialize();
 
@@ -197,7 +197,7 @@ namespace WallpaperManager
             // opens the default theme
             if (OptionsData.EnableDefaultThemeHotkey)
             {
-                WallpaperData.SaveData(WallpaperPathing.ActiveWallpaperTheme);
+                WallpaperData.SaveData(WallpaperPathSetter.ActiveWallpaperTheme);
                 WallpaperData.LoadDefaultTheme();
             }
         }

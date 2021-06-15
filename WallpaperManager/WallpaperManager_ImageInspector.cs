@@ -225,9 +225,9 @@ namespace WallpaperManager
             UpdateImageRanks();
 
             //? The volume may have been updated, this ensures that it does so
-            for (var i = 0; i < WallpaperPathing.ActiveWallpapers.Length; i++)
+            for (var i = 0; i < WallpaperPathSetter.ActiveWallpapers.Length; i++)
             {
-                if (WallpaperPathing.ActiveWallpapers[i] == InspectedImage) // this wallpaper is currently active, change its volume
+                if (WallpaperPathSetter.ActiveWallpapers[i] == InspectedImage) // this wallpaper is currently active, change its volume
                 {
                     wallpapers[i].SetVolume(inspector_mpvVideoBar.GetVolume());
                 }

@@ -50,11 +50,11 @@ namespace WallpaperManager.ImageSelector
         private void buttonSelectActiveImages_Click(object sender, EventArgs e)
         {
             List<string> imagesToSelect = new List<string>();
-            for (int i = 0; i < WallpaperPathing.ActiveWallpapers.Length; i++)
+            for (int i = 0; i < WallpaperPathSetter.ActiveWallpapers.Length; i++)
             {
-                if (File.Exists(WallpaperPathing.ActiveWallpapers[i])) // depending on the setup, some wallpapers can be activated before others are put in place
+                if (File.Exists(WallpaperPathSetter.ActiveWallpapers[i])) // depending on the setup, some wallpapers can be activated before others are put in place
                 {
-                    imagesToSelect.Add(WallpaperPathing.ActiveWallpapers[i]);
+                    imagesToSelect.Add(WallpaperPathSetter.ActiveWallpapers[i]);
                 }
             }
 

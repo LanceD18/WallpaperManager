@@ -93,22 +93,15 @@ namespace WallpaperManager
             }
         }
 
-        public static Thread QueryVideoThread;
-        public static Queue<string> videoQueue = new Queue<string>();
-
-        //! be careful not to have multiple threads accessing this at the same time, you can't have two threads accessing a bitmap at the same time
+        //! NOTE: You can't have two threads accessing a bitmap at the same time
         public static Bitmap GetFirstVideoFrame(string videoPath)
         {
-            //xwhile (QueryVideoThread.IsAlive) Thread.Sleep(1000);
-
-            PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-
             Bitmap bitmap;
             using (VideoCapture video = new VideoCapture(videoPath))
             {
                 try
                 {
-                    bitmap = video.QueryFrame().ToBitmap(); /*.Clone(new Rectangle(0, 0, video.Width, video.Height), System.Drawing.Imaging.PixelFormat.Format32bppRgb);*/ //System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                    bitmap = video.QueryFrame().ToBitmap();
                 }
                 catch
                 {

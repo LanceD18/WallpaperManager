@@ -71,6 +71,11 @@ namespace WallpaperManager
                 {
                     dialog.IsFolderPicker = true;
 
+                    if (InspectedImage != string.Empty)
+                    {
+                        dialog.InitialDirectory = new FileInfo(InspectedImage).DirectoryName;
+                    } // otherwise use the default InitialDirectory
+
                     if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                     {
                         if (WallpaperData.ThemeContainsFolder(dialog.FileName))

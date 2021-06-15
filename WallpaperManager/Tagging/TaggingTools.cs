@@ -34,8 +34,17 @@ namespace WallpaperManager.Tagging
             return tagButton.Text.Substring(startIndex, endIndex - startIndex);
         }
 
-        public static void UpdateTagButton(Button tagButton, TagData tag)
+        public static void UpdateTagButton(Button tagButton, TagData tag, WallpaperData.ImageData activeImage = null)
         {
+            if (activeImage != null && activeImage.ContainsTag(tag))
+            {
+                tagButton.BackColor = Color.LightGreen;
+            }
+            else
+            {
+                tagButton.BackColor = SystemColors.ButtonFace;
+            }
+
             tagButton.Text = tag.Name + " (" + tag.GetLinkedImageCount() + ")";
             tagButton.ForeColor = tag.Enabled ? Color.Black : Color.Red;
         }

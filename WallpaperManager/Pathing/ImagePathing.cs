@@ -196,7 +196,7 @@ namespace WallpaperManager.Pathing
                 }
             }
 
-            WallpaperData.SaveData(WallpaperPathing.ActiveWallpaperTheme); //! Forgetting to save after renaming images could destroy a theme depending on the scale
+            WallpaperData.SaveData(WallpaperPathSetter.ActiveWallpaperTheme); //! Forgetting to save after renaming images could destroy a theme depending on the scale
             return finalNames.ToArray();
         }
 

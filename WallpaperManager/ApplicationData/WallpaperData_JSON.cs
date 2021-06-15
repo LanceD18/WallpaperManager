@@ -183,7 +183,7 @@ namespace WallpaperManager.ApplicationData
                 }
 
                 IsLoadingData = false;
-                WallpaperPathing.ActiveWallpaperTheme = path;
+                WallpaperPathSetter.ActiveWallpaperTheme = path;
                 UpdateRankPercentiles(ImageType.None); //! Now that image types exist this preemptive change may not be worth it
 
                 Debug.WriteLine("Finished Loading");
@@ -210,7 +210,7 @@ namespace WallpaperManager.ApplicationData
             ImagesOfTypeRankData.Clear();
             ActiveImagesOfType.Clear();
 
-            WallpaperPathing.Reset();
+            WallpaperPathSetter.Reset();
 
             InitializeImagesOfType();
 

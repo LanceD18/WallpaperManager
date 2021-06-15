@@ -95,7 +95,7 @@ namespace WallpaperManager
         private void SetWallpaper(int index, bool ignoreRandomization)
         {
             //-----Set Next Wallpaper-----
-            string wallpaperPath = WallpaperPathing.SetNextWallpaperOrder(index, ignoreRandomization);
+            string wallpaperPath = WallpaperPathSetter.SetNextWallpaperOrder(index, ignoreRandomization);
 
             //-----Update Notify Icons-----
             string wallpaperName = new FileInfo(wallpaperPath).Name; // pathless string of file name
@@ -106,18 +106,18 @@ namespace WallpaperManager
             }
             else //? this can occur after swapping themes as next wallpaper still holds data from the previous theme
             {
-                WallpaperPathing.SetNextWallpaperOrder(index, ignoreRandomization);
+                WallpaperPathSetter.SetNextWallpaperOrder(index, ignoreRandomization);
             }
 
             //? without this, if the inspector wasn't open prior to setting a new wallpaper it would never allow it's MvpPlayer to display
             // TODO find a permanent solution to this | Using a different player such as VLC did not work
-            WallpaperData.WallpaperManagerForm.FixInspectorPlayer(WallpaperPathing.ActiveWallpapers[index]);
+            WallpaperData.WallpaperManagerForm.FixInspectorPlayer(WallpaperPathSetter.ActiveWallpapers[index]);
 
             //-----Update Wallpaper Forms-----
             //? This needs to be above the call to WallpaperForum's SetWallpaper() otherwise the form will call its load event second & override some settings
             //! the moment this is shown, any new MpvPlayers will stop working, only the ones that were started by the player previously will continue to function
             if (!wallpapers[index].Visible) wallpapers[index].Show(); // this is processed only once after the first wallpaper change
-            wallpapers[index].SetWallpaper(WallpaperPathing.ActiveWallpapers[index]);
+            wallpapers[index].SetWallpaper(WallpaperPathSetter.ActiveWallpapers[index]);
         }
 
         private bool fixAdministered = false;
@@ -163,7 +163,7 @@ namespace WallpaperManager
                     {
                         //? Note that Previous Wallpaper should only be set when Next Wallpaper is updated
                         // Pushes to the previous wallpaper array using the corresponding index
-                        if (WallpaperPathing.ActiveWallpapers[index] != null) WallpaperPathing.PreviousWallpapers[index].Push(WallpaperPathing.ActiveWallpapers[index]);
+                        if (WallpaperPathSetter.ActiveWallpapers[index] != null) WallpaperPathSetter.PreviousWallpapers[index].Push(WallpaperPathSetter.ActiveWallpapers[index]);
 
                         ResetTimer(index);
                         SetWallpaper(index, false); // randomize wallpaper will check if it even can randomize the wallpapers first
@@ -185,7 +185,7 @@ namespace WallpaperManager
 
         public void PreviousWallpaper()
         {
-            for (int i = 0; i < WallpaperPathing.PreviousWallpapers.Length; i++)
+            for (int i = 0; i < WallpaperPathSetter.PreviousWallpapers.Length; i++)
             {
                 PreviousWallpaper(i);
             }
@@ -194,11 +194,11 @@ namespace WallpaperManager
         // sets all wallpapers to their previous wallpaper, if one existed
         public void PreviousWallpaper(int index)
         {
-            if (WallpaperPathing.PreviousWallpapers[index].Count > 0)
+            if (WallpaperPathSetter.PreviousWallpapers[index].Count > 0)
             {
-                WallpaperPathing.NextWallpapers[index] = WallpaperPathing.PreviousWallpapers[index].Pop();
+                WallpaperPathSetter.NextWallpapers[index] = WallpaperPathSetter.PreviousWallpapers[index].Pop();
 
-                if (File.Exists(WallpaperPathing.NextWallpapers[index]))
+                if (File.Exists(WallpaperPathSetter.NextWallpapers[index]))
                 {
                     ResetTimer(index);
                     SetWallpaper(index, true);

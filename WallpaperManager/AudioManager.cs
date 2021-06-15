@@ -31,7 +31,7 @@ namespace WallpaperManager
             await Task.Run(() =>
             {
                 int potentialAudioCount = 0;
-                foreach (string wallpaper in WallpaperPathing.ActiveWallpapers)
+                foreach (string wallpaper in WallpaperPathSetter.ActiveWallpapers)
                 {
                     if (WallpaperManagerTools.IsSupportedVideoType(wallpaper))
                     {
@@ -113,7 +113,7 @@ namespace WallpaperManager
                     }
 
                     List<string> potentialNames = new List<string>();
-                    foreach (string wallpaper in WallpaperPathing.ActiveWallpapers)
+                    foreach (string wallpaper in WallpaperPathSetter.ActiveWallpapers)
                     {
                         if (File.Exists(wallpaper))
                         {

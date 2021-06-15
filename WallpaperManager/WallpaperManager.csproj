@@ -220,7 +220,7 @@
   <ItemGroup>
     <Compile Include="ApplicationData\DisplayData.cs" />
     <Compile Include="Pathing\ImagePathing.cs" />
-    <Compile Include="Pathing\WallpaperPathing.cs" />
+    <Compile Include="Pathing\WallpaperPathSetter.cs" />
     <Compile Include="ApplicationData\WallpaperData.cs" />
     <Compile Include="ApplicationData\WallpaperData_ImageData.cs" />
     <Compile Include="ApplicationData\WallpaperData_JSON.cs" />

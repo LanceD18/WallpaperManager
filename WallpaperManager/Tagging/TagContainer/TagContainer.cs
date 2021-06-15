@@ -116,7 +116,7 @@ namespace WallpaperManager.Tagging
 
                 if (tag.Name.ToLower().Contains(textBoxSearchTag.Text.ToLower()))
                 {
-                    Button tagButton = CreateTagButton(tag);
+                    Button tagButton = CreateTagButton(tag, activeImage);
 
                     if (tagButton.Bounds.Bottom >= tagContainerFLP.Size.Height)
                     {

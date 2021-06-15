@@ -292,6 +292,25 @@ namespace WallpaperManager.ApplicationData
                 return foundTags.ToArray();
             }
 
+            public bool ContainsTag(TagData tag)
+            {
+                foreach (string curCategory in Tags.Keys)
+                {
+                    if (tag.ParentCategoryName == curCategory)
+                    {
+                        foreach (string curTag in Tags[curCategory])
+                        {
+                            if (curTag == tag.Name)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+
             public bool CheckIfTagIsParent(TagData tag) => CheckIfTagIsParent(tag, out var dummyChildTagName);
 
             public bool CheckIfTagIsParent(TagData tag, out string childTagName)

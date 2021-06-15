@@ -16,12 +16,11 @@ namespace WallpaperManager.Tagging
     {
         private Action<TagData> tagClickEvent;
 
-        private Button CreateTagButton(TagData tag)
+        private Button CreateTagButton(TagData tag, WallpaperData.ImageData activeImage = null)
         {
             Button tagButton = new Button();
             tagButton.AutoSize = true;
-            tagButton.BackColor = SystemColors.ButtonFace;
-            TaggingTools.UpdateTagButton(tagButton, tag);
+            TaggingTools.UpdateTagButton(tagButton, tag, activeImage);
 
             ApplyTagFormStyle(ref tagButton);
 
@@ -77,6 +76,8 @@ namespace WallpaperManager.Tagging
 
             activeImage.AddTag(selectedTag);
             tagClickEvent?.Invoke(selectedTag);
+            TaggingTools.UpdateTagButton(sender as Button, selectedTag, activeImage);
+            UpdateParentTagButtons(selectedTag);
 
             //!(ParentTagTabControl.Parent as Form).Close();
         }
@@ -103,7 +104,15 @@ namespace WallpaperManager.Tagging
 
             if (tagButton != null)
             {
-                TaggingTools.UpdateTagButton(tagButton, tag);
+                TaggingTools.UpdateTagButton(tagButton, tag, activeImage);
+            }
+        }
+
+        public void UpdateParentTagButtons(TagData tag)
+        {
+            foreach (Tuple<string, string> parentTag in tag.ParentTags)
+            {
+                UpdateTagButton(WallpaperData.TaggingInfo.GetTag(parentTag.Item1, parentTag.Item2));
             }
         }
 

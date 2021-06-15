@@ -11,7 +11,7 @@ using WallpaperManager.Options;
 
 namespace WallpaperManager.Pathing
 {
-    public static class WallpaperPathing
+    public static class WallpaperPathSetter
     {
         public static string[] ActiveWallpapers = new string[Screen.AllScreens.Length]; // holds paths of the currently active wallpapers
         public static string[] NextWallpapers = new string[Screen.AllScreens.Length]; // derived from UpcomingWallpapers, holds the next set of wallpapers
